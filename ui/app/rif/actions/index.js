@@ -759,11 +759,13 @@ function getChannelsGroupedByNetwork () {
     return new Promise((resolve, reject) => {
       dispatch(this.getChannels()).then(channelObject => {
         const arrayWithoutKeys = [];
-        if (Object.keys(channelObject).length !== 0 && channelObject.constructor !== Object) {
-          channelObject.map(channelJson => {
-            const channel = channelJson[Object.keys(channelJson)[0]];
-            arrayWithoutKeys.push(channel);
-          });
+        if (Object.keys(channelObject).length !== 0) {
+          for (var key in channelObject) {
+            if (channelObject.hasOwnProperty(key)) {
+              const channel = channelObject[key];
+              arrayWithoutKeys.push(channel);
+            }
+          }
         }
         const groupedBy = _.groupBy(arrayWithoutKeys, 'token_network_identifier');
         return resolve(groupedBy);

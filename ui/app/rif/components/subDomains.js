@@ -153,7 +153,14 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showSubdomainDetails: (params) => dispatch(rifActions.navigateTo(pageNames.rns.subdomains, params)),
+    showSubdomainDetails: (params) => dispatch(rifActions.navigateTo(pageNames.rns.subdomains, {
+      ...params,
+      tabOptions: {
+        hideTitle: true,
+        showSearchbar: false,
+        showBack: true,
+      },
+    })),
     getSubdomains: (domainName) => dispatch(rifActions.getSubdomains(domainName)),
     showPopup: (title, opts) => {
       dispatch(rifActions.showModal({

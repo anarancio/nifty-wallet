@@ -108,7 +108,8 @@ const mapDispatchToProps = dispatch => {
     showDomainsDetailPage: (data) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetail, {
       ...data,
       tabOptions: {
-        screenTitle: 'Domain Detail',
+        hideTitle: true,
+        showSearchbar: false,
         showBack: true,
       },
     })),

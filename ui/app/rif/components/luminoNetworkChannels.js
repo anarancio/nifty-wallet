@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {CustomButton, GenericTable} from './index';
+import { GenericTable, OpenChannel, CloseChannel } from './index';
 import rifActions from '../actions';
 import ItemWithActions from './item-with-actions';
 import {faCoins} from '@fortawesome/free-solid-svg-icons';
-import { SVG_PLUS } from '../constants';
 
 class LuminoNetworkChannels extends Component {
 
@@ -90,19 +89,7 @@ class LuminoNetworkChannels extends Component {
         </div>
       }
         {isOwner &&
-        <CustomButton
-          svgIcon={SVG_PLUS}
-          text={'Add channel'}
-          onClick={() => {
-          }}
-          className={
-            {
-              button: classes.customButton.button,
-              icon: classes.customButton.icon,
-              text: classes.customButton.text,
-            }
-          }
-        />
+          <OpenChannel/>
         }
       </div>
     );

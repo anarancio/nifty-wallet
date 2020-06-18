@@ -249,7 +249,14 @@ const mapDispatchToProps = dispatch => {
     displayToast: (message) => dispatch(niftyActions.displayToast(message)),
     getDomain: (domainName) => dispatch(rifActions.getDomain(domainName)),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
-    showConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, props)),
+    showConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, {
+      ...props,
+      tabOptions: {
+        hideTitle: true,
+        showSearchbar: false,
+        showBack: true,
+      },
+    })),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
 	}
 }
