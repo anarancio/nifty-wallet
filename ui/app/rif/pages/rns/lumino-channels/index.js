@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 class LuminoChannels extends Component {
   static propTypes = {
-    token: PropTypes.any.isRequired,
   }
 
   render () {
