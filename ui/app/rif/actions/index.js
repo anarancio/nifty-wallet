@@ -53,6 +53,7 @@ const rifActions = {
   getAvailableCallbacks,
   getTokensWithJoinedCheck,
   getLuminoNetworks,
+  getLuminoNetworkData,
   getUserChannelsInNetwork,
   listenCallback,
   createPayment,
@@ -821,7 +822,32 @@ function getTokensWithJoinedCheck () {
 
 function getLuminoNetworks (userAddress) {
   return (dispatch) => {
+
     return new Promise((resolve, reject) => {
+      // TODO: Remove these mocks
+      const networkMock1 = {
+        symbol: 'MRIF',
+        tokenAddress: '0x1234',
+        name: 'Mock RIF',
+        tokenNetwork: '0x12345',
+        channels: 20,
+        nodes: 5,
+        userChannels: 0,
+      }
+      const networkMock2 = {
+        symbol: 'MDoC',
+        tokenAddress: '0x12234',
+        name: 'Mock DoC',
+        tokenNetwork: '0x122345',
+        channels: 20,
+        nodes: 5,
+        userChannels: 2,
+      }
+      const networksMock = {
+        withChannels: [networkMock2],
+        withoutChannels: [networkMock1],
+      }
+      return resolve(networksMock);
       dispatch(this.getTokens()).then(tokens => {
         const networks = {
           withChannels: [],
@@ -830,9 +856,9 @@ function getLuminoNetworks (userAddress) {
         tokens.forEach(t => {
           const network = {
             symbol: t.symbol,
-            networkTokenAddress: t.address,
+            tokenAddress: t.address,
             name: t.name,
-            networkAddress: t.network_address,
+            tokenNetwork: t.network_address,
             channels: t.channels.length,
             nodes: 0,
             userChannels: 0,
@@ -862,26 +888,83 @@ function getLuminoNetworks (userAddress) {
   };
 }
 
+function getLuminoNetworkData (tokenAddress) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      const emptyNetwork = {
+        symbol: '???',
+        tokenAddress: '0x',
+        name: '???',
+        tokenNetwork: '0x',
+        channels: 0,
+        nodes: 0,
+        userChannels: 0,
+      }
+      dispatch(this.getTokens()).then(tokens => {
+        const data = tokens.find(n => n.address === tokenAddress);
+        if (data) {
+          const nodesMap = {};
+          data.channels.forEach(c => {
+            const {from_address: from, to_address: to} = c;
+            nodesMap[from] = true;
+            nodesMap[to] = true;
+          })
+          const network = {
+            symbol: data.symbol,
+            tokenAddress: data.address,
+            name: data.name,
+            tokenNetwork: data.network_address,
+            channels: data.channels.length,
+            nodes: Object.keys(nodesMap).length,
+          }
+          return resolve(network);
+        }
+        resolve(emptyNetwork)
+      }).catch(err => reject(err))
+    })
+  }
+
+}
+
+
 function getUserChannelsInNetwork (tokenAddress) {
   return (dispatch) => new Promise((resolve, reject) => {
-      background.rif.lumino.getChannels((error, channels) => {
-        if (error) {
-          dispatch(niftyActions.displayWarning(error));
-          return reject(error);
-        }
-        if (channels) {
-          // We get only the values, since these are the ones we care about
-          const channelsArr = Object.values(channels).filter(ch => ch.token_address.toLowerCase() === tokenAddress);
-          return resolve(channelsArr);
-        }
-        return resolve([])
-      });
-
+    // TODO: Remove these mocks
+    if (tokenAddress !== '0x12234') {
+      return resolve([]);
     }
+    const mockData = [
+      {
+        balance: '100000000000',
+        partner_address: '0x460218fcd497991b380f38b77c61334ad442e7f6',
+        channel_identifier: 1,
+        state: 'Open',
+      },
+      {
+        balance: '1000000000000000000000000',
+        channel_identifier: 2,
+        state: 'Open',
+        token_network_identifier: '0x41a34C1B6035E89FAdecb445dbAFe5804BC13a8E',
+        partner_address: '0xd7387C9b5a2860bFb6e8E8F36c8983B0469C6d18',
+      },
+    ]
+    return resolve(mockData);
+    background.rif.lumino.getChannels((error, channels) => {
+      if (error) {
+        dispatch(niftyActions.displayWarning(error));
+        return reject(error);
+      }
+      debugger;
 
-    ,
-  )
-    ;
+      if (channels) {
+        // We get only the values, since these are the ones we care about
+        debugger;
+        const channelsArr = Object.values(channels).filter(ch => ch.token_address.toLowerCase() === tokenAddress);
+        return resolve(channelsArr);
+      }
+      return resolve([])
+    });
+  });
 }
 
 function cleanStore () {

@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import rifActions from '../../actions';
 import LuminoNetworkItem from '../../components/LuminoNetworkItem';
 import {pageNames} from '../names';
+import {GenericTable} from '../../components';
 
 class LuminoHome extends Component {
 
@@ -31,26 +32,41 @@ class LuminoHome extends Component {
 
   navigateToNetworkDetail = (network) => {
     const {navigateTo} = this.props;
-    const {symbol, networkAddress, name, networkTokenAddress} = network;
-    return navigateTo(symbol, networkAddress, name, networkTokenAddress)
+    const {symbol, tokenAddress, name, tokenNetwork} = network;
+    return navigateTo(symbol, tokenAddress, name, tokenNetwork)
+  }
+
+  getNetworkItems = networkArr => {
+    return networkArr.map(n => {
+      return {
+        content: <LuminoNetworkItem key={n.symbol} userChannels={n.userChannels}
+                                    symbol={n.symbol} nodes={n.nodes}
+                                    channels={n.channels}
+                                    onRightChevronClick={() => this.navigateToNetworkDetail(n)}/>,
+      }
+    });
   }
 
   render () {
     const {networks} = this.state;
-    // TODO: Replace .map with instances of the <GenericTable /> from other branches
+    const myNetworks = this.getNetworkItems(networks.withChannels)
+    const otherNetworks = this.getNetworkItems(networks.withoutChannels)
+    const columns = [{
+      Header: 'Content',
+      accessor: 'content',
+    }];
     return (
       <div className="body">
-        <div>My Lumino networks available</div>
-        {networks.withChannels.map(n => <LuminoNetworkItem key={n.symbol} userChannels={n.userChannels}
-                                                           symbol={n.symbol} nodes={n.nodes}
-                                                           channels={n.channels}
-                                                           onRightChevronClick={() => this.navigateToNetworkDetail(n)}/>,
-        )}
-        <div>Lumino networks available</div>
-        {networks.withoutChannels.map(n => <LuminoNetworkItem key={n.symbol} symbol={n.symbol} nodes={n.nodes}
-                                                              channels={n.channels}
-                                                              onRightChevronClick={() => this.navigateToNetworkDetail(n)}/>,
-        )}
+        <GenericTable
+          title={'My Lumino Networks'}
+          columns={columns}
+          data={myNetworks}
+          paginationSize={3}/>
+        <GenericTable
+          title={'Lumino networks available'}
+          columns={columns}
+          data={otherNetworks}
+          paginationSize={3}/>
       </div>
     );
   }
@@ -67,12 +83,12 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getLuminoNetworks: (userAddress) => dispatch(rifActions.getLuminoNetworks(userAddress)),
-    navigateTo: (networkSymbol, networkAddress, networkName, networkTokenAddress) => {
+    navigateTo: (networkSymbol, tokenAddress, networkName, tokenNetwork) => {
       dispatch(rifActions.navigateTo(pageNames.lumino.networkDetails, {
         networkSymbol,
-        networkAddress,
+        tokenAddress,
         networkName,
-        networkTokenAddress,
+        tokenNetwork,
         tabOptions: {
           tabIndex: 1,
           showBack: true,
