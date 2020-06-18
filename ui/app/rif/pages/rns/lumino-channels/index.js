@@ -1,16 +1,17 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
 
 class LuminoChannels extends Component {
-
-  static propTypes = {}
+  static propTypes = {
+    token: PropTypes.any.isRequired,
+  }
 
   render () {
     return (<div className="body">LuminoChannels</div>);
   }
 }
 function mapStateToProps (state) {
-  // params is the params value or object passed to rifActions.navigateTo('pageName', params)
   const params = state.appState.currentView.params;
   return {}
 }
