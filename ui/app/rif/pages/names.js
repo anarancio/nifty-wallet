@@ -6,7 +6,7 @@ const pageNames = {
     domainRegister: 'domainRegister',
     subdomains: 'subdomains',
     exchange: 'exchange',
-    luminoChannels: 'lumino-channels',
+    luminoChannels: 'luminoChannels',
     pay: 'pay',
     renew: 'renew',
     sellOnMKP: 'sell-on-mkp',

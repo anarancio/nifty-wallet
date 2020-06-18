@@ -38,8 +38,8 @@ class LuminoNetworkChannels extends Component {
             enableRightChevron={true}
             onRightChevronClick={() => this.props.showNetworkDetails({
               networkSymbol: networkChannel.symbol,
-              networkAddress: networkChannel.address,
-              networkTokenAddress: networkChannel.tokenNetwork,
+              tokenAddress: networkChannel.address,
+              tokenNetwork: networkChannel.tokenNetwork,
               networkName: networkChannel.name,
             })}
           />)

@@ -10,7 +10,8 @@ import ChainAddresses from './chainAddresses';
 import LuminoChannels from './luminoChannels';
 import LuminoNetworkChannels from './luminoNetworkChannels';
 import { Logo, Channels, JoinedChip, ChannelStatusChip, ChannelChiplet } from './tokens';
-import { OpenChannel, CloseChannel, DepositChannel } from './lumino';
+import { OpenChannel, CloseChannel, DepositOnChannel } from './lumino';
+import Tabs from './tabs';
 
 function buildModal (modalComponent, currentModal) {
   return h(modalComponent, {key: currentModal.name, message: currentModal.message})
@@ -46,5 +47,6 @@ export {
   ChannelChiplet,
   OpenChannel,
   CloseChannel,
-  DepositChannel,
+  DepositOnChannel,
+  Tabs,
 }
