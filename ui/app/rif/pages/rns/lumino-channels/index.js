@@ -2,6 +2,10 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
 import { CloseChannel, DepositOnChannel, Tabs } from '../../../components';
+import rifActions from '../../../actions';
+import {CallbackHandlers} from '../../../actions/callback-handlers';
+import niftyActions from '../../../../actions';
+import {validateDecimalAmount} from '../../../utils/validations';
 
 const styles = {
   tabs: '',
@@ -16,6 +20,9 @@ const styles = {
 class LuminoChannels extends Component {
   static propTypes = {
     channel: PropTypes.object,
+    sendLuminoPayment: PropTypes.func,
+    showPopup: PropTypes.func,
+    showToast: PropTypes.func,
   }
   constructor (props) {
     super(props);
@@ -41,24 +48,56 @@ class LuminoChannels extends Component {
       ),
     };
     tabs.push(addFundsTab);
-    /*
-      TODO Rodrigo
-      Call the action when the user wants to pay.
-      Add checks for the input (Or put a regex to only put numbers)
-     */
     const payTab = {
       index: 1,
       title: 'Pay',
       component: (
         <div>
-          <input type="text" onChange={(e) => this.setState({paymentInput: e.target.value})} />
-          <button>Pay</button>
+          <input
+            type="text"
+            onKeyDown={event => this.validateAmount(event)}
+            onChange={(e) => this.setState({paymentInput: e.target.value})}
+          />
+          <button onClick={() => this.sendLuminoPayment()}>Pay</button>
         </div>
       ),
     };
     tabs.push(payTab);
     return tabs;
   }
+
+  validateAmount (event) {
+    return validateDecimalAmount(event, this.state.amount);
+  }
+
+  sendLuminoPayment () {
+    const { channel } = this.props;
+    const callbackHandlers = new CallbackHandlers();
+    callbackHandlers.requestHandler = (result) => {
+      console.debug('PAYMENT REQUESTED', result);
+      this.props.showToast('Payment Sent');
+    };
+    callbackHandlers.successHandler = (result) => {
+      console.debug('PAYMENT DONE', result);
+      this.props.showToast('Payment Delivered');
+    };
+    callbackHandlers.errorHandler = (error) => {
+      console.debug('PAYMENT ERROR', error);
+      this.props.showToast('Error trying to pay!', false);
+    };
+    this.props.showPopup('Pay', {
+      text: 'Are you sure you want to pay ' + this.state.paymentInput + ' tokens to partner ' + channel.partner_address + '?',
+      confirmLabel: 'Pay',
+      confirmCallback: async () => {
+        if (this.state.paymentInput) {
+          this.props.sendLuminoPayment(channel.token_address, channel.partner_address, this.state.paymentInput, callbackHandlers);
+        } else {
+          this.props.showToast('You need to put the amount first.', false);
+        }
+      },
+    });
+  }
+
   render () {
     const { channel } = this.props;
     const tabs = this.buildTabs();
@@ -75,13 +114,7 @@ class LuminoChannels extends Component {
         <div id="description">
           <span>{channel.state}</span>
           <span>{channel.total_deposit} {channel.token_symbol}</span>
-          {
-            /*
-            TODO Rodrigo
-            This rns domain needs to be getted from background
-            */
-          }
-          <span>pixel.rsk</span>
+          <span>{channel.partner_address}</span>
         </div>
         <Tabs tabs={tabs} classes={styles}/>
       </div>
@@ -96,6 +129,17 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    sendLuminoPayment: (token, destination, amount, callbackHandlers) => {
+      return dispatch(rifActions.createPayment(destination, token, amount, callbackHandlers));
+    },
+    showPopup: (title, opts) => {
+      dispatch(rifActions.showModal({
+        title,
+        ...opts,
+      }));
+    },
+    showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
+  }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoChannels)
