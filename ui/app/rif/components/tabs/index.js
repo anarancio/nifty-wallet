@@ -11,6 +11,7 @@ class Tabs extends Component {
     showBack: PropTypes.bool,
     backAction: PropTypes.func,
     classes: PropTypes.any,
+    letSelectedIndex: PropTypes.number,
   }
 
   constructor (props) {
@@ -40,7 +41,7 @@ class Tabs extends Component {
   }
 
   getTabBarItems () {
-    const { classes } = this.props;
+    const { letSelectedIndex, classes } = this.props;
     const styles = classes || {};
     let tabs = this.props.tabs;
     tabs = tabs.sort(this.sortTabs);
@@ -53,7 +54,7 @@ class Tabs extends Component {
                          </li>);
     }
     tabComponents.push(...tabs.map(tab => {
-      const active = tab.index === this.state.activeTabIndex;
+      const active = letSelectedIndex || (tab.index === this.state.activeTabIndex);
       const className = (styles.barItem || 'rif-tabs-bar-item ') + (active ? (styles.activeItem || 'rif-tabs-bar-item-active') : '');
       return (
         <li key={tab.index}

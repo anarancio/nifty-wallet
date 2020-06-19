@@ -17,6 +17,7 @@ class LuminoNetworkChannels extends Component {
     getChannel: PropTypes.func,
     showNetworkDetails: PropTypes.func,
     classes: PropTypes.any,
+    letSelectedIndex: PropTypes.number,
   }
 
   constructor (props) {
@@ -27,7 +28,7 @@ class LuminoNetworkChannels extends Component {
   }
 
   getData () {
-    const {classes} = this.props;
+    const { letSelectedIndex, classes } = this.props;
     if (this.state.networkChannels) {
       return this.state.networkChannels.map(networkChannel => {
         const item = (<ItemWithActions
@@ -41,6 +42,7 @@ class LuminoNetworkChannels extends Component {
               tokenAddress: networkChannel.address,
               tokenNetwork: networkChannel.tokenNetwork,
               networkName: networkChannel.name,
+              letSelectedIndex: letSelectedIndex,
             })}
           />)
         return {
@@ -126,6 +128,7 @@ function mapDispatchToProps (dispatch) {
       hideTitle: true,
       showSearchbar: false,
       showBack: true,
+      letSelectedIndex: params.letSelectedIndex,
     },
   })),
     getChannelsGroupedByNetwork: () => dispatch(rifActions.getChannelsGroupedByNetwork()),
