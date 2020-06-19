@@ -6,6 +6,7 @@ import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
 import {validateDecimalAmount} from '../../../utils/validations';
+import {getBalanceInEth} from '../../../utils/parse';
 
 const styles = {
   tabs: '',
@@ -113,7 +114,7 @@ class LuminoChannels extends Component {
         />
         <div id="description">
           <span>{channel.state}</span>
-          <span>{channel.total_deposit} {channel.token_symbol}</span>
+          <span>{getBalanceInEth(channel.total_deposit)} {channel.token_symbol}</span>
           <span>{channel.partner_address}</span>
         </div>
         <Tabs tabs={tabs} classes={styles}/>
