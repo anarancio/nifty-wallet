@@ -113,7 +113,6 @@ class DomainsDetailActiveScreen extends Component {
 		ownerAddress: PropTypes.string.isRequired,
     selectedResolverAddress: PropTypes.string,
 		isOwner: PropTypes.bool,
-		isLuminoNode: PropTypes.bool,
 		isRifStorage: PropTypes.bool,
     displayToast: PropTypes.func.isRequired,
     disableResolvers: PropTypes.bool,
@@ -139,7 +138,10 @@ class DomainsDetailActiveScreen extends Component {
 	}
 
 	render () {
-    const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isLuminoNode, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains } = this.props;
+    const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains } = this.props;
+    // TODO Rodrigo
+    // Make this call the function of isLuminoNode
+    const isLuminoNode = false;
     const domainInfo = {
       domainName,
       expirationDate,
@@ -229,7 +231,6 @@ function mapStateToProps (state) {
 		autoRenew: details.autoRenew,
 		ownerAddress: details.ownerAddress,
 		isOwner: state.metamask.selectedAddress.toLowerCase() === details.ownerAddress.toLowerCase(),
-		isLuminoNode: details.isLuminoNode,
 		isRifStorage: details.isRifStorage,
     selectedResolverAddress: params.selectedResolverAddress ? params.selectedResolverAddress : details.selectedResolverAddress,
     newChainAddresses: details.newChainAddresses || [],
