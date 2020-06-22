@@ -16,7 +16,7 @@ class DomainHeader extends Component {
     const {showOwnerIcon, showLuminoNodeIcon, showRifStorageIcon, domainName, children} = this.props;
     return (
       <div id="headerName" className="domain-name">
-        <span>{domainName}</span>
+        <span className="mr-1">{domainName}</span>
         {showOwnerIcon &&
         <DomainIcon className="domain-icon"/>
         }

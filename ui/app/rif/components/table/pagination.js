@@ -28,7 +28,7 @@ export default class Pagination extends Component {
     if (nextProps.pages !== this.props.pages) {
       const visiblePages = this.getVisiblePages(this.props.page, nextProps.pages);
       this.setState({
-        visiblePages: this.filterPages(visiblePages, this.props.pages),
+        visiblePages: this.filterPages(visiblePages, nextProps.pages),
       });
     }
     if (nextProps.page !== this.props.page) {

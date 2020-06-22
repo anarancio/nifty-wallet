@@ -14,18 +14,12 @@ class LuminoChannelItem extends Component {
 
   render = () => {
     const {partnerAddress, balance, state, tokenSymbol, onRightChevronClick} = this.props;
-    return (<div>
-      <div>
-        <span>{partnerAddress}</span>
-      </div>
-      <div>
-        <span>{getBalanceInEth(balance)} {tokenSymbol}</span>
-      </div>
-      <div>
-        <span>{state}</span>
-      </div>
-      <div onClick={onRightChevronClick}>
-        <img height={15} width={15} src="images/rif/chevronRight.svg"/>
+    return (<div className="row-data-container">
+      <span className="lumino-partner-address">{partnerAddress}</span>
+      <span className="ml-auto lumino-balance mr-1">{getBalanceInEth(balance)} <small>{tokenSymbol}</small></span>
+      <span className={`lumino-label-state ${state}`}>{state}</span>
+      <div className="ml-auto c-pointer" onClick={onRightChevronClick}>
+        <img height={15} width={15} src="images/rif/chevronRight.svg" className="d-block"/>
       </div>
     </div>);
   }

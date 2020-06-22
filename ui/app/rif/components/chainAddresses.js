@@ -31,6 +31,7 @@ class ChainAddresses extends Component {
     paginationSize: PropTypes.number,
     classes: PropTypes.any,
     getConfiguration: PropTypes.func,
+    showToast: PropTypes.func,
   }
 
   constructor (props) {
@@ -60,7 +61,7 @@ class ChainAddresses extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.domainName !== this.props.domainName) {
       this.loadChainAddresses();
-    } else if (prevProps.newChainAddresses !== this.props.newChainAddresses && this.props.newChainAddresses.length > 0) {
+    } else if (prevProps.newChainAddresses !== this.props.newChainAddresses) {
       this.setState({chainAddresses: this.props.newChainAddresses});
     }
   }
@@ -100,14 +101,14 @@ class ChainAddresses extends Component {
 
   onChangeSubmit = (address, selectedChainAddress) => {
     if (address) {
-      this.addAddress(address, selectedChainAddress);
+      this.addAddress(address, selectedChainAddress, 'Updating chain address');
     } else {
       this.props.displayWarning('Address cannot be empty');
     }
   }
 
   onDeleteClick = (selectedChainAddress) => {
-    this.addAddress(null, selectedChainAddress);
+    this.addAddress(null, selectedChainAddress, 'Deleting chain address');
   }
 
   updateChainAddress = (selectedOption) => {
@@ -118,7 +119,7 @@ class ChainAddresses extends Component {
     this.setState({ insertedAddress: address });
   }
 
-  async addAddress (address = null, chainAddress = null) {
+  async addAddress (address = null, chainAddress = null, toastMessage = 'Adding chain address') {
     const insertedAddress = address || this.state.insertedAddress;
     const selectedChainAddress = chainAddress || this.state.selectedChainAddress;
     const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName);
@@ -131,14 +132,17 @@ class ChainAddresses extends Component {
             {
               ...this.props.redirectParams,
               newChainAddresses: chainAddresses,
-          });
+            });
         }
       });
     this.props.showTransactionConfirmPage({
       action: () => {
         this.props.showThis(
           this.props.redirectPage,
-          this.props.redirectParams)
+          this.props.redirectParams);
+        if (toastMessage) {
+          this.props.showToast(toastMessage);
+        }
       },
     });
   }
@@ -225,6 +229,7 @@ function mapDispatchToProps (dispatch) {
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
+    showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ChainAddresses);

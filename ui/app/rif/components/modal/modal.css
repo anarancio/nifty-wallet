@@ -1,41 +1,54 @@
-.modal-message {
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-}
-
-.modal-message>h1 {
-  font-weight: bold;
-  font-size: 1em;
-  text-transform: uppercase;
-  margin-bottom: 1em;
-}
-
-.modal-message>p {
-  margin: 1em;
-}
-
-.modal-buttons {
-  display: flex;
-  padding: 0.5em;
-}
-
-.modal-buttons>button {
-  margin: 0.5em;
+.ReactModal__Overlay {
+  background: transparent !important;
 }
 
 .modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 90%;
-  background: white;
-  padding: 1em;
+  height: 100%;
+  padding: 35px;
+  display: flex;
+  align-items: center;
 }
-.modal-body {
-  width: 100%;
+
+.modal-message {
+  padding: 18px 14px;
+  border-radius: 10px;
+  background: var(--gray-modal);
+  font-family: var(--primary-font);
+  color: var(--gray-modal-title);
+}
+
+.modal-message h1 {
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.modal-message p {
+  font-weight: 400;
+  font-size: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+  line-height: 1.3;
+}
+
+.modal-buttons {
+  text-align: center;
+}
+
+.modal-buttons .btn-confirm {
+  background: var(--gray-modal-btn);
+  border-radius: 5px;
+  color: #fff;
+}
+
+.modal-buttons .btn-cancel {
+  background: transparent;
+  border-radius: 5px;
+  color: var(--gray-modal-btn);
+  border: 1px solid var(--gray-modal-btn);
+}
+
+.modal-buttons button + button {
+  margin-left: 10px;
 }

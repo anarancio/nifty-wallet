@@ -3,11 +3,11 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import rifActions from '../actions';
 import niftyActions from '../../actions';
-import {CustomButton, GenericTable} from './index';
+import {CustomButton, GenericSearch, GenericTable} from './index';
 import ItemWithActions from './item-with-actions';
 import {SVG_PLUS} from '../constants';
 import AddNewSubdomain from '../pages/domainsDetailPage/domainDetailActive/addNewSubdomain';
-import { pageNames } from '../pages';
+import {pageNames} from '../pages';
 
 class Subdomains extends Component {
 
@@ -35,6 +35,7 @@ class Subdomains extends Component {
     super(props);
     this.state = {
       subdomains: [],
+      filteredSubdomains: [],
       addSubdomain: false,
     };
   }
@@ -44,7 +45,7 @@ class Subdomains extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.newSubdomains !== this.props.newSubdomains && this.props.newSubdomains.length > 0) {
+    if (prevProps.newSubdomains !== this.props.newSubdomains) {
       this.setState({subdomains: this.props.newSubdomains});
     }
   }
@@ -52,14 +53,17 @@ class Subdomains extends Component {
   loadSubdomains () {
     this.props.getSubdomains(this.props.domainInfo.domainName)
       .then(subdomains => {
-        this.setState({subdomains: subdomains});
+        this.setState({subdomains: subdomains, filteredSubdomains: subdomains});
       });
   }
 
+  setFilteredSubdomains = filteredSubdomains => this.setState(({filteredSubdomains}));
+
   getData () {
-  const { domainInfo, showSubdomainDetails, pageName, redirectParams, classes } = this.props;
-  if (this.state.subdomains) {
-      return this.state.subdomains.map((subdomain) => {
+    const {domainInfo, showSubdomainDetails, pageName, redirectParams, classes} = this.props;
+    const {filteredSubdomains} = this.state;
+    if (filteredSubdomains) {
+      return filteredSubdomains.map((subdomain) => {
         const item = (
           <ItemWithActions
             contentClasses={classes.content}
@@ -88,15 +92,20 @@ class Subdomains extends Component {
   }
 
   render () {
-    const { domainInfo, isOwner, pageName, redirectParams, classes, paginationSize} = this.props;
+    const {domainInfo, isOwner, pageName, redirectParams, classes, paginationSize} = this.props;
+    const {subdomains} = this.state;
     const data = this.getData();
     return (
       <div>
         {
           data.length > 0 &&
           <div>
+            <GenericSearch
+              placeholder={'Subdomains'}
+              data={subdomains}
+              resultSetFunction={this.setFilteredSubdomains}
+              filterProperty={'name'}/>
             <GenericTable
-              title={'Subdomains'}
               columns={[
                 {
                   Header: 'Content',
@@ -144,6 +153,7 @@ class Subdomains extends Component {
     );
   }
 }
+
 function mapStateToProps (state) {
   const params = state.appState.currentView.params;
   return {
@@ -176,4 +186,5 @@ function mapDispatchToProps (dispatch) {
     deleteSubdomain: (domainName, subdomain) => dispatch(rifActions.deleteSubdomain(domainName, subdomain)),
   }
 }
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Subdomains);

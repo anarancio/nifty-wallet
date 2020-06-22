@@ -92,11 +92,11 @@ function showModal (opts, modalName = 'generic-modal') {
     elements: null,
     confirmLabel: 'Confirm',
     cancelLabel: 'Cancel',
-    confirmButtonClass: null,
+    confirmButtonClass: 'btn-confirm',
     confirmCallback: () => {
     },
     closeAfterConfirmCallback: true,
-    cancelButtonClass: null,
+    cancelButtonClass: 'btn-cancel',
     cancelCallback: () => {
     },
     closeAfterCancelCallback: true,
@@ -828,24 +828,26 @@ function getLuminoNetworks (userAddress) {
           withChannels: [],
           withoutChannels: [],
         }
-        tokens.forEach(t => {
+        tokens.forEach(token => {
           const network = {
-            symbol: t.symbol,
-            tokenAddress: t.address,
-            name: t.name,
-            tokenNetwork: t.network_address,
-            channels: t.channels.length,
+            symbol: token.symbol,
+            tokenAddress: token.address,
+            name: token.name,
+            tokenNetwork: token.network_address,
+            channels: token.channels.length,
             nodes: 0,
             userChannels: 0,
           }
           if (network.channels) {
             const nodesMap = {};
             // We check for the unique nodes in the channels
-            t.channels.forEach(c => {
-              const {from_address: from, to_address: to} = c;
+            token.channels.forEach(channel => {
+              const {from_address: from, to_address: to} = channel;
               nodesMap[from] = true
               // If the user is one of the participants, this is one of their channels
-              if (from.toLowerCase() === userAddress || to.toLowerCase() === userAddress) {
+              const toLower = value => value.toLowerCase();
+              const lowerUserAddress = toLower(userAddress);
+              if (toLower(from) === lowerUserAddress || toLower(to) === lowerUserAddress) {
                 network.userChannels += 1
               }
             })

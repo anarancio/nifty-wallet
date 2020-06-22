@@ -11,8 +11,7 @@ export const tabDefinitions = [
   {
     title: 'Lumino',
     index: 1,
-    defaultScreenTitle: 'Lumino networks directory',
     defaultScreenName: pageNames.lumino.home,
-    showSearchbar: true,
+    showSearchbar: false,
   },
 ]

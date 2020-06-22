@@ -14,7 +14,7 @@
 .rif-tab-content__inside {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 118px);
+  height: calc(100vh - 113px);
 }
 
 .rif-tabs-bar li {

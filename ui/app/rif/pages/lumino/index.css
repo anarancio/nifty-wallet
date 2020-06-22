@@ -1,0 +1,90 @@
+.rif-home-body {
+  overflow-y: auto;
+  width: 100%;
+}
+
+.lumino-list-container {
+  padding: 0 20px;
+}
+
+.lumino-list-container > div + div {
+  margin-top: 28px;
+}
+
+.lumino-table-title {
+  font-family: var(--primary-font);
+  color: var(--primary-color);
+  font-weight: 400;
+  font-size: 14px;
+  display: block;
+  border-bottom: 1px solid var(--gray-soft);
+  padding-bottom: 12px;
+  margin-bottom: 0;
+}
+
+.lumino-text-symbol {
+  color: #000000;
+}
+
+.lumino-text-data {
+  font-family: var(--primary-font);
+  color: var(--primary-color);
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.lumino-text-data small {
+  font-size: 10px;
+}
+
+.lumino-list-container img + .lumino-text-data,
+.lumino-network-detail-container img + .lumino-text-data {
+  margin-left: 3px;
+}
+
+.lumino-list-container .d-flex + .d-flex,
+.lumino-network-detail-container .d-flex + .d-flex {
+  margin-left: 15px;
+}
+
+/* LUMINO NETWORK DETAIL */
+
+.lumino-network-detail-container {
+  padding: 0 20px;
+}
+
+.network-detail__name {
+  font-family: var(--primary-font);
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.lumino-partner-address {
+  font-size: 12px;
+  font-weight: 400;
+  width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lumino-balance {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.lumino-balance small {
+  font-size: 10px;
+}
+
+.lumino-label-state {
+  font-size: 12px;
+}
+
+.lumino-label-state.Open {
+  color: #2BA147;
+}
+
+.lumino-label-state.Opening {
+  color: #FFAA05;
+}

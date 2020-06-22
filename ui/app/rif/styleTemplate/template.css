@@ -6,6 +6,10 @@
   --gray-soft: #DFDFDF;
   --gray-text: #979797;
 
+  --gray-modal: #D8D8D8;
+  --gray-modal-title: #515052;
+  --gray-modal-btn: #767677;
+
   --primary-font: 'Lato', sans-serif;
   --secondary-font: 'Roboto', sans-serif;
 }
@@ -27,15 +31,15 @@
   color: var(--primary-color);
   font-size: 18px;
   font-weight: 700;
-  padding: 0 28px;
-  margin: 30px 0 18px;
+  padding: 0 20px;
+  margin: 12px 0 18px;
 }
 
 /* SEARCH BAR */
 .search-bar-container {
   width: 100%;
-  max-width: 290px;
-  margin: 0 auto;
+  max-width: 317px;
+  margin: 0 auto 18px;
   padding: 34px 0 0;
 }
 
@@ -81,6 +85,11 @@
   margin-left: 0;
 }
 
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .mr-auto {
   margin-right: auto;
 }
@@ -89,8 +98,28 @@
   margin-left: auto;
 }
 
+.mr-1 {
+  margin-right: 10px;
+}
+
+.mb-4 {
+  margin-bottom: 40px;
+}
+
+.d-block {
+  display: block;
+}
+
 .d-flex {
   display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.c-pointer {
+  cursor: pointer;
 }
 
 /* BTN */
@@ -98,11 +127,6 @@
   background-color: transparent;
   border: 1px solid var(--primary-color);
   color: var(--primary-color);
-}
-
-.btn-register {
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
 .btn-primary-outlined + .btn-primary-outlined {

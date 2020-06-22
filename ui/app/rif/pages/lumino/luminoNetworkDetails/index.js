@@ -7,6 +7,22 @@ import OpenChannel from '../../../components/lumino/open-channel';
 import {GenericTable} from '../../../components';
 import {pageNames} from '../../names';
 
+const styles = {
+  myLuminoChannels: {
+    title: 'n-table-title',
+    table: 'n-table',
+    tbodyTd: 'n-table-td',
+    pagination: {
+      body: 'n-table-pagination',
+      buttonBack: 'n-table-pagination-back',
+      indexes: '',
+      activePageButton: 'n-table-pagination-active',
+      inactivePageButton: 'n-table-pagination-inactive',
+      buttonNext: 'n-table-pagination-next',
+    },
+  }
+}
+
 class LuminoNetworkDetails extends Component {
 
   static propTypes = {
@@ -69,25 +85,31 @@ class LuminoNetworkDetails extends Component {
       accessor: 'content',
     }];
     return (
-      <div className="body">
-        <div>{networkSymbol} Network</div>
-        <div>
-          <div>
+      <div className="lumino-network-detail-container">
+        <div className="d-flex align-items-center">
+          <div className="network-detail__name">{networkSymbol} Network</div>
+          <button className="btn-primary btn-primary-outlined ml-auto">Leave</button>
+        </div>
+        <div className="row-data-container mb-4">
+          <span className="lumino-text-symbol mr-1">
+            {networkSymbol}
+          </span>
+          <div className="d-flex align-items-center">
             <img height={15} width={15} src="images/rif/node.svg"/>
-            {networkData.nodes} nodes
+            <span className="lumino-text-data">{networkData.nodes} <small>nodes</small></span>
           </div>
-          <div>
-            <img height={15} width={15} src="images/rif/node.svg"/>
-            {networkData.channels} channels
+          <div className="d-flex align-items-center">
+            <img height={15} width={15} src="images/rif/channels.svg"/>
+            <span className="lumino-text-data">{networkData.channels} <small>channels</small></span>
           </div>
 
         </div>
-        <button>Leave</button>
         {loading && <div>Loading data</div>}
         {!loading && <div>
           {!!userChannels.length &&
           <GenericTable
             title={`My channels in ${networkSymbol} network`}
+            classes={styles.myLuminoChannels}
             columns={columns}
             data={channelItems}
             paginationSize={3}/>

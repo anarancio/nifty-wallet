@@ -5,6 +5,7 @@ import rifActions from '../../rif/actions';
 import actions from '../../actions';
 import {pageNames} from '../pages';
 import {cleanDomainName} from '../utils/parse';
+import {GenericSearch} from './index';
 
 class SearchDomains extends Component {
 
@@ -33,50 +34,44 @@ class SearchDomains extends Component {
     return cleanDomainName(domainName);
   }
 
-  handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      const typedDomain = e.target.value;
-      // There is a limitation in rns that domains with less 5 characters are blocked
-      if (typedDomain.length < 5) {
-        this.props.displayWarning('Domains with less than 5 characters are blocked.');
-        return;
-      }
+  filter = (value) => {
+    // There is a limitation in rns that domains with less 5 characters are blocked
+    if (value.length < 5) {
+      this.props.displayWarning('Domains with less than 5 characters are blocked.');
+      return;
+    }
 
-      const domainName = this.cleanDomainName(e.target.value);
-      const storedDomains = this.state.storedDomains;
+    const domainName = this.cleanDomainName(value);
+    const storedDomains = this.state.storedDomains;
 
-      if (storedDomains && storedDomains.find(storedDomain => storedDomain.name === domainName)) {
-        const storedDomain = storedDomains.find(storedDomain => storedDomain.name === domainName);
-        return this.props.showDomainsDetailPage({domain: storedDomain, status: storedDomain.status});
-      } else {
-        // Checks if the domain is available, so if it is, it need to render a screen so the user can register it
-        this.props.checkDomainAvailable(domainName).then(domain => {
-          if (domain) {
-            this.props.showDomainRegisterPage(domainName);
-          } else {
-            // We need to put an else here, so we can redirect to details page, remember that the localstorage part of code, will not be anymore here
-            this.props.getDomainDetails(domainName).then(details => {
-              console.debug('Details retrieved', details);
-              return this.props.showDomainsDetailPage(details);
-            }).catch(error => {
-              console.debug('Error retrieving domain details', error);
-              this.props.displayWarning('An error happend trying to get details from domain, please try again later.');
-            });
-          }
-        });
-      }
+    if (storedDomains && storedDomains.find(storedDomain => storedDomain.name === domainName)) {
+      const storedDomain = storedDomains.find(storedDomain => storedDomain.name === domainName);
+      return this.props.showDomainsDetailPage({domain: storedDomain, status: storedDomain.status});
+    } else {
+      // Checks if the domain is available, so if it is, it need to render a screen so the user can register it
+      this.props.checkDomainAvailable(domainName).then(domain => {
+        if (domain) {
+          this.props.showDomainRegisterPage(domainName);
+        } else {
+          // We need to put an else here, so we can redirect to details page, remember that the localstorage part of code, will not be anymore here
+          this.props.getDomainDetails(domainName).then(details => {
+            console.debug('Details retrieved', details);
+            return this.props.showDomainsDetailPage(details);
+          }).catch(error => {
+            console.debug('Error retrieving domain details', error);
+            this.props.displayWarning('An error happend trying to get details from domain, please try again later.');
+          });
+        }
+      });
     }
   }
 
   render () {
     return (
-      <div className="search-bar-container">
-        <input
-          placeholder="Search for domains"
-          className={'search-bar'}
-          onKeyDown={(event) => this.handleKeyDown(event)}
-        />
-      </div>
+      <GenericSearch
+        filterFunction={this.filter}
+        placeholder="Search for domains"
+      />
     )
   }
 }
