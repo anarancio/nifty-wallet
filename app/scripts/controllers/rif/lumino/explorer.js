@@ -44,7 +44,12 @@ export class LuminoExplorer {
           return response.json();
         })
         .then(dashBoardInfo => {
-          resolve(dashBoardInfo.nodes.find(node => node.node_address.toLowerCase() === address.toLowerCase()));
+          dashBoardInfo.nodes.map(node => {
+            if (node.node_address.toLowerCase() === address.toLowerCase()) {
+              resolve(true);
+            }
+          });
+          resolve(false);
         }).catch(err => reject(err));
     });
   }

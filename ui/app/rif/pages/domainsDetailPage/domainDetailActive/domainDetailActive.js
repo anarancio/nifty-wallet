@@ -122,6 +122,7 @@ class DomainsDetailActiveScreen extends Component {
     showToast: PropTypes.func,
     showConfigPage: PropTypes.func,
     getConfiguration: PropTypes.func,
+    isLuminoNode: PropTypes.func,
 	}
 	constructor (props) {
 		super(props);
@@ -132,16 +133,19 @@ class DomainsDetailActiveScreen extends Component {
           resolvers,
         });
       });
+    this.props.isLuminoNode(this.props.ownerAddress).then(isLumino => {
+      this.setState({
+        isLuminoNode: isLumino,
+      });
+    });
 		this.state = {
 			resolvers: [],
+      isLuminoNode: false,
 		};
 	}
 
 	render () {
     const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains } = this.props;
-    // TODO Rodrigo
-    // Make this call the function of isLuminoNode
-    const isLuminoNode = false;
     const domainInfo = {
       domainName,
       expirationDate,
@@ -153,7 +157,7 @@ class DomainsDetailActiveScreen extends Component {
       content,
       selectedResolverAddress,
     };
-		const { resolvers } = this.state;
+		const { resolvers, isLuminoNode } = this.state;
 		return (
       <div className="domain-detail">
         <DomainHeader domainName={domainName}
@@ -259,6 +263,7 @@ const mapDispatchToProps = dispatch => {
       },
     })),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
+    isLuminoNode: (address) => dispatch(rifActions.isLuminoNode(address)),
 	}
 }
 
