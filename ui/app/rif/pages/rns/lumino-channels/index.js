@@ -64,7 +64,7 @@ class LuminoChannels extends Component {
             />
           </div>
           <div className="form-segment">
-            <button className="btn-primary" onClick={() => this.sendLuminoPayment()}>Pay</button>
+            <button disabled={!(this.state.paymentInput > 0)} className="btn-primary" onClick={() => this.sendLuminoPayment()}>Pay</button>
           </div>
         </div>
       ),
