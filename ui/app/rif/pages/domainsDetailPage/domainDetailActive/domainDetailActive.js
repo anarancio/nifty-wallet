@@ -146,6 +146,7 @@ class DomainsDetailActiveScreen extends Component {
 
 	render () {
     const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains } = this.props;
+    const { resolvers, isLuminoNode } = this.state;
     const domainInfo = {
       domainName,
       expirationDate,
@@ -157,7 +158,6 @@ class DomainsDetailActiveScreen extends Component {
       content,
       selectedResolverAddress,
     };
-		const { resolvers, isLuminoNode } = this.state;
 		return (
       <div className="domain-detail">
         <DomainHeader domainName={domainName}
@@ -225,6 +225,7 @@ function mapStateToProps (state) {
 	const params = state.appState.currentView.params;
 	const domain = params.domain;
 	const details = domain.details || params.details;
+  console.debug('==================================================mapStateToProps');
   return {
 		dispatch: state.dispatch,
 		status: details.status,
