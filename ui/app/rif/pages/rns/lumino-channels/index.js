@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import { CloseChannel, DepositOnChannel, Tabs } from '../../../components';
 import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
@@ -98,26 +98,52 @@ class LuminoChannels extends Component {
       },
     });
   }
-
+  getStatus (sdkStatus) {
+    let retVal;
+    switch (sdkStatus) {
+      case 'CHANNEL_OPENED':
+        retVal = (
+          <span>Open</span>
+        )
+        break;
+      default:
+        retVal = (
+          <span>Close</span>
+        )
+    }
+    return retVal;
+  }
   render () {
     const { channel } = this.props;
     const tabs = this.buildTabs();
     return (
       <div>
-        <CloseChannel
-          partner={channel.partner_address}
-          buttonLabel="Close"
-          tokenAddress={channel.token_address}
-          tokenNetworkAddress={channel.token_network_identifier}
-          tokenName={channel.token_name}
-          channelIdentifier={channel.channel_identifier}
-        />
+        {channel.sdk_status === 'CHANNEL_OPENED' &&
+          <CloseChannel
+            partner={channel.partner_address}
+            buttonLabel="Close"
+            tokenAddress={channel.token_address}
+            tokenNetworkAddress={channel.token_network_identifier}
+            tokenName={channel.token_name}
+            channelIdentifier={channel.channel_identifier}
+          />
+        }
         <div id="description">
-          <span>{channel.state}</span>
-          <span>{getBalanceInEth(channel.total_deposit)} {channel.token_symbol}</span>
-          <span>{channel.partner_address}</span>
+          {
+            this.getStatus(channel.sdk_status)
+          }
+          <span><span>$</span>{getBalanceInEth(channel.total_deposit)} {channel.token_symbol}</span>
+          <span>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.4838 11.7778H0.516217C0.745698 8.25555 3.38061 5.55554 6.5 5.55554C9.61939 5.55554 12.2543 8.25555 12.4838 11.7778Z" stroke="#602A95"/>
+              <circle cx="6.50022" cy="2.88889" r="2.38889" stroke="#602A95"/>
+            </svg>
+            {channel.partner_address}
+          </span>
         </div>
-        <Tabs tabs={tabs} classes={styles}/>
+        {channel.sdk_status === 'CHANNEL_OPENED' &&
+          <Tabs tabs={tabs} classes={styles}/>
+        }
       </div>
     );
   }
