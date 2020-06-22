@@ -123,6 +123,7 @@ class DomainsDetailActiveScreen extends Component {
     showConfigPage: PropTypes.func,
     getConfiguration: PropTypes.func,
     isLuminoNode: PropTypes.func,
+    showPay: PropTypes.func,
 	}
 	constructor (props) {
 		super(props);
@@ -145,7 +146,7 @@ class DomainsDetailActiveScreen extends Component {
 	}
 
 	render () {
-    const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains } = this.props;
+    const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay } = this.props;
     const { resolvers, isLuminoNode } = this.state;
     const domainInfo = {
       domainName,
@@ -163,7 +164,9 @@ class DomainsDetailActiveScreen extends Component {
         <DomainHeader domainName={domainName}
                       showOwnerIcon={isOwner}
                       showLuminoNodeIcon={isLuminoNode}
-                      showRifStorageIcon={isRifStorage}>
+                      showRifStorageIcon={isRifStorage}
+                      onClickLuminoNode={() => showPay(domainInfo) }
+        >
           <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg" className="config-domain-btn"
             onClick={() => this.props.showConfigPage({
               domain: domain,
@@ -225,7 +228,6 @@ function mapStateToProps (state) {
 	const params = state.appState.currentView.params;
 	const domain = params.domain;
 	const details = domain.details || params.details;
-  console.debug('==================================================mapStateToProps');
   return {
 		dispatch: state.dispatch,
 		status: details.status,
@@ -265,6 +267,9 @@ const mapDispatchToProps = dispatch => {
     })),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
     isLuminoNode: (address) => dispatch(rifActions.isLuminoNode(address)),
+    showPay: (domainInfo) => dispatch(rifActions.navigateTo(pageNames.rns.pay, {
+      domainInfo: domainInfo,
+    })),
 	}
 }
 
