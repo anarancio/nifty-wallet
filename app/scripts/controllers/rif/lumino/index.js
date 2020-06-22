@@ -5,7 +5,7 @@ import {bindOperation, isRskNetwork} from '../utils/general';
 import {LuminoOperations} from './operations';
 import {LuminoCallbacks} from './callbacks';
 import ethUtils from 'ethereumjs-util';
-import { LuminoExplorer } from './explorer';
+import {LuminoExplorer} from './explorer';
 import {LuminoStorageHandler} from './storage';
 
 /**
@@ -35,7 +35,7 @@ export class LuminoManager extends AbstractManager {
     });
   }
 
-  async initializeLumino (cleanApiKey = false) {
+  async initializeLumino (cleanApiKey = false, reconfigure = false) {
     const configuration = this.configurationProvider.getConfigurationObject();
     if (this.unlocked && isRskNetwork(this.network.id)) {
       const configParams = {
@@ -61,15 +61,19 @@ export class LuminoManager extends AbstractManager {
           luminoStorageHandler.saveLuminoData(data);
         },
       }
-      await this.lumino.init(signingHandler, storageHandler, configParams);
+      if (reconfigure) {
+        await this.lumino.reConfigure(signingHandler, storageHandler, configParams)
+      } else {
+        await this.lumino.init(signingHandler, storageHandler, configParams);
+      }
       const state = this.getStoreState();
-        if (state.apiKey && !cleanApiKey) {
-          await this.operations.setApiKey(state.apiKey);
-        } else {
-          await this.operations.onboarding();
-          state.apiKey = await this.operations.getApiKey();
-          this.updateStoreState(state);
-        }
+      if (state.apiKey && !cleanApiKey) {
+        await this.operations.setApiKey(state.apiKey);
+      } else {
+        await this.operations.onboarding();
+        state.apiKey = await this.operations.getApiKey();
+        this.updateStoreState(state);
+      }
       await this.afterInitialization();
     }
   };
@@ -86,11 +90,11 @@ export class LuminoManager extends AbstractManager {
 
   onNetworkChanged (network) {
     super.onNetworkChanged(network);
-    this.initializeLumino(true);
+    this.initializeLumino(true, true);
   }
 
   onConfigurationUpdated (configuration) {
-    this.initializeLumino(true);
+    this.initializeLumino(true, true);
   }
 
   onAddressChanged (address) {
@@ -101,7 +105,7 @@ export class LuminoManager extends AbstractManager {
     if (this.operations) {
       this.operations.updateAddress(address);
     }
-    this.initializeLumino(true);
+    this.initializeLumino(true, true);
   }
 
   bindApi () {
