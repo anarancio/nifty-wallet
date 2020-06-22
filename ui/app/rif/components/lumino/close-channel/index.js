@@ -56,8 +56,8 @@ class CloseChannel extends Component {
 
   render () {
     return (
-      <div>
-        <button className="btn-primary btn-primary-outlined" onClick={() => this.closeChannelModal()}>{this.props.buttonLabel ? this.props.buttonLabel : 'Close'}</button>
+      <div className="d-flex mb-1">
+        <button className="btn-primary btn-primary-outlined ml-auto" onClick={() => this.closeChannelModal()}>{this.props.buttonLabel ? this.props.buttonLabel : 'Close'}</button>
       </div>
     );
   }
