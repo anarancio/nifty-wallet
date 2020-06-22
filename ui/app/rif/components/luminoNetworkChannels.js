@@ -14,7 +14,6 @@ class LuminoNetworkChannels extends Component {
     isOwner: PropTypes.bool,
     paginationSize: PropTypes.number,
     getChannelsGroupedByNetwork: PropTypes.func,
-    getChannel: PropTypes.func,
     showNetworkDetails: PropTypes.func,
     classes: PropTypes.any,
     letSelectedIndex: PropTypes.number,
@@ -132,7 +131,6 @@ function mapDispatchToProps (dispatch) {
     },
   })),
     getChannelsGroupedByNetwork: () => dispatch(rifActions.getChannelsGroupedByNetwork()),
-    getChannel: () => {},
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoNetworkChannels);
