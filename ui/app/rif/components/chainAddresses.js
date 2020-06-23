@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import rifActions from '../actions';
 import {CustomButton, GenericTable} from './index';
-import {getChainAddressByChainAddress} from '../utils/utils';
+import {getChainAddressByChainAddress, arraysMatch} from '../utils/utils';
 import {DEFAULT_ICON, GET_RESOLVERS, SVG_PLUS} from '../constants';
 import ItemWithActions from './item-with-actions';
 import InputWithSubmit from './InputWithSubmit';
@@ -61,7 +61,7 @@ class ChainAddresses extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.domainName !== this.props.domainName) {
       this.loadChainAddresses();
-    } else if (prevProps.newChainAddresses.length !== this.props.newChainAddresses.length) {
+    } else if (!arraysMatch(prevProps.newChainAddresses, this.props.newChainAddresses)) {
       this.setState({chainAddresses: this.props.newChainAddresses});
     }
   }

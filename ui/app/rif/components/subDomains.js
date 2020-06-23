@@ -8,6 +8,7 @@ import ItemWithActions from './item-with-actions';
 import {SVG_PLUS} from '../constants';
 import AddNewSubdomain from '../pages/domainsDetailPage/domainDetailActive/addNewSubdomain';
 import {pageNames} from '../pages';
+import {arraysMatch} from '../utils/utils';
 
 class Subdomains extends Component {
 
@@ -45,7 +46,7 @@ class Subdomains extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.newSubdomains !== this.props.newSubdomains) {
+    if (!arraysMatch(prevProps.newSubdomains, this.props.newSubdomains)) {
       this.setState({subdomains: this.props.newSubdomains});
     }
   }
