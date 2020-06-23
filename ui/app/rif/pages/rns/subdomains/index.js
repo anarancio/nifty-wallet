@@ -134,6 +134,7 @@ class Subdomains extends Component {
 
   render () {
     const { subdomain, domainName, selectedResolverAddress, newChainAddresses, isOwner } = this.props;
+    const updatedChainAddresses = newChainAddresses || [];
     const displayName = domainName + '.' + subdomain.name;
     const { resolvers } = this.state;
     return (
@@ -165,10 +166,10 @@ class Subdomains extends Component {
             paginationSize={PAGINATION_DEFAULT_SIZE}
             classes={styles.chainAddresses}
             isOwner={isOwner}
-            newChainAddresses={newChainAddresses || []}
+            newChainAddresses={updatedChainAddresses}
             redirectParams={{
               ...this.props,
-              newChainAddresses: newChainAddresses || [],
+              newChainAddresses: updatedChainAddresses,
             }}
             redirectPage={pageNames.rns.subdomains}
           />
