@@ -52,6 +52,7 @@ export class LuminoManager extends AbstractManager {
       }
       const luminoStorageHandler = new LuminoStorageHandler({
         store: this.store,
+        address: this.address,
       });
       const storageHandler = {
         getLuminoData: () => {
