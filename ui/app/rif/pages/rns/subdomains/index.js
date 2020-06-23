@@ -165,10 +165,10 @@ class Subdomains extends Component {
             paginationSize={PAGINATION_DEFAULT_SIZE}
             classes={styles.chainAddresses}
             isOwner={isOwner}
-            newChainAddresses={newChainAddresses}
+            newChainAddresses={newChainAddresses || []}
             redirectParams={{
               ...this.props,
-              newChainAddresses: newChainAddresses,
+              newChainAddresses: newChainAddresses || [],
             }}
             redirectPage={pageNames.rns.subdomains}
           />
