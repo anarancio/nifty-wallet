@@ -52,6 +52,7 @@ export class LuminoManager extends AbstractManager {
       }
       const luminoStorageHandler = new LuminoStorageHandler({
         store: this.store,
+        address: this.address,
       });
       const storageHandler = {
         getLuminoData: () => {
@@ -122,6 +123,7 @@ export class LuminoManager extends AbstractManager {
       getAvailableCallbacks: bindOperation(this.callbacks.getAvailableCallbacks, this.callbacks),
       listenCallback: bindOperation(this.callbacks.listenForCallback, this.callbacks),
       getTokens: bindOperation(this.luminoExplorer.getTokens, this.luminoExplorer),
+      isLuminoNode: bindOperation(this.luminoExplorer.isLuminoNode, this.luminoExplorer),
     };
   }
 
