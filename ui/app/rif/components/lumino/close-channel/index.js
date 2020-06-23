@@ -30,11 +30,11 @@ class CloseChannel extends Component {
         callbackHandlers.requestHandler = async (result) => {
           console.debug('CLOSE CHANNEL REQUESTED', result);
           this.props.showToast('Requesting Close Channel');
-          await this.props.subscribeToCloseChannel(this.props.channelIdentifier, this.props.tokenAddress);
+          await this.props.subscribeToCloseChannel(this.props.channelIdentifier, this.props.tokenNetworkAddress);
         };
         callbackHandlers.successHandler = async (result) => {
           console.debug('CLOSE CHANNEL DONE', result);
-          await this.props.deleteChannelFromSdk(this.props.channelIdentifier, this.props.tokenAddress);
+          await this.props.deleteChannelFromSdk(this.props.channelIdentifier, this.props.tokenNetworkAddress);
           if (this.props.afterCloseChannel) {
             this.props.afterCloseChannel(result);
           }
