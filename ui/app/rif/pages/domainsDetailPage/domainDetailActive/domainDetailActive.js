@@ -217,7 +217,7 @@ class DomainsDetailActiveScreen extends Component {
             paginationSize={PAGINATION_DEFAULT_SIZE}
             classes={styles.LuminoNetworkChannels}
             pageName={pageNames.rns.domainsDetail}
-            letSelectedIndex={0}
+            tabIndex={0}
           />
         </div>
       </div>

@@ -107,7 +107,6 @@ function buildTabScreen (screenName, context, dispatch) {
             onChange={(tab) => onTabChange(tab)}
             showBack={tabOptions.showBack}
             backAction={() => dispatch(rifActions.navigateBack())}
-            letSelectedIndex={context.params.tabOptions.letSelectedIndex}
       />
     </div>
   );
