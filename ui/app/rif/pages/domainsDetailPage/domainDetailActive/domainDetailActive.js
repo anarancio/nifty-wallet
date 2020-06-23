@@ -113,7 +113,6 @@ class DomainsDetailActiveScreen extends Component {
 		ownerAddress: PropTypes.string.isRequired,
     selectedResolverAddress: PropTypes.string,
 		isOwner: PropTypes.bool,
-		isLuminoNode: PropTypes.bool,
 		isRifStorage: PropTypes.bool,
     displayToast: PropTypes.func.isRequired,
     disableResolvers: PropTypes.bool,
@@ -123,6 +122,8 @@ class DomainsDetailActiveScreen extends Component {
     showToast: PropTypes.func,
     showConfigPage: PropTypes.func,
     getConfiguration: PropTypes.func,
+    isLuminoNode: PropTypes.func,
+    showPay: PropTypes.func,
 	}
 	constructor (props) {
 		super(props);
@@ -133,13 +134,20 @@ class DomainsDetailActiveScreen extends Component {
           resolvers,
         });
       });
+    this.props.isLuminoNode(this.props.ownerAddress).then(isLumino => {
+      this.setState({
+        isLuminoNode: isLumino,
+      });
+    });
 		this.state = {
 			resolvers: [],
+      isLuminoNode: false,
 		};
 	}
 
 	render () {
-    const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isLuminoNode, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains } = this.props;
+    const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay } = this.props;
+    const { resolvers, isLuminoNode } = this.state;
     const domainInfo = {
       domainName,
       expirationDate,
@@ -151,13 +159,14 @@ class DomainsDetailActiveScreen extends Component {
       content,
       selectedResolverAddress,
     };
-		const { resolvers } = this.state;
 		return (
       <div className="domain-detail">
         <DomainHeader domainName={domainName}
                       showOwnerIcon={isOwner}
                       showLuminoNodeIcon={isLuminoNode}
-                      showRifStorageIcon={isRifStorage}>
+                      showRifStorageIcon={isRifStorage}
+                      onClickLuminoNode={() => showPay(domainInfo) }
+        >
           <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg" className="config-domain-btn"
             onClick={() => this.props.showConfigPage({
               domain: domain,
@@ -229,7 +238,6 @@ function mapStateToProps (state) {
 		autoRenew: details.autoRenew,
 		ownerAddress: details.ownerAddress,
 		isOwner: state.metamask.selectedAddress.toLowerCase() === details.ownerAddress.toLowerCase(),
-		isLuminoNode: details.isLuminoNode,
 		isRifStorage: details.isRifStorage,
     selectedResolverAddress: params.selectedResolverAddress ? params.selectedResolverAddress : details.selectedResolverAddress,
     newChainAddresses: details.newChainAddresses || [],
@@ -258,6 +266,10 @@ const mapDispatchToProps = dispatch => {
       },
     })),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
+    isLuminoNode: (address) => dispatch(rifActions.isLuminoNode(address)),
+    showPay: (domainInfo) => dispatch(rifActions.navigateTo(pageNames.rns.pay, {
+      domainInfo: domainInfo,
+    })),
 	}
 }
 

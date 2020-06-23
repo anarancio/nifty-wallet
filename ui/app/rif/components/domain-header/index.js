@@ -8,12 +8,13 @@ class DomainHeader extends Component {
     domainName: PropTypes.string,
     showOwnerIcon: PropTypes.bool,
     showLuminoNodeIcon: PropTypes.bool,
+    onClickLuminoNode: PropTypes.func,
     showRifStorageIcon: PropTypes.bool,
     children: PropTypes.object,
   }
 
   render () {
-    const {showOwnerIcon, showLuminoNodeIcon, showRifStorageIcon, domainName, children} = this.props;
+    const {showOwnerIcon, showLuminoNodeIcon, onClickLuminoNode, showRifStorageIcon, domainName, children} = this.props;
     return (
       <div id="headerName" className="domain-name">
         <span className="mr-1">{domainName}</span>
@@ -21,7 +22,7 @@ class DomainHeader extends Component {
         <DomainIcon className="domain-icon"/>
         }
         {showLuminoNodeIcon &&
-        <LuminoNodeIcon className="domain-icon"/>
+        <LuminoNodeIcon onClickLuminoNode={onClickLuminoNode} className="domain-icon"/>
         }
         {showRifStorageIcon &&
         <RifStorageIcon className="domain-icon"/>

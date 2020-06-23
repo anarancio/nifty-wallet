@@ -59,6 +59,7 @@ const rifActions = {
   createPayment,
   createDeposit,
   getTokens,
+  isLuminoNode,
   cleanStore,
   showRifLandingPage,
   setupDefaultLuminoCallbacks,
@@ -787,6 +788,20 @@ function getTokens () {
           return reject(error);
         }
         return resolve(tokens);
+      });
+    });
+  };
+}
+
+function isLuminoNode (address) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.lumino.isLuminoNode(address, (error, isLuminoNode) => {
+        if (error) {
+          dispatch(niftyActions.displayWarning(error));
+          return reject(error);
+        }
+        return resolve(isLuminoNode);
       });
     });
   };

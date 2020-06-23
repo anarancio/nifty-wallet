@@ -36,4 +36,21 @@ export class LuminoExplorer {
         }).catch(err => reject(err));
     });
   }
+  isLuminoNode (address) {
+    const configuration = this.configurationProvider.getConfigurationObject();
+    return new Promise((resolve, reject) => {
+      fetch(configuration.lumino.explorer.endpoint + ENDPOINT_EXPLORER_DASHBOARD)
+        .then(response => {
+          return response.json();
+        })
+        .then(dashBoardInfo => {
+          dashBoardInfo.nodes.map(node => {
+            if (node.node_address.toLowerCase() === address.toLowerCase()) {
+              resolve(true);
+            }
+          });
+          resolve(false);
+        }).catch(err => reject(err));
+    });
+  }
 }
