@@ -10,6 +10,7 @@ class Tabs extends Component {
     onChange: PropTypes.func,
     showBack: PropTypes.bool,
     backAction: PropTypes.func,
+    classes: PropTypes.any,
   }
 
   constructor (props) {
@@ -39,19 +40,21 @@ class Tabs extends Component {
   }
 
   getTabBarItems () {
+    const { classes } = this.props;
+    const styles = classes || {};
     let tabs = this.props.tabs;
     tabs = tabs.sort(this.sortTabs);
     const tabComponents = [];
     if (this.props.showBack) {
-      tabComponents.push(<li key="-1" className="rif-tabs-back-button">
+      tabComponents.push(<li key="-1" className={styles.backButton || 'rif-tabs-back-button'}>
                            <i onClick={(event) => {
                               this.props.backAction();
-                            }} className="fa fa-chevron-left cursor-pointer"/>
+                            }} className={styles.chevron || 'fa fa-chevron-left cursor-pointer'}/>
                          </li>);
     }
     tabComponents.push(...tabs.map(tab => {
       const active = tab.index === this.state.activeTabIndex;
-      const className = 'rif-tabs-bar-item ' + (active ? 'rif-tabs-bar-item-active' : '');
+      const className = (styles.barItem || 'rif-tabs-bar-item ') + (active ? (styles.activeItem || 'rif-tabs-bar-item-active') : '');
       return (
         <li key={tab.index}
             className={className}
@@ -66,12 +69,14 @@ class Tabs extends Component {
   }
 
   render () {
+    const { classes } = this.props;
+    const styles = classes || {};
     return (
-      <div className="rif-tabs">
-        <ul className="rif-tabs-bar">
+      <div className={styles.tabs || 'rif-tabs'}>
+        <ul className={styles.tabsBar || 'rif-tabs-bar'}>
           {this.getTabBarItems()}
         </ul>
-        <div className="rif-tabs-content">
+        <div className={styles.tabsContent || 'rif-tabs-content'}>
           {this.getActiveTabContent()}
         </div>
       </div>

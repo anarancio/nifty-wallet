@@ -837,7 +837,6 @@ function getTokensWithJoinedCheck () {
 
 function getLuminoNetworks (userAddress) {
   return (dispatch) => {
-
     return new Promise((resolve, reject) => {
       dispatch(this.getTokens()).then(tokens => {
         const networks = {
@@ -927,15 +926,12 @@ function getUserChannelsInNetwork (tokenAddress) {
         dispatch(niftyActions.displayWarning(error));
         return reject(error);
       }
-      debugger;
-
       if (channels) {
         // We get only the values, since these are the ones we care about
-        debugger;
-        const channelsArr = Object.values(channels).filter(ch => ch.token_address.toLowerCase() === tokenAddress);
+        const channelsArr = Object.values(channels).filter(ch => ch.token_address.toLowerCase() === tokenAddress.toLowerCase());
         return resolve(channelsArr);
       }
-      return resolve([])
+      return resolve([]);
     });
   });
 }

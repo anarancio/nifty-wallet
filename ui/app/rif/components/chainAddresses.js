@@ -61,7 +61,7 @@ class ChainAddresses extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.domainName !== this.props.domainName) {
       this.loadChainAddresses();
-    } else if (prevProps.newChainAddresses !== this.props.newChainAddresses) {
+    } else if (prevProps.newChainAddresses.length !== this.props.newChainAddresses.length) {
       this.setState({chainAddresses: this.props.newChainAddresses});
     }
   }

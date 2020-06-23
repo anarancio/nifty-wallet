@@ -96,7 +96,7 @@ class Subdomains extends Component {
     const {subdomains} = this.state;
     const data = this.getData();
     return (
-      <div>
+      <div className="subdomain-section">
         {
           data.length > 0 &&
           <div>

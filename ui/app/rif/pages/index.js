@@ -106,7 +106,8 @@ function buildTabScreen (screenName, context, dispatch) {
       <Tabs tabs={tabs}
             onChange={(tab) => onTabChange(tab)}
             showBack={tabOptions.showBack}
-            backAction={() => dispatch(rifActions.navigateBack())}/>
+            backAction={() => dispatch(rifActions.navigateBack())}
+      />
     </div>
   );
 }

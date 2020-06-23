@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import { GenericTable, OpenChannel, CloseChannel } from './index';
+import { GenericTable, OpenChannel } from './index';
 import rifActions from '../actions';
 import ItemWithActions from './item-with-actions';
 import {faCoins} from '@fortawesome/free-solid-svg-icons';
+import {pageNames} from '../pages';
 
 class LuminoNetworkChannels extends Component {
 
@@ -13,8 +14,9 @@ class LuminoNetworkChannels extends Component {
     isOwner: PropTypes.bool,
     paginationSize: PropTypes.number,
     getChannelsGroupedByNetwork: PropTypes.func,
-    getChannel: PropTypes.func,
+    showNetworkDetails: PropTypes.func,
     classes: PropTypes.any,
+    tabIndex: PropTypes.number,
   }
 
   constructor (props) {
@@ -25,11 +27,23 @@ class LuminoNetworkChannels extends Component {
   }
 
   getData () {
-    const {classes} = this.props;
+    const { tabIndex, classes } = this.props;
     if (this.state.networkChannels) {
       return this.state.networkChannels.map(networkChannel => {
-        const item = <ItemWithActions leftIcon={{icon: faCoins, color: '#05836D'}} contentClasses={classes.content} actionClasses={classes.contentActions}
-                                      text={networkChannel.token_symbol} enableRightChevron={true}/>
+        const item = (<ItemWithActions
+            leftIcon={{icon: faCoins, color: '#05836D'}}
+            contentClasses={classes.content}
+            actionClasses={classes.contentActions}
+            text={networkChannel.symbol}
+            enableRightChevron={true}
+            onRightChevronClick={() => this.props.showNetworkDetails({
+              networkSymbol: networkChannel.symbol,
+              tokenAddress: networkChannel.address,
+              tokenNetwork: networkChannel.tokenNetwork,
+              networkName: networkChannel.name,
+              tabIndex: tabIndex,
+            })}
+          />)
         return {
           content: item,
         }
@@ -46,10 +60,13 @@ class LuminoNetworkChannels extends Component {
     this.props.getChannelsGroupedByNetwork().then(networkChannels => {
       const arrayNetworks = [];
       for (const key of Object.keys(networkChannels)) {
+        const channels = networkChannels[key];
         const network = {
-          token_network_identifier: key,
-          token_symbol: networkChannels[key][0].token_symbol,
-          channels: networkChannels[key],
+          tokenNetwork: channels[0].token_network_identifier,
+          address: channels[0].token_address,
+          symbol: channels[0].token_symbol,
+          name: channels[0].token_name,
+          channels: channels,
         }
         arrayNetworks.push(network);
       }
@@ -104,8 +121,16 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    showNetworkDetails: (params) => dispatch(rifActions.navigateTo(pageNames.lumino.networkDetails, {
+    ...params,
+    tabOptions: {
+      hideTitle: true,
+      showSearchbar: false,
+      showBack: true,
+      tabIndex: params.tabIndex,
+    },
+  })),
     getChannelsGroupedByNetwork: () => dispatch(rifActions.getChannelsGroupedByNetwork()),
-    getChannel: () => {},
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoNetworkChannels);

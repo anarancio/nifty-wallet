@@ -17,7 +17,6 @@ class OpenChannel extends Component {
     tokenNetworkAddress: PropTypes.string,
     tokenName: PropTypes.string,
     tokenSymbol: PropTypes.string,
-    //
     openChannel: PropTypes.func,
     showToast: PropTypes.func,
     showPopup: PropTypes.func,

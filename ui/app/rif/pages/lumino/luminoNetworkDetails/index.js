@@ -5,6 +5,7 @@ import rifActions from '../../../actions';
 import LuminoChannelItem from '../../../components/luminoChannelItem';
 import OpenChannel from '../../../components/lumino/open-channel';
 import {GenericTable} from '../../../components';
+import {pageNames} from '../../names';
 
 const styles = {
   myLuminoChannels: {
@@ -31,6 +32,7 @@ class LuminoNetworkDetails extends Component {
     getNetworkData: PropTypes.func,
     tokenAddress: PropTypes.string,
     networkName: PropTypes.string,
+    showChannelDetails: PropTypes.func,
   }
 
   constructor (props) {
@@ -67,7 +69,9 @@ class LuminoNetworkDetails extends Component {
         content: <LuminoChannelItem key={c.channel_identifier} partnerAddress={c.partner_address}
                                     balance={c.balance}
                                     state={c.state} tokenSymbol={networkSymbol}
-                                    onRightChevronClick={() => console.warn(c)}/>,
+                                    onRightChevronClick={() => this.props.showChannelDetails({
+                                      channel: c,
+                                    })}/>,
       };
     });
   }
@@ -145,6 +149,14 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    showChannelDetails: (params) => dispatch(rifActions.navigateTo(pageNames.rns.luminoChannels, {
+      ...params,
+      tabOptions: {
+        hideTitle: true,
+        showSearchbar: false,
+        showBack: true,
+      },
+    })),
     getUserChannels: tokenAddress => dispatch(rifActions.getUserChannelsInNetwork(tokenAddress)),
     getNetworkData: tokenAddress => dispatch(rifActions.getLuminoNetworkData(tokenAddress)),
   }

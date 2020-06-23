@@ -20,6 +20,7 @@ const styles = {
       inactivePageButton: 'n-table-pagination-inactive',
       buttonNext: 'n-table-pagination-next',
     },
+    notFound: 'not-found-info',
   },
 }
 
