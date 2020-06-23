@@ -24,6 +24,7 @@ class LuminoChannels extends Component {
     sendLuminoPayment: PropTypes.func,
     showPopup: PropTypes.func,
     showToast: PropTypes.func,
+    navigateBack: PropTypes.func,
   }
   constructor (props) {
     super(props);
@@ -128,7 +129,7 @@ class LuminoChannels extends Component {
     return retVal;
   }
   render () {
-    const { channel } = this.props;
+    const { channel, navigateBack } = this.props;
     const tabs = this.buildTabs();
     return (
       <div className="lumino-channel-detail">
@@ -140,6 +141,7 @@ class LuminoChannels extends Component {
             tokenNetworkAddress={channel.token_network_identifier}
             tokenName={channel.token_name}
             channelIdentifier={channel.channel_identifier}
+            afterCloseChannel={() => navigateBack()}
           />
         }
         <div id="description" className="lumino-channel-detail__description">
@@ -176,6 +178,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    navigateBack: () => dispatch(rifActions.navigateBack()),
     sendLuminoPayment: (token, destination, amount, callbackHandlers) => {
       return dispatch(rifActions.createPayment(destination, token, amount, callbackHandlers));
     },
