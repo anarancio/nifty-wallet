@@ -17,7 +17,6 @@ class CloseChannel extends Component {
     showToast: PropTypes.func,
     showPopup: PropTypes.func,
     closeChannel: PropTypes.func,
-    deleteChannelFromSdk: PropTypes.func,
     afterCloseChannel: PropTypes.func,
     subscribeToCloseChannel: PropTypes.func,
   }
@@ -34,7 +33,6 @@ class CloseChannel extends Component {
         };
         callbackHandlers.successHandler = async (result) => {
           console.debug('CLOSE CHANNEL DONE', result);
-          await this.props.deleteChannelFromSdk(this.props.channelIdentifier, this.props.tokenNetworkAddress);
           if (this.props.afterCloseChannel) {
             this.props.afterCloseChannel(result);
           }
@@ -67,7 +65,6 @@ function mapDispatchToProps (dispatch) {
   return {
     closeChannel: (partner, tokenAddress, tokenNetworkAddress, channelIdentifier, callbackHandlers) =>
       dispatch(rifActions.closeChannel(partner, tokenAddress, tokenNetworkAddress, channelIdentifier, callbackHandlers)),
-    deleteChannelFromSdk: (channelIdentifier, tokenAddress) => dispatch(rifActions.deleteChannelFromSdk(channelIdentifier, tokenAddress)),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     showPopup: (title, opts) => {
       dispatch(rifActions.showModal({
@@ -75,7 +72,7 @@ function mapDispatchToProps (dispatch) {
         ...opts,
       }));
     },
-    subscribeToCloseChannel: (channelIdentifier, tokenAddress) => dispatch(rifActions.subscribeToCloseChannel(channelIdentifier, tokenAddress)),
+    subscribeToCloseChannel: (channelIdentifier, tokenNetworkAddress) => dispatch(rifActions.subscribeToCloseChannel(channelIdentifier, tokenNetworkAddress)),
   };
 }
 

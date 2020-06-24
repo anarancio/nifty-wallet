@@ -24,12 +24,13 @@ class LuminoChannels extends Component {
     sendLuminoPayment: PropTypes.func,
     showPopup: PropTypes.func,
     showToast: PropTypes.func,
-    navigateBack: PropTypes.func,
   }
   constructor (props) {
     super(props);
     this.state = {
       paymentInput: 0,
+      isOpen: props.channel.sdk_status === 'CHANNEL_OPENED',
+      channelStatus: this.getStatus(props.channel.sdk_status),
     };
   }
   buildTabs () {
@@ -129,11 +130,12 @@ class LuminoChannels extends Component {
     return retVal;
   }
   render () {
-    const { channel, navigateBack } = this.props;
+    const { channel } = this.props;
+    const { isOpen, channelStatus } = this.state;
     const tabs = this.buildTabs();
     return (
       <div className="lumino-channel-detail">
-        {channel.sdk_status === 'CHANNEL_OPENED' &&
+        {isOpen &&
           <CloseChannel
             partner={channel.partner_address}
             buttonLabel="Close"
@@ -141,11 +143,11 @@ class LuminoChannels extends Component {
             tokenNetworkAddress={channel.token_network_identifier}
             tokenName={channel.token_name}
             channelIdentifier={channel.channel_identifier}
-            afterCloseChannel={() => navigateBack()}
+            afterCloseChannel={() => this.setState({isOpen: false, channelStatus: 'Close'})}
           />
         }
         <div id="description" className="lumino-channel-detail__description">
-          {this.getStatus(channel.sdk_status)}
+          {channelStatus}
           <div className="d-flex align-items-center justify-center">
             <div className="lumino-channel-detail__amount">
               <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -162,7 +164,7 @@ class LuminoChannels extends Component {
             </div>
           </div>
         </div>
-        {channel.sdk_status === 'CHANNEL_OPENED' &&
+        {isOpen &&
           <Tabs tabs={tabs} classes={styles}/>
         }
       </div>
@@ -178,7 +180,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    navigateBack: () => dispatch(rifActions.navigateBack()),
     sendLuminoPayment: (token, destination, amount, callbackHandlers) => {
       return dispatch(rifActions.createPayment(destination, token, amount, callbackHandlers));
     },
