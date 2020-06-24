@@ -270,6 +270,9 @@ const mapDispatchToProps = dispatch => {
     isLuminoNode: (address) => dispatch(rifActions.isLuminoNode(address)),
     showPay: (domainInfo) => dispatch(rifActions.navigateTo(pageNames.rns.pay, {
       domainInfo: domainInfo,
+      tabOptions: {
+        hideTitle: true,
+      },
     })),
 	}
 }

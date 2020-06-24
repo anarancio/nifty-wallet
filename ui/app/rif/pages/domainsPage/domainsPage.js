@@ -111,6 +111,7 @@ const mapDispatchToProps = dispatch => {
         hideTitle: true,
         showSearchbar: false,
         showBack: true,
+        tabIndex: 0,
       },
     })),
     setAutoRenew: (data) => {},
