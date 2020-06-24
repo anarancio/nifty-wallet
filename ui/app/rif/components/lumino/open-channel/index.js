@@ -36,8 +36,8 @@ class OpenChannel extends Component {
         address: tokenAddress,
         name: tokenName,
         symbol: tokenSymbol,
-        networkAddress: tokenNetworkAddress,
-      }
+        network_address: tokenNetworkAddress,
+      };
     } else {
       this.props.getTokens().then(tokens => {
         const tokenAddresses = Object.assign([], tokens);
@@ -209,7 +209,7 @@ class OpenChannel extends Component {
         await this.props.createDeposit(
           this.state.destination,
           this.state.selectedToken.address,
-          this.state.selectedToken.networkAddress,
+          this.state.selectedToken.network_address,
           channelIdentifier,
           this.state.amount,
           depositCallbackHandlers);
