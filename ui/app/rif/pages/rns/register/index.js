@@ -23,7 +23,6 @@ class DomainRegisterScreen extends Component {
     showTransactionConfirmPage: PropTypes.func,
     completeRegistration: PropTypes.func,
     canCompleteRegistration: PropTypes.func,
-    viewDomainDetails: PropTypes.func,
     waitForListener: PropTypes.func,
     getDomain: PropTypes.func,
     updateDomains: PropTypes.func,
@@ -143,20 +142,6 @@ class DomainRegisterScreen extends Component {
     });
   }
 
-  viewDomainDetails () {
-    this.props.getDomain(this.props.domainName)
-      .then(domain => {
-        this.props.viewDomainDetails({
-          domain: domain,
-          status: domain.details.status,
-          tabOptions: {
-            screenTitle: 'Domain Detail',
-            showBack: false,
-          },
-        });
-      })
-  }
-
   async afterRegistration () {
     await this.changeDomainStatus('active');
     this.props.showThis({
@@ -251,7 +236,7 @@ class DomainRegisterScreen extends Component {
       registered: (
         <div className="domain-registered text-center">
           <h4 className="domain-registered__title">Congrats!</h4>
-          <p  className="domain-registered__name">{this.props.domainName} is yours</p>
+          <p className="domain-registered__name">{this.props.domainName} is yours</p>
           <p className="domain-registered__text">Check it in the explorer</p>
         </div>
       ),
@@ -290,8 +275,7 @@ class DomainRegisterScreen extends Component {
       ),
       registered: (
         <div className="button-container">
-          <button className="btn-primary-outlined"  onClick={() => this.props.showDomainList()}>My Domains</button>
-          <button className="btn-primary-outlined"  onClick={() => this.viewDomainDetails()}>List in Marketplace</button>
+          <button className="btn-primary-outlined" onClick={() => this.props.showDomainList()}>My Domains</button>
         </div>
       ),
     };
@@ -335,12 +319,6 @@ const mapDispatchToProps = dispatch => {
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
     completeRegistration: (domainName) => dispatch(rifActions.finishRegistration(domainName)),
     canCompleteRegistration: (commitment) => dispatch(rifActions.canFinishRegistration(commitment)),
-    viewDomainDetails: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetail, {
-      tabOptions: {
-        screenTitle: 'Domain Details',
-      },
-      ...params,
-    })),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     getDomain: (domainName) => dispatch(rifActions.getDomain(domainName)),
     updateDomains: (domain) => dispatch(rifActions.updateDomains(domain)),
@@ -349,6 +327,7 @@ const mapDispatchToProps = dispatch => {
     showDomainList: () => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
       tabOptions: {
         showBack: false,
+        hideTitle: true,
       },
     })),
     showLoading: (loading = true, message) => loading ? dispatch(niftyActions.showLoadingIndication(message)) : dispatch(niftyActions.hideLoadingIndication()),

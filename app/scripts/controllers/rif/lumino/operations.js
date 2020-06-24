@@ -138,33 +138,33 @@ export class LuminoOperations {
     return Promise.resolve(this.lumino.get().actions.getChannels());
   }
 
-  subscribeToCloseChannel (channelId, tokenAddress) {
+  subscribeToCloseChannel (channelId, tokenNetworkAddress) {
     const configuration = this.configurationProvider.getConfigurationObject();
-    this.subscribeToCloseChannelForNotifiers(configuration.notifier.availableNodes, channelId, tokenAddress);
+    this.subscribeToCloseChannelForNotifiers(configuration.notifier.availableNodes, channelId, tokenNetworkAddress);
     return Promise.resolve();
   }
 
-  async subscribeToCloseChannelForNotifiers (urls, channelId, tokenAddress) {
-    if (urls && urls.length > 0 && channelId && tokenAddress) {
+  async subscribeToCloseChannelForNotifiers (urls, channelId, tokenNetworkAddress) {
+    if (urls && urls.length > 0 && channelId && tokenNetworkAddress) {
       for (const url of urls) {
-        await this.subscribeToCloseChannelForNotifier(url, channelId, tokenAddress);
+        await this.subscribeToCloseChannelForNotifier(url, channelId, tokenNetworkAddress);
       }
     }
   }
 
-  async subscribeToCloseChannelForNotifier (url, channelId, tokenAddress) {
+  async subscribeToCloseChannelForNotifier (url, channelId, tokenNetworkAddress) {
     const errors = checkRequiredParameters({
       url,
       channelId,
-      tokenAddress,
+      tokenNetworkAddress,
     });
     if (errors.length > 0) {
       return Promise.reject(errors);
     }
-    if (url && tokenAddress) {
-      tokenAddress = web3Utils.toChecksumAddress(tokenAddress);
-      await this.lumino.get().actions.subscribeToUserClosesChannelOnToken(url, tokenAddress);
-      await this.lumino.get().actions.subscribeToPartnerClosesSpecificChannel(url, channelId, tokenAddress);
+    if (url && tokenNetworkAddress) {
+      tokenNetworkAddress = web3Utils.toChecksumAddress(tokenNetworkAddress);
+      await this.lumino.get().actions.subscribeToUserClosesChannelOnToken(url, tokenNetworkAddress);
+      await this.lumino.get().actions.subscribeToPartnerClosesSpecificChannel(url, channelId, tokenNetworkAddress);
     }
   }
 

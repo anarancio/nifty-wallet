@@ -380,7 +380,6 @@ function navigateTo (screenName, params, resetNavigation = false) {
     showBack: true,
     showSearchbar: true,
     screenName,
-    tabIndex: 0,
     hideTitle: false,
   };
   if (!params) {
@@ -957,6 +956,7 @@ function showRifLandingPage () {
       tabOptions: {
         showBack: true,
         screenTitle: 'My Domains',
+        tabIndex: 0,
       },
     },
   }
@@ -1014,10 +1014,10 @@ function createNetworkPayment (network, destination, amountInWei) {
 }
 
 
-function subscribeToCloseChannel (channelId, tokenAddress) {
+function subscribeToCloseChannel (channelId, tokenNetworkAddress) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.lumino.subscribeToCloseChannel(channelId, tokenAddress, (error) => {
+      background.rif.lumino.subscribeToCloseChannel(channelId, tokenNetworkAddress, (error) => {
         if (error) {
           dispatch(niftyActions.displayWarning(error));
           return reject(error);
