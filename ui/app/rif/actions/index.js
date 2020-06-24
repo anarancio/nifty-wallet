@@ -758,7 +758,7 @@ function getChannels () {
 function getChannelsGroupedByNetwork () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      dispatch(this.getChannels()).then(channelObject => {
+      dispatch(getChannels()).then(channelObject => {
         const arrayWithoutKeys = [];
         if (Object.keys(channelObject).length !== 0) {
           for (var key in channelObject) {

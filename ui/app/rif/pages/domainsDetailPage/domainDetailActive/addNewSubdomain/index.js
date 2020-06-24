@@ -76,7 +76,7 @@ class AddNewSubdomain extends Component {
             newSubdomain.owner = e.target.value;
             this.setState({newSubdomain});
           }}/>
-          <button className="btn-primary" onClick={() => this.addSubdomain()} >Change</button>
+          <button className="btn-primary" onClick={() => this.addSubdomain()}>Save</button>
         </div>
       </div>
     )
