@@ -1,0 +1,15 @@
+.select-token-container .Select-control {
+  border-bottom-width: 1px;
+  padding: 2px;
+  color: var(--gray-text);
+  font-size: 12px;
+}
+
+.select-token-container .Select-control .Select-input {
+  height: auto;
+  display: inherit !important;
+}
+
+.select-token-container .Select-control svg + span {
+  margin-left: 5px;
+}
