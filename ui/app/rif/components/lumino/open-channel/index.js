@@ -29,15 +29,15 @@ class OpenChannel extends Component {
 
   constructor (props) {
     super(props);
-    const { tokenAddress, tokenName, tokenSymbol, tokenNetworkAddress } = props;
+    const {tokenAddress, tokenName, tokenSymbol, tokenNetworkAddress} = props;
     let selectedToken = {};
     if (props.tokenAddress) {
       selectedToken = {
         address: tokenAddress,
         name: tokenName,
         symbol: tokenSymbol,
-        networkAddress: tokenNetworkAddress,
-      }
+        network_address: tokenNetworkAddress,
+      };
     } else {
       this.props.getTokens().then(tokens => {
         const tokenAddresses = Object.assign([], tokens);
@@ -76,11 +76,11 @@ class OpenChannel extends Component {
   }
 
   updateSelectedToken = (selectedOption) => {
-    this.setState({ selectedToken: selectedOption });
+    this.setState({selectedToken: selectedOption});
   }
 
   getBody () {
-    const { tokensOptions, selectedToken } = this.state;
+    const {tokensOptions, selectedToken} = this.state;
     const selectValue = ({value}) => {
       const icon = value.icon ? value.icon : DEFAULT_ICON;
       return (
@@ -94,7 +94,7 @@ class OpenChannel extends Component {
     }
 
     const selectOption = (props) => {
-      const { option } = props;
+      const {option} = props;
       const icon = option.icon ? option.icon : DEFAULT_ICON;
       return (
         <div
@@ -122,6 +122,7 @@ class OpenChannel extends Component {
     return (
       <div>
         {(!this.props.tokenAddress) &&
+        <div id="comboChainAddresses" className="select-token-container">
           <Select
             searchable={false}
             arrowRenderer={() => <div className={'combo-selector-triangle'}></div>}
@@ -132,9 +133,11 @@ class OpenChannel extends Component {
             value={selectedToken}
             valueComponent={selectValue}
           />
+        </div>
         }
         <div className="form-segment">
-          <input className="domain-address-input domain-address-input--open-channel" type="text" placeholder="Enter address / domain"
+          <input className="domain-address-input domain-address-input--open-channel" type="text"
+                 placeholder="Enter address / domain"
                  onChange={(event) => this.changeDestination(event)}/>
           <span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -209,7 +212,7 @@ class OpenChannel extends Component {
         await this.props.createDeposit(
           this.state.destination,
           this.state.selectedToken.address,
-          this.state.selectedToken.networkAddress,
+          this.state.selectedToken.network_address,
           channelIdentifier,
           this.state.amount,
           depositCallbackHandlers);
