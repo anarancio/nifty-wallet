@@ -24,6 +24,8 @@ import {pageNames} from './names';
 import RifConfiguration from './configuration';
 import niftyActions from '../../actions';
 
+let currentTabIndex = 0;
+
 function getSearchBarComponent (show) {
   if (!show) {
     return null;
@@ -47,8 +49,10 @@ function buildTabs (screenName, tabOptions) {
     let tabTitle = tabDefinition.defaultScreenTitle;
     let tabComponent = getPageComponent(tabDefinition.defaultScreenName);
     let showSearchbar = tabDefinition.showSearchbar;
-    const tabIndex = tabOptions.tabIndex;
-    if (screenName && tabDefinition.index === tabIndex) {
+    if (!isNaN(tabOptions.tabIndex)) {
+      currentTabIndex = tabOptions.tabIndex;
+    }
+    if (screenName && tabDefinition.index === currentTabIndex) {
       tabTitle = tabOptions.screenTitle;
       tabComponent = getPageComponent(screenName);
       showSearchbar = tabOptions.showSearchbar;
@@ -90,6 +94,7 @@ function buildTabScreen (screenName, context, dispatch) {
   const onTabChange = (tab) => {
     // we can use this to trigger on change tab actions
     console.debug('Selected tab', tab);
+    currentTabIndex = tab.index;
     const tabDefinition = tabDefinitions.find(definition => definition.index === tab.index);
     dispatch(rifActions.navigateTo(tabDefinition.defaultScreenName, {
       tabOptions: {
