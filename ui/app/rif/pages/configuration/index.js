@@ -141,7 +141,7 @@ class RifConfiguration extends Component {
 
   render () {
     if (this.state.loading) {
-      return (<div className="">Loaing Configuration...</div>);
+      return (<div>Loaing Configuration...</div>);
     }
     const notifierInputs = this.getNotifierInputs();
     return (
