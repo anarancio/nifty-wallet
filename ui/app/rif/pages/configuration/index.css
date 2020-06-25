@@ -1,16 +1,59 @@
 .settings-body {
-  height: 36em;
-  width: 22.3em;
-  overflow: scroll;
+  height: 562px;
+  overflow-y: auto;
+  padding: 20px;
 }
-.settings-body .form-segment > input {
+
+.settings-body hr.horizontal-line {
+  margin: 20px 0;
+}
+
+.settings-body label {
+  font-family: var(--primary-font);
+  color: var(--gray-text);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.settings-body input {
   width: 100%;
+  height: 32px;
+  border-radius: 3px;
+  border: 1px solid rgb(226, 226, 226);
+  padding: 10px;
+  color: var(--gray-text);
 }
-.settings-body .form-segment{
-  flex-flow: column;
+
+.settings-body li + li {
+  margin-top: 5px;
 }
-.settings-body .form-segment > span {
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: bold;
+
+.settings-body svg {
+  margin-right: 4px;
+}
+
+.notifier-list input {
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+}
+
+.notifier-list span {
+  width: 32px;
+  border-radius: 0 3px 3px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.notifier-list span svg {
+  margin-right: 0;
+}
+
+.notifier-list .btn-remove {
+  background: var(--danger);
+}
+
+.notifier-list .btn-check {
+  background: var(--success);
 }
