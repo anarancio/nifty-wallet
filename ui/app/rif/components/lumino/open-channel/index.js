@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {validateDecimalAmount} from '../../../utils/validations';
+import {validateAmountValue, validateDecimalAmount} from '../../../utils/validations';
 import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
@@ -170,6 +170,12 @@ class OpenChannel extends Component {
   }
 
   async openChannelRequest () {
+    if (this.state.amount) {
+      if (!validateAmountValue(this.state.amount)) {
+        this.props.showToast('Invalid deposit amount, should be greater than 0', false);
+        return;
+      }
+    }
     const callbackHandlers = new CallbackHandlers();
     callbackHandlers.requestHandler = (result) => {
       console.debug('OPEN CHANNEL REQUESTED', result);

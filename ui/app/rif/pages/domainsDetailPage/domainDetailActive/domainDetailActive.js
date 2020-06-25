@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { ChainAddresses, Subdomains, LuminoNetworkChannels } from '../../../components';
+import {connect} from 'react-redux';
+import {ChainAddresses, Subdomains, LuminoNetworkChannels} from '../../../components';
 import {pageNames} from '../../names';
-import { GET_RESOLVERS, PAGINATION_DEFAULT_SIZE } from '../../../constants';
+import {GET_RESOLVERS, PAGINATION_DEFAULT_SIZE} from '../../../constants';
 import niftyActions from '../../../../actions';
 import rifActions from '../../../actions';
 import DomainHeader from '../../../components/domain-header';
@@ -98,22 +98,22 @@ const styles = {
 }
 
 class DomainsDetailActiveScreen extends Component {
-	static propTypes = {
+  static propTypes = {
     addNewChainAddress: PropTypes.func.isRequired,
     setNewResolver: PropTypes.func.isRequired,
     deleteChainAddressForResolver: PropTypes.func.isRequired,
-		setAutoRenew: PropTypes.func.isRequired,
+    setAutoRenew: PropTypes.func.isRequired,
     getUnapprovedTransactions: PropTypes.func,
     domain: PropTypes.object.isRequired,
-		domainName: PropTypes.string.isRequired,
-		address: PropTypes.string.isRequired,
-		content: PropTypes.string.isRequired,
-		expirationDate: PropTypes.string.isRequired,
-		autoRenew: PropTypes.bool.isRequired,
-		ownerAddress: PropTypes.string.isRequired,
+    domainName: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    expirationDate: PropTypes.string.isRequired,
+    autoRenew: PropTypes.bool.isRequired,
+    ownerAddress: PropTypes.string.isRequired,
     selectedResolverAddress: PropTypes.string,
-		isOwner: PropTypes.bool,
-		isRifStorage: PropTypes.bool,
+    isOwner: PropTypes.bool,
+    isRifStorage: PropTypes.bool,
     displayToast: PropTypes.func.isRequired,
     disableResolvers: PropTypes.bool,
     newChainAddresses: PropTypes.array,
@@ -124,9 +124,10 @@ class DomainsDetailActiveScreen extends Component {
     getConfiguration: PropTypes.func,
     isLuminoNode: PropTypes.func,
     showPay: PropTypes.func,
-	}
-	constructor (props) {
-		super(props);
+  }
+
+  constructor (props) {
+    super(props);
     this.props.getConfiguration()
       .then(configuration => {
         const resolvers = Object.assign([], GET_RESOLVERS(configuration));
@@ -139,15 +140,15 @@ class DomainsDetailActiveScreen extends Component {
         isLuminoNode: isLumino,
       });
     });
-		this.state = {
-			resolvers: [],
+    this.state = {
+      resolvers: [],
       isLuminoNode: false,
-		};
-	}
+    };
+  }
 
-	render () {
-    const { domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay } = this.props;
-    const { resolvers, isLuminoNode } = this.state;
+  render () {
+    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay} = this.props;
+    const {resolvers, isLuminoNode} = this.state;
     const domainInfo = {
       domainName,
       expirationDate,
@@ -159,20 +160,21 @@ class DomainsDetailActiveScreen extends Component {
       content,
       selectedResolverAddress,
     };
-		return (
+    return (
       <div className="domain-detail">
         <DomainHeader domainName={domainName}
                       showOwnerIcon={isOwner}
                       showLuminoNodeIcon={isLuminoNode}
                       showRifStorageIcon={isRifStorage}
-                      onClickLuminoNode={() => showPay(domainInfo) }
+                      onClickLuminoNode={() => showPay(domainInfo)}
         >
-          <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg" className="config-domain-btn"
-            onClick={() => this.props.showConfigPage({
-              domain: domain,
-              domainName: domainName,
-              selectedResolverAddress: selectedResolverAddress,
-            })}
+          <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg"
+               className="config-domain-btn"
+               onClick={() => this.props.showConfigPage({
+                 domain: domain,
+                 domainName: domainName,
+                 selectedResolverAddress: selectedResolverAddress,
+               })}
           >
             <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>
             <line x1="9" y1="4.37114e-08" x2="9" y2="23" stroke="#602A95" strokeWidth="2"/>
@@ -192,7 +194,8 @@ class DomainsDetailActiveScreen extends Component {
               classes={styles.chainAddresses}
               isOwner={isOwner}
               newChainAddresses={newChainAddresses}
-              redirectParams={{domain: this.props.domain,
+              redirectParams={{
+                domain: this.props.domain,
                 status: this.props.domain.status,
                 newChainAddresses: newChainAddresses,
               }}
@@ -221,47 +224,48 @@ class DomainsDetailActiveScreen extends Component {
           />
         </div>
       </div>
-		);
-	}
+    );
+  }
 }
 
 function mapStateToProps (state) {
-	const params = state.appState.currentView.params;
-	const domain = params.domain;
-	const details = domain.details || params.details;
+  const params = state.appState.currentView.params;
+  const domain = params.domain;
+  const details = domain.details || params.details;
   return {
-		dispatch: state.dispatch,
-		status: details.status,
-		domainName: details.name,
-		address: details.address,
-		content: details.content,
-		expirationDate: details.expiration,
-		autoRenew: details.autoRenew,
-		ownerAddress: details.ownerAddress,
-		isOwner: state.metamask.selectedAddress.toLowerCase() === details.ownerAddress.toLowerCase(),
-		isRifStorage: details.isRifStorage,
+    dispatch: state.dispatch,
+    status: details.status,
+    domainName: details.name,
+    address: details.address,
+    content: details.content,
+    expirationDate: details.expiration,
+    autoRenew: details.autoRenew,
+    ownerAddress: details.ownerAddress,
+    isOwner: state.metamask.selectedAddress.toLowerCase() === details.ownerAddress.toLowerCase(),
+    isRifStorage: details.isRifStorage,
     selectedResolverAddress: params.selectedResolverAddress ? params.selectedResolverAddress : details.selectedResolverAddress,
     newChainAddresses: details.newChainAddresses || [],
     newSubdomains: details.newSubdomains || [],
     disableResolvers: details.disableResolvers,
-		domain: domain,
-	}
+    domain: domain,
+  }
 }
 
 const mapDispatchToProps = dispatch => {
-	return {
-		addNewChainAddress: (message) => dispatch(rifActions.showModal(message)),
+  return {
+    addNewChainAddress: (message) => dispatch(rifActions.showModal(message)),
     setNewResolver: (domainName, resolverAddress) => dispatch(rifActions.setResolverAddress(domainName, resolverAddress)),
-    deleteChainAddressForResolver: (domainName, chain, chainAddress) => {},
+    deleteChainAddressForResolver: (domainName, chain, chainAddress) => {
+    },
     getUnapprovedTransactions: () => dispatch(rifActions.getUnapprovedTransactions()),
-		setAutoRenew: () => {},
+    setAutoRenew: () => {
+    },
     displayToast: (message) => dispatch(niftyActions.displayToast(message)),
     getDomain: (domainName) => dispatch(rifActions.getDomain(domainName)),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     showConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, {
       ...props,
       tabOptions: {
-        hideTitle: true,
         showSearchbar: false,
         showBack: true,
       },
@@ -270,11 +274,8 @@ const mapDispatchToProps = dispatch => {
     isLuminoNode: (address) => dispatch(rifActions.isLuminoNode(address)),
     showPay: (domainInfo) => dispatch(rifActions.navigateTo(pageNames.rns.pay, {
       domainInfo: domainInfo,
-      tabOptions: {
-        hideTitle: true,
-      },
     })),
-	}
+  }
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(DomainsDetailActiveScreen)

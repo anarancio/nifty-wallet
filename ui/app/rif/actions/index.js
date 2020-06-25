@@ -380,7 +380,6 @@ function navigateTo (screenName, params, resetNavigation = false) {
     showBack: true,
     showSearchbar: true,
     screenName,
-    hideTitle: false,
   };
   if (!params) {
     params = {
@@ -758,7 +757,7 @@ function getChannels () {
 function getChannelsGroupedByNetwork () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      dispatch(this.getChannels()).then(channelObject => {
+      dispatch(getChannels()).then(channelObject => {
         const arrayWithoutKeys = [];
         if (Object.keys(channelObject).length !== 0) {
           for (var key in channelObject) {
@@ -956,6 +955,7 @@ function showRifLandingPage () {
       tabOptions: {
         showBack: true,
         screenTitle: 'My Domains',
+        showTitle: true,
         tabIndex: 0,
       },
     },

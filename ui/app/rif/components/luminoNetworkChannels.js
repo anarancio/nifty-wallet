@@ -125,7 +125,6 @@ function mapDispatchToProps (dispatch) {
     showNetworkDetails: (params) => dispatch(rifActions.navigateTo(pageNames.lumino.networkDetails, {
       ...params,
       tabOptions: {
-        hideTitle: true,
         showSearchbar: false,
         showBack: true,
         tabIndex: params.tabIndex,

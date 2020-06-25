@@ -33,8 +33,8 @@ function getSearchBarComponent (show) {
   return (<SearchDomains/>);
 }
 
-function getTabTitleComponent (title, hideTitle) {
-  if (!title || hideTitle) {
+function getTabTitleComponent (title, showTitle = false) {
+  if (!title || !showTitle) {
     return null;
   }
   return (
@@ -63,7 +63,7 @@ function buildTabs (screenName, tabOptions) {
       component: (
         <div className="rif-tab-content__inside">
           {getSearchBarComponent(showSearchbar)}
-          {getTabTitleComponent(tabTitle, tabOptions.hideTitle)}
+          {getTabTitleComponent(tabTitle, tabOptions.showTitle)}
           {tabComponent}
         </div>
       ),
