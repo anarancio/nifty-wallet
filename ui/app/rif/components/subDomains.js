@@ -98,14 +98,14 @@ class Subdomains extends Component {
     const data = this.getData();
     return (
       <div className="subdomain-section">
+        <GenericSearch
+          placeholder={'Subdomains'}
+          data={subdomains}
+          resultSetFunction={this.setFilteredSubdomains}
+          filterProperty={'name'}/>
         {
           data.length > 0 &&
           <div>
-            <GenericSearch
-              placeholder={'Subdomains'}
-              data={subdomains}
-              resultSetFunction={this.setFilteredSubdomains}
-              filterProperty={'name'}/>
             <GenericTable
               columns={[
                 {
@@ -167,7 +167,6 @@ function mapDispatchToProps (dispatch) {
     showSubdomainDetails: (params) => dispatch(rifActions.navigateTo(pageNames.rns.subdomains, {
       ...params,
       tabOptions: {
-        hideTitle: true,
         showSearchbar: false,
         showBack: true,
       },

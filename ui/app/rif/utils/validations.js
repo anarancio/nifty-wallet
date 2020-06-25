@@ -29,3 +29,12 @@ export function validateDecimalAmount (event, currentValue, decimalSeparator = '
   }
   return true;
 }
+
+/**
+ * This function validates that an amount value is a valid value greater than 0 and a number value
+ * @param amount to validate
+ * @returns true if the amount it's valid or false otherwise.
+ */
+export function validateAmountValue (amount) {
+  return amount && !isNaN(amount) && amount > 0;
+}

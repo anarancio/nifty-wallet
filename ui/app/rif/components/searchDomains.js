@@ -69,6 +69,7 @@ class SearchDomains extends Component {
   render () {
     return (
       <GenericSearch
+        onlyFilterOnEnter={true}
         customFilterFunction={this.filter}
         placeholder="Search for domains"
       />
@@ -91,9 +92,6 @@ const mapDispatchToProps = dispatch => {
     showDomainsDetailPage: (data) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetail, data)),
     showDomainRegisterPage: (domainName) => dispatch(rifActions.navigateTo(pageNames.rns.domainRegister, {
       domainName,
-      tabOptions: {
-        hideTitle: true,
-      },
     })),
     checkDomainAvailable: (domainName) => dispatch(rifActions.checkDomainAvailable(domainName)),
     getDomainDetails: (domainName) => dispatch(rifActions.getDomainDetails(domainName)),

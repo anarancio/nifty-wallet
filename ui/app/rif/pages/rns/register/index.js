@@ -93,7 +93,6 @@ class DomainRegisterScreen extends Component {
       currentStep: 'waitingForRegister',
       tabOptions: {
         showBack: false,
-        hideTitle: true,
       },
     }));
   }
@@ -104,7 +103,6 @@ class DomainRegisterScreen extends Component {
       currentStep: 'waitingForConfirmation',
       tabOptions: {
         showBack: false,
-        hideTitle: true,
       },
     });
   }
@@ -115,7 +113,6 @@ class DomainRegisterScreen extends Component {
       currentStep: 'readyToRegister',
       tabOptions: {
         showBack: false,
-        hideTitle: true,
       },
     });
   }
@@ -184,15 +181,18 @@ class DomainRegisterScreen extends Component {
           <div className="d-flex number-years-to-buy">
             <span className="title-years">Number of years:</span>
             <div className="qty-years">
-              <span className="hand-over btn-minus" onClick={() => this.changeYearsToRegister(this.props.yearsToRegister - 1)}>
+              <span className="hand-over btn-minus"
+                    onClick={() => this.changeYearsToRegister(this.props.yearsToRegister - 1)}>
                 <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 1L8 0.999999" stroke="#602A95"/>
                 </svg>
               </span>
               <span className="qty-number">{this.props.yearsToRegister}</span>
-              <span className="hand-over btn-plus" onClick={() => this.changeYearsToRegister(this.props.yearsToRegister + 1)}>
+              <span className="hand-over btn-plus"
+                    onClick={() => this.changeYearsToRegister(this.props.yearsToRegister + 1)}>
                 <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.48 5.168H5.216V8.608H4.056V5.168H0.808V4.088H4.056V0.672H5.216V4.088H8.48V5.168Z" fill="#602A95"/>
+                  <path d="M8.48 5.168H5.216V8.608H4.056V5.168H0.808V4.088H4.056V0.672H5.216V4.088H8.48V5.168Z"
+                        fill="#602A95"/>
                 </svg>
               </span>
             </div>
@@ -213,7 +213,8 @@ class DomainRegisterScreen extends Component {
         <div className="waiting-for-register text-center">
           <h4 className="waiting-for-register__title">Confirming transaction</h4>
           <div className="app-loader"/>
-          <p className="waiting-for-register__text">Wait until the domain is requested then click Register to buy the domain.</p>
+          <p className="waiting-for-register__text">Wait until the domain is requested then click Register to buy the
+            domain.</p>
         </div>
       ),
       readyToRegister: (
@@ -327,7 +328,7 @@ const mapDispatchToProps = dispatch => {
     showDomainList: () => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
       tabOptions: {
         showBack: false,
-        hideTitle: true,
+        showTitle: true,
       },
     })),
     showLoading: (loading = true, message) => loading ? dispatch(niftyActions.showLoadingIndication(message)) : dispatch(niftyActions.hideLoadingIndication()),

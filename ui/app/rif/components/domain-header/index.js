@@ -17,7 +17,7 @@ class DomainHeader extends Component {
     const {showOwnerIcon, showLuminoNodeIcon, onClickLuminoNode, showRifStorageIcon, domainName, children} = this.props;
     return (
       <div id="headerName" className="domain-name">
-        <span className="mr-1">{domainName}</span>
+        <span className="mr-1 domain-name-title">{domainName}</span>
         {showOwnerIcon &&
         <DomainIcon className="domain-icon"/>
         }
@@ -32,4 +32,5 @@ class DomainHeader extends Component {
     );
   }
 }
+
 module.exports = DomainHeader;

@@ -380,7 +380,6 @@ function navigateTo (screenName, params, resetNavigation = false) {
     showBack: true,
     showSearchbar: true,
     screenName,
-    hideTitle: false,
   };
   if (!params) {
     params = {
@@ -758,7 +757,7 @@ function getChannels () {
 function getChannelsGroupedByNetwork () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      dispatch(this.getChannels()).then(channelObject => {
+      dispatch(getChannels()).then(channelObject => {
         const arrayWithoutKeys = [];
         if (Object.keys(channelObject).length !== 0) {
           for (var key in channelObject) {
@@ -892,7 +891,7 @@ function getLuminoNetworkData (tokenAddress) {
         userChannels: 0,
       }
       dispatch(this.getTokens()).then(tokens => {
-        const data = tokens.find(n => n.address === tokenAddress);
+        const data = tokens.find(n => n.address.toLowerCase() === tokenAddress.toLowerCase());
         if (data) {
           const nodesMap = {};
           data.channels.forEach(c => {
@@ -956,6 +955,7 @@ function showRifLandingPage () {
       tabOptions: {
         showBack: true,
         screenTitle: 'My Domains',
+        showTitle: true,
         tabIndex: 0,
       },
     },

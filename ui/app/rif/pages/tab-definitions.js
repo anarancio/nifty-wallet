@@ -6,6 +6,7 @@ export const tabDefinitions = [
     index: 0,
     defaultScreenTitle: 'My Domains',
     defaultScreenName: pageNames.rns.domains,
+    showTitle: true,
     showSearchbar: true,
   },
   {
