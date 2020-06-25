@@ -20,7 +20,7 @@ const styles = {
       inactivePageButton: 'n-table-pagination-inactive',
       buttonNext: 'n-table-pagination-next',
     },
-  }
+  },
 }
 
 class LuminoNetworkDetails extends Component {
@@ -67,7 +67,7 @@ class LuminoNetworkDetails extends Component {
     return channels.map(c => {
       return {
         content: <LuminoChannelItem key={c.channel_identifier} partnerAddress={c.partner_address}
-                                    balance={c.balance}
+                                    balance={c.offChainBalance}
                                     state={c.state} tokenSymbol={networkSymbol}
                                     onRightChevronClick={() => this.props.showChannelDetails({
                                       channel: c,
