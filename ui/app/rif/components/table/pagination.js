@@ -21,6 +21,7 @@ export default class Pagination extends Component {
     nextPage: PropTypes.func,
     canNextPage: PropTypes.bool,
     canPreviousPage: PropTypes.bool,
+    changePageIndex: PropTypes.func,
     className: PropTypes.any,
   };
 
@@ -32,7 +33,7 @@ export default class Pagination extends Component {
       });
     }
     if (nextProps.page !== this.props.page) {
-      this.changePage(nextProps.page + 1);
+      this.props.onPageChange(nextProps.page - 1);
     }
   }
 
@@ -46,14 +47,13 @@ export default class Pagination extends Component {
     if (page === activePage) {
       return;
     }
-
     const visiblePages = this.getVisiblePages(page, this.props.pages);
 
     this.setState({
       visiblePages: this.filterPages(visiblePages, this.props.pages),
     });
 
-    this.props.onPageChange(page - 1);
+    this.props.changePageIndex(page - 1);
   }
 
   getVisiblePages = (page, total) => {

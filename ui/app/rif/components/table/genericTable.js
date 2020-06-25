@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useTable, usePagination } from 'react-table';
 import Pagination from './pagination';
 
-const Table = ({ title, columns, data, pageSize, displayColumnHeader, classes }) => {
+const Table = ({ title, columns, data, pageSize, displayColumnHeader, selectedPageIndex, changePageIndex, classes }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -16,12 +16,12 @@ const Table = ({ title, columns, data, pageSize, displayColumnHeader, classes })
     gotoPage,
     nextPage,
     previousPage,
-    state: { pageIndex },
   } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: pageSize || 10 },
+      initialState: { pageIndex: selectedPageIndex, pageSize: pageSize || 10 },
+      pageIndex: selectedPageIndex,
     },
     usePagination,
   );
@@ -63,13 +63,14 @@ const Table = ({ title, columns, data, pageSize, displayColumnHeader, classes })
           <div>
             <Pagination
             pages={pageOptions.length}
-            page={pageIndex}
+            page={selectedPageIndex}
             onPageChange={gotoPage}
             previousPage={previousPage}
             nextPage={nextPage}
             canPreviousPage={canPreviousPage}
             canNextPage={canNextPage}
             className={styles.pagination}
+            changePageIndex={(page) => changePageIndex(page)}
             />
           </div>
         </div>
@@ -90,8 +91,25 @@ export default class GenericTable extends Component {
     displayColumnHeader: PropTypes.bool,
     classes: PropTypes.any,
   };
+  constructor (props) {
+    super(props);
+    this.state = {
+      selectedPage: 0,
+    }
+  }
   render () {
     const { title, columns, data, paginationSize, displayColumnHeader, classes } = this.props;
-    return <Table title={title} columns={columns} data={data} pageSize={paginationSize} displayColumnHeader={displayColumnHeader} classes={classes} />;
+    return (<Table
+      title={title}
+      columns={columns}
+      data={data}
+      pageSize={paginationSize}
+      displayColumnHeader={displayColumnHeader}
+      selectedPageIndex={this.state.selectedPage}
+      changePageIndex={(page) => {
+        this.setState({selectedPage: page});
+      }}
+      classes={classes}
+    />);
   }
 }
