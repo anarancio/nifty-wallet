@@ -69,6 +69,7 @@ class SearchDomains extends Component {
   render () {
     return (
       <GenericSearch
+        onlyFilterOnEnter={true}
         customFilterFunction={this.filter}
         placeholder="Search for domains"
       />

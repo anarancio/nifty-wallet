@@ -17,6 +17,7 @@ class GenericSearch extends Component {
     filterProperty: PropTypes.string,
     data: PropTypes.array,
     placeholder: PropTypes.string,
+    onlyFilterOnEnter: PropTypes.bool,
   }
 
   includesCriteria = (element, criteria) => {
@@ -26,8 +27,11 @@ class GenericSearch extends Component {
     return lowerElement.includes(lowerCriteria);
   }
 
-  handleKeyDown = async (e) => {
-    if (e.key === 'Enter') {
+  handleInput = async (e) => {
+    const {onlyFilterOnEnter} = this.props;
+    const enterPressed = e.key === 'Enter';
+    const shouldFilter = (!onlyFilterOnEnter && !enterPressed) || (onlyFilterOnEnter && enterPressed)
+    if (shouldFilter) {
       const {value} = e.target;
       const {customFilterFunction, resultSetFunction} = this.props;
 
@@ -52,13 +56,16 @@ class GenericSearch extends Component {
   }
 
   render () {
-    const {placeholder} = this.props;
+    const {placeholder, onlyFilterOnEnter} = this.props;
+    const handleKeydown = onlyFilterOnEnter ? this.handleInput : null;
+    const handleOnChange = onlyFilterOnEnter ? null : this.handleInput;
     return (
       <div className="search-bar-container">
         <input
           placeholder={placeholder || ''}
           className={'search-bar'}
-          onKeyDown={this.handleKeyDown}
+          onChange={handleOnChange}
+          onKeyDown={handleKeydown}
         />
       </div>
     )

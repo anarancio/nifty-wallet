@@ -1,8 +1,8 @@
 // Constant names, if you want to add a new token (icon), just go to constant.js and add one to the array, then add it to getNameTokenForIcon
-import { SLIP_ADDRESSES } from '../constants/slipAddresses'
+import {SLIP_ADDRESSES} from '../constants/slipAddresses'
 
 const getChainAddressByChainAddress = function (chainAddress) {
-    return SLIP_ADDRESSES.find(e => e.chain === chainAddress);
+  return SLIP_ADDRESSES.find(e => e.chain === chainAddress);
 }
 
 const getStatusForChannel = (SDK_STATUS) => {
@@ -14,7 +14,7 @@ const getStatusForChannel = (SDK_STATUS) => {
   }
 }
 const sumValuesOfArray = (items, prop) => {
-  return items.reduce( function(a, b){
+  return items.reduce(function (a, b) {
     return a + b[prop];
   }, 0);
 };
