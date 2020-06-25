@@ -5,13 +5,16 @@
 
   --gray-soft: #DFDFDF;
   --gray-text: #979797;
-
+  --gray-border: #919191;
   --gray-modal: #D8D8D8;
   --gray-modal-title: #515052;
   --gray-modal-btn: #767677;
 
   --primary-font: 'Lato', sans-serif;
   --secondary-font: 'Roboto', sans-serif;
+
+  --danger: #E41F64;
+  --success: #2BA147;
 }
 
 /* HEADER */
@@ -77,16 +80,16 @@
 
 /* UTILITIES */
 
+.w-100 {
+  width: 100%;
+}
+
 .text-center {
   text-align: center;
 }
 
-.mt-0 {
-  margin-top: 0;
-}
-
-.ml-0 {
-  margin-left: 0;
+.text-right {
+  text-align: right;
 }
 
 .mx-auto {
@@ -102,16 +105,28 @@
   margin-left: auto;
 }
 
+.mt-0 {
+  margin-top: 0 !important;;
+}
+
+.mt-2 {
+  margin-top: 20px !important;
+}
+
+.ml-0 {
+  margin-left: 0 !important;;
+}
+
 .mr-1 {
-  margin-right: 10px;
+  margin-right: 10px !important;;
 }
 
 .mb-1 {
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;;
 }
 
 .mb-4 {
-  margin-bottom: 40px;
+  margin-bottom: 40px !important;;
 }
 
 .d-block {

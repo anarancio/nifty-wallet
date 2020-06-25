@@ -76,7 +76,7 @@ function buildTabs (screenName, tabOptions) {
 
 function buildTabScreen (screenName, context, dispatch) {
   if (screenName === pageNames.configuration) {
-    return (<div>
+    return (<div className="w-100">
       <ToastComponent/>
       <RifConfiguration/>
     </div>);
