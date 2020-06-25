@@ -167,7 +167,6 @@ function mapDispatchToProps (dispatch) {
     showSubdomainDetails: (params) => dispatch(rifActions.navigateTo(pageNames.rns.subdomains, {
       ...params,
       tabOptions: {
-        hideTitle: true,
         showSearchbar: false,
         showBack: true,
       },

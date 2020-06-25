@@ -108,13 +108,13 @@ const mapDispatchToProps = dispatch => {
     showDomainsDetailPage: (data) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetail, {
       ...data,
       tabOptions: {
-        hideTitle: true,
         showSearchbar: false,
         showBack: true,
         tabIndex: 0,
       },
     })),
-    setAutoRenew: (data) => {},
+    setAutoRenew: (data) => {
+    },
     showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, params)),
     getDomains: () => dispatch(rifActions.getDomains()),
   }

@@ -380,7 +380,6 @@ function navigateTo (screenName, params, resetNavigation = false) {
     showBack: true,
     showSearchbar: true,
     screenName,
-    hideTitle: false,
   };
   if (!params) {
     params = {
