@@ -160,7 +160,7 @@ class DomainsDetailActiveScreen extends Component {
       content,
       selectedResolverAddress,
     };
-    console.debug('================================================domainDetailActive', newSubdomains);
+
     return (
       <div className="domain-detail">
         <DomainHeader domainName={domainName}
@@ -233,8 +233,6 @@ function mapStateToProps (state) {
   const params = state.appState.currentView.params;
   const domain = params.domain;
   const details = domain.details || params.details;
-  console.debug('==================================================params.newSubdomains', params.newSubdomains);
-  console.debug('==================================================details.newSubdomains', details.newSubdomains);
   return {
     dispatch: state.dispatch,
     status: details.status,
