@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {validateDecimalAmount} from '../../../utils/validations';
+import {validateAmountValue, validateDecimalAmount} from '../../../utils/validations';
 import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
@@ -62,36 +62,40 @@ class DepositOnChannel extends Component {
   }
 
   async depositOnChannel () {
-    const callbackHandlers = new CallbackHandlers();
-    callbackHandlers.requestHandler = (result) => {
-      console.debug('DEPOSIT REQUESTED', result);
-      this.props.showToast('Deposit Requested');
-    };
-    callbackHandlers.successHandler = (result) => {
-      console.debug('DEPOSIT DONE', result);
-      this.props.showToast('Deposit Done Successfully');
-    };
-    callbackHandlers.errorHandler = (result) => {
-      console.debug('DEPOSIT ERROR', result);
-      const errorMessage = result.response.data.errors;
-      if (errorMessage) {
-        this.props.showToast(errorMessage, false);
-      } else {
-        this.props.showToast('Unknown Error Trying to Deposit');
-      }
-    };
-    this.props.showPopup('Deposit on Channel', {
-      text: `Are you sure you want to deposit ${this.state.amount} ${this.props.tokenSymbol} tokens on channel ${this.props.channelIdentifier} with partner ${this.props.destination}?`,
-      confirmCallback: async () => {
-        await this.props.createDeposit(
-          this.props.destination,
-          this.props.tokenAddress,
-          this.props.tokenNetworkAddress,
-          this.props.channelIdentifier,
-          this.state.amount,
-          callbackHandlers);
-      },
-    });
+    if (validateAmountValue(this.state.amount)) {
+      const callbackHandlers = new CallbackHandlers();
+      callbackHandlers.requestHandler = (result) => {
+        console.debug('DEPOSIT REQUESTED', result);
+        this.props.showToast('Deposit Requested');
+      };
+      callbackHandlers.successHandler = (result) => {
+        console.debug('DEPOSIT DONE', result);
+        this.props.showToast('Deposit Done Successfully');
+      };
+      callbackHandlers.errorHandler = (result) => {
+        console.debug('DEPOSIT ERROR', result);
+        const errorMessage = result.response.data.errors;
+        if (errorMessage) {
+          this.props.showToast(errorMessage, false);
+        } else {
+          this.props.showToast('Unknown Error Trying to Deposit');
+        }
+      };
+      this.props.showPopup('Deposit on Channel', {
+        text: `Are you sure you want to deposit ${this.state.amount} ${this.props.tokenSymbol} tokens on channel ${this.props.channelIdentifier} with partner ${this.props.destination}?`,
+        confirmCallback: async () => {
+          await this.props.createDeposit(
+            this.props.destination,
+            this.props.tokenAddress,
+            this.props.tokenNetworkAddress,
+            this.props.channelIdentifier,
+            this.state.amount,
+            callbackHandlers);
+        },
+      });
+    } else {
+      this.props.showToast('Invalid deposit amount, should be greater than 0', false);
+    }
   }
 
   render () {
