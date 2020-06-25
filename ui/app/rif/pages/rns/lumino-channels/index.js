@@ -5,8 +5,10 @@ import { CloseChannel, DepositOnChannel, Tabs } from '../../../components';
 import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
-import {validateDecimalAmount} from '../../../utils/validations';
-import {getBalanceInEth} from '../../../utils/parse';
+import {validateAmountValue, validateDecimalAmount} from '../../../utils/validations';
+import {getBalanceInEth, isValidRNSDomain} from '../../../utils/parse';
+import ethUtils from 'ethereumjs-util';
+import {getLoader} from '../../../utils/components';
 
 const styles = {
   tabs: '',
@@ -31,6 +33,8 @@ class LuminoChannels extends Component {
       paymentInput: 0,
       isOpen: props.channel.sdk_status === 'CHANNEL_OPENED',
       channelStatus: this.getStatus(props.channel.sdk_status),
+      loading: false,
+      loadingMessage: 'Wait please...',
     };
   }
   buildTabs () {
@@ -54,7 +58,7 @@ class LuminoChannels extends Component {
     const payTab = {
       index: 1,
       title: 'Pay',
-      component: (
+      component: this.state.loading ? getLoader(this.state.loadingMessage) : (
         <div>
           <div className="form-segment">
             <input
@@ -80,17 +84,23 @@ class LuminoChannels extends Component {
   }
 
   sendLuminoPayment () {
-    const { channel } = this.props;
+    const channel = this.props.channel;
     const callbackHandlers = new CallbackHandlers();
     callbackHandlers.requestHandler = (result) => {
       console.debug('PAYMENT REQUESTED', result);
       this.props.showToast('Payment Sent');
     };
     callbackHandlers.successHandler = (result) => {
+      this.setState({
+        loading: false,
+      });
       console.debug('PAYMENT DONE', result);
       this.props.showToast('Payment Delivered');
     };
     callbackHandlers.errorHandler = (error) => {
+      this.setState({
+        loading: false,
+      });
       console.debug('PAYMENT ERROR', error);
       this.props.showToast('Error trying to pay!', false);
     };
@@ -98,11 +108,15 @@ class LuminoChannels extends Component {
       text: 'Are you sure you want to pay ' + this.state.paymentInput + ' tokens to partner ' + channel.partner_address + '?',
       confirmLabel: 'Pay',
       confirmCallback: async () => {
-        if (this.state.paymentInput) {
-          this.props.sendLuminoPayment(channel.token_address, channel.partner_address, this.state.paymentInput, callbackHandlers);
-        } else {
-          this.props.showToast('You need to put the amount first.', false);
+        if (!validateAmountValue(this.state.paymentInput)) {
+          this.props.showToast('Invalid deposit amount, should be greater than 0', false);
+          return;
         }
+        this.setState({
+          loading: true,
+          loadingMessage: 'Paying...',
+        });
+        this.props.sendLuminoPayment(channel.token_address, channel.partner_address, this.state.paymentInput, callbackHandlers);
       },
     });
   }

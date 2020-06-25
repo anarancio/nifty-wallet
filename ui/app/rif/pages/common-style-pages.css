@@ -44,3 +44,12 @@
   font-weight: 400;
   margin-right: 10px;
 }
+
+.app-loader-message {
+  text-align: center;
+  font-family: var(--primary-font);
+  color: var(--gray-text);
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: 300;
+}

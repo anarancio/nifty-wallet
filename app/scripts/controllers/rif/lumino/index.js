@@ -14,9 +14,7 @@ import {LuminoStorageHandler} from './storage';
 export class LuminoManager extends AbstractManager {
 
   constructor (props) {
-    super(props, {
-      apiKey: null,
-    });
+    super(props);
     this.lumino = Lumino;
     this.operations = new LuminoOperations({
       lumino: this.lumino,
@@ -35,7 +33,7 @@ export class LuminoManager extends AbstractManager {
     });
   }
 
-  async initializeLumino (cleanApiKey = false, reconfigure = false) {
+  async initializeLumino (reconfigure = false) {
     const configuration = this.configurationProvider.getConfigurationObject();
     if (this.unlocked && isRskNetwork(this.network.id)) {
       const configParams = {
@@ -53,7 +51,9 @@ export class LuminoManager extends AbstractManager {
       const luminoStorageHandler = new LuminoStorageHandler({
         store: this.store,
         address: this.address,
+        chainId: this.network.id,
       });
+      this.luminoStorageHandler = luminoStorageHandler;
       const storageHandler = {
         getLuminoData: () => {
           return luminoStorageHandler.getLuminoData();
@@ -67,14 +67,7 @@ export class LuminoManager extends AbstractManager {
       } else {
         await this.lumino.init(signingHandler, storageHandler, configParams);
       }
-      const state = this.getStoreState();
-      if (state.apiKey && !cleanApiKey) {
-        await this.operations.setApiKey(state.apiKey);
-      } else {
-        await this.operations.onboarding();
-        state.apiKey = await this.operations.getApiKey();
-        this.updateStoreState(state);
-      }
+      await this.operations.onboarding();
       await this.afterInitialization();
     }
   };
@@ -91,11 +84,14 @@ export class LuminoManager extends AbstractManager {
 
   onNetworkChanged (network) {
     super.onNetworkChanged(network);
-    this.initializeLumino(true, true);
+    if (this.luminoStorageHandler) {
+      this.luminoStorageHandler.onNetworkChanged(network);
+    }
+    this.initializeLumino(true);
   }
 
   onConfigurationUpdated (configuration) {
-    this.initializeLumino(true, true);
+    this.initializeLumino(true);
   }
 
   onAddressChanged (address) {
@@ -103,10 +99,13 @@ export class LuminoManager extends AbstractManager {
     if (this.signingHandler) {
       this.signingHandler.updateAddress(address);
     }
+    if (this.luminoStorageHandler) {
+      this.luminoStorageHandler.onAddressChanged(address);
+    }
     if (this.operations) {
       this.operations.updateAddress(address);
     }
-    this.initializeLumino(true, true);
+    this.initializeLumino(true);
   }
 
   bindApi () {
