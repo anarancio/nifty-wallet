@@ -891,7 +891,7 @@ function getLuminoNetworkData (tokenAddress) {
         userChannels: 0,
       }
       dispatch(this.getTokens()).then(tokens => {
-        const data = tokens.find(n => n.address === tokenAddress);
+        const data = tokens.find(n => n.address.toLowerCase() === tokenAddress.toLowerCase());
         if (data) {
           const nodesMap = {};
           data.channels.forEach(c => {
