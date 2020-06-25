@@ -380,7 +380,6 @@ function navigateTo (screenName, params, resetNavigation = false) {
     showBack: true,
     showSearchbar: true,
     screenName,
-    hideTitle: false,
   };
   if (!params) {
     params = {
@@ -956,6 +955,7 @@ function showRifLandingPage () {
       tabOptions: {
         showBack: true,
         screenTitle: 'My Domains',
+        showTitle: true,
         tabIndex: 0,
       },
     },

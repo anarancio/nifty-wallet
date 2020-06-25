@@ -152,7 +152,6 @@ function mapDispatchToProps (dispatch) {
     showChannelDetails: (params) => dispatch(rifActions.navigateTo(pageNames.rns.luminoChannels, {
       ...params,
       tabOptions: {
-        hideTitle: true,
         showSearchbar: false,
         showBack: true,
       },
