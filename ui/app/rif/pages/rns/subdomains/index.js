@@ -5,7 +5,7 @@ import rifActions from '../../../actions';
 import niftyActions from '../../../../actions';
 import {pageNames} from '../../../pages/index';
 import {ChainAddresses, CustomButton, LuminoNetworkChannels} from '../../../components';
-import { GET_RESOLVERS, PAGINATION_DEFAULT_SIZE} from '../../../constants';
+import {GET_RESOLVERS, PAGINATION_DEFAULT_SIZE} from '../../../constants';
 import DomainHeader from '../../../components/domain-header';
 
 // TODO @fmelo
@@ -117,8 +117,8 @@ class Subdomains extends Component {
                   ...this.props.redirectParams,
                   newSubdomains: subdomains,
                 });
-              });
             });
+        });
         this.props.showTransactionConfirmPage({
           action: () => {
             this.props.showThis(
@@ -133,10 +133,10 @@ class Subdomains extends Component {
   }
 
   render () {
-    const { subdomain, domainName, selectedResolverAddress, newChainAddresses, isOwner } = this.props;
+    const {subdomain, domainName, selectedResolverAddress, newChainAddresses, isOwner} = this.props;
     const updatedChainAddresses = newChainAddresses || [];
-    const displayName = domainName + '.' + subdomain.name;
-    const { resolvers } = this.state;
+    const displayName = `${subdomain.name}.${domainName}`
+    const {resolvers} = this.state;
     return (
       <div className="subdomain-page">
         <DomainHeader
@@ -144,17 +144,17 @@ class Subdomains extends Component {
           showOwnerIcon={isOwner}
         >
           {isOwner &&
-            <CustomButton
-              text="Delete"
-              onClick={() => this.openDeletePopup(subdomain)}
-              className={
-                {
-                  button: 'ml-auto',
-                  icon: '',
-                  text: 'btn-primary btn-primary-outlined',
-                }
+          <CustomButton
+            text="Delete"
+            onClick={() => this.openDeletePopup(subdomain)}
+            className={
+              {
+                button: 'ml-auto',
+                icon: '',
+                text: 'btn-primary btn-primary-outlined',
               }
-            />
+            }
+          />
           }
         </DomainHeader>
         {resolvers &&
@@ -185,6 +185,7 @@ class Subdomains extends Component {
     );
   }
 }
+
 function mapStateToProps (state) {
   const params = state.appState.currentView.params;
   return {
@@ -212,4 +213,5 @@ function mapDispatchToProps (dispatch) {
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
   }
 }
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Subdomains);
