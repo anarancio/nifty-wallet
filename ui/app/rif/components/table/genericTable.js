@@ -14,8 +14,6 @@ const Table = ({ title, columns, data, pageSize, displayColumnHeader, selectedPa
     canNextPage,
     pageOptions,
     gotoPage,
-    nextPage,
-    previousPage,
   } = useTable(
     {
       columns,
@@ -65,8 +63,6 @@ const Table = ({ title, columns, data, pageSize, displayColumnHeader, selectedPa
             pages={pageOptions.length}
             page={selectedPageIndex}
             onPageChange={gotoPage}
-            previousPage={previousPage}
-            nextPage={nextPage}
             canPreviousPage={canPreviousPage}
             canNextPage={canNextPage}
             className={styles.pagination}
