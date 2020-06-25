@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import { GenericTable, OpenChannel } from './index';
+import {GenericTable, OpenChannel} from './index';
 import rifActions from '../actions';
 import ItemWithActions from './item-with-actions';
 import {faCoins} from '@fortawesome/free-solid-svg-icons';
@@ -27,23 +27,23 @@ class LuminoNetworkChannels extends Component {
   }
 
   getData () {
-    const { tabIndex, classes } = this.props;
+    const {tabIndex, classes} = this.props;
     if (this.state.networkChannels) {
       return this.state.networkChannels.map(networkChannel => {
         const item = (<ItemWithActions
-            leftIcon={{icon: faCoins, color: '#05836D'}}
-            contentClasses={classes.content}
-            actionClasses={classes.contentActions}
-            text={networkChannel.symbol}
-            enableRightChevron={true}
-            onRightChevronClick={() => this.props.showNetworkDetails({
-              networkSymbol: networkChannel.symbol,
-              tokenAddress: networkChannel.address,
-              tokenNetwork: networkChannel.tokenNetwork,
-              networkName: networkChannel.name,
-              tabIndex: tabIndex,
-            })}
-          />)
+          leftIcon={{icon: faCoins, color: '#05836D'}}
+          contentClasses={classes.content}
+          actionClasses={classes.contentActions}
+          text={networkChannel.symbol}
+          enableRightChevron={true}
+          onRightChevronClick={() => this.props.showNetworkDetails({
+            networkSymbol: networkChannel.symbol,
+            tokenAddress: networkChannel.address,
+            tokenNetwork: networkChannel.tokenNetwork,
+            networkName: networkChannel.name,
+            tabIndex: tabIndex,
+          })}
+        />)
         return {
           content: item,
         }
@@ -81,8 +81,8 @@ class LuminoNetworkChannels extends Component {
     const data = this.getData();
     return (
       <div>
-      {
-        data.length > 0 &&
+        {
+          data.length > 0 &&
           <div>
             <GenericTable
               title={'Lumino Channels'}
@@ -97,21 +97,22 @@ class LuminoNetworkChannels extends Component {
               classes={classes}
             />
           </div>
-      }
-      {
-        data.length === 0 &&
-        <div>
-          <span className={classes.title}>Lumino Channels</span>
-          <span className={classes.notFound}>No channels found</span>
-        </div>
-      }
+        }
+        {
+          data.length === 0 &&
+          <div>
+            <span className={classes.title}>Lumino Channels</span>
+            <span className={classes.notFound}>No channels found</span>
+          </div>
+        }
         {isOwner &&
-          <OpenChannel afterChannelCreated={() => this.loadChannels()}/>
+        <OpenChannel afterChannelCreated={() => this.loadChannels()}/>
         }
       </div>
     );
   }
 }
+
 function mapStateToProps (state) {
   const params = state.appState.currentView.params;
   return {
@@ -122,15 +123,16 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     showNetworkDetails: (params) => dispatch(rifActions.navigateTo(pageNames.lumino.networkDetails, {
-    ...params,
-    tabOptions: {
-      hideTitle: true,
-      showSearchbar: false,
-      showBack: true,
-      tabIndex: params.tabIndex,
-    },
-  })),
+      ...params,
+      tabOptions: {
+        hideTitle: true,
+        showSearchbar: false,
+        showBack: true,
+        tabIndex: params.tabIndex,
+      },
+    })),
     getChannelsGroupedByNetwork: () => dispatch(rifActions.getChannelsGroupedByNetwork()),
   }
 }
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoNetworkChannels);
