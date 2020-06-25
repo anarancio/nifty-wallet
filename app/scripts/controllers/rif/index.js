@@ -23,6 +23,7 @@ export default class RifController {
     if (!props.metamaskController) {
       throw new Error('MetamaskController has to be present');
     }
+    this.unlocked = false;
     this.metamaskController = props.metamaskController;
     this.web3 = new Web3(this.metamaskController.networkController._provider);
 
@@ -67,9 +68,9 @@ export default class RifController {
     this.metamaskController.networkController.store.subscribe(updatedNetwork => this.networkUpdated(updatedNetwork));
     this.metamaskController.on('update', (memState) => {
       const unlocked = this.metamaskController.isUnlocked();
-      if (unlocked && !this.alreadyUnlocked) {
-        this.alreadyUnlocked = true;
-        this.unlocked();
+      if (unlocked && !this.unlocked) {
+        this.unlocked = true;
+        this.onUnlocked();
       }
     });
   }
@@ -121,7 +122,7 @@ export default class RifController {
   /**
    * Event executed when the user unlocks the wallet
    */
-  unlocked () {
+  onUnlocked () {
     this.configurationProvider.onUnlock();
     this.rnsManager.onUnlock();
     this.luminoManager.onUnlock();
@@ -178,6 +179,10 @@ export default class RifController {
     return Promise.resolve();
   }
 
+  walletUnlocked () {
+    return Promise.resolve(this.unlocked);
+  }
+
   /**
    * This method publishes all the operations available to call from the ui for RifController
    * and all it's members.
@@ -191,6 +196,7 @@ export default class RifController {
       lumino: this.luminoManager.bindApi(),
       cleanStore: bindOperation(this.cleanStore, this),
       enabled: bindOperation(this.enabled, this),
+      walletUnlocked: bindOperation(this.walletUnlocked, this),
     }
   }
 }

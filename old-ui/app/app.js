@@ -1,3 +1,5 @@
+import rifActions from '../../ui/app/rif/actions';
+
 const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
@@ -104,6 +106,22 @@ function mapStateToProps (state) {
     identities,
     selected,
     keyrings,
+    luminoCallbacksRunning: state.appState.luminoCallbacksRunning,
+  }
+}
+
+App.prototype.componentDidUpdate = function () {
+  this.setupLuminoDefaultCallbacks(this.props.dispatch);
+}
+
+App.prototype.setupLuminoDefaultCallbacks = function (dispatch) {
+  if (this.props.isUnlocked && !this.props.luminoCallbacksRunning) {
+    dispatch(rifActions.rifEnabled()).then(enabled => {
+      if (enabled) {
+        dispatch(rifActions.setupDefaultLuminoCallbacks());
+
+      }
+    });
   }
 }
 
