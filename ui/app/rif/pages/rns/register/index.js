@@ -328,6 +328,7 @@ const mapDispatchToProps = dispatch => {
     showDomainList: () => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
       tabOptions: {
         showBack: false,
+        showTitle: true,
       },
     })),
     showLoading: (loading = true, message) => loading ? dispatch(niftyActions.showLoadingIndication(message)) : dispatch(niftyActions.hideLoadingIndication()),

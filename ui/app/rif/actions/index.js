@@ -955,6 +955,7 @@ function showRifLandingPage () {
       tabOptions: {
         showBack: true,
         screenTitle: 'My Domains',
+        showTitle: true,
         tabIndex: 0,
       },
     },
