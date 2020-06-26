@@ -13,6 +13,7 @@ const rifActions = {
   SHOW_MENU: 'SHOW_MENU',
   NAVIGATE_TO: 'NAVIGATE_TO',
   RIF_LANDING_PAGE: 'RIF_LANDING_PAGE',
+  LUMINO_CALLBACKS_RUNNING: 'LUMINO_CALLBACKS_RUNNING',
   setBackgroundConnection,
   // RNS
   checkDomainAvailable,
@@ -63,12 +64,14 @@ const rifActions = {
   cleanStore,
   showRifLandingPage,
   setupDefaultLuminoCallbacks,
+  luminoCallbacksRunning,
   createNetworkPayment,
   getDomainAddress,
   subscribeToCloseChannel,
   getConfiguration,
   setConfiguration,
   rifEnabled,
+  walletUnlocked,
 }
 
 let background = null;
@@ -600,6 +603,23 @@ function handleSdkCallback (callbackName, dispatch, handler = null) {
     .catch(error => handlerFunction(error));
 }
 
+function handleSdkDefaultCallback (callbackName, dispatch, handler = null) {
+  const handlerFunction = async (result) => {
+    if (handler) {
+      await handler(result);
+    }
+  };
+  listenToSdkCallback(callbackName, dispatch)
+    .then(result => {
+      handlerFunction(result);
+      handleSdkDefaultCallback(callbackName, dispatch, handler);
+    })
+    .catch(error => {
+      handlerFunction(error);
+      handleSdkDefaultCallback(callbackName, dispatch, handler);
+    });
+}
+
 function listenToSdkCallback (callbackName) {
   return new Promise((resolve, reject) => {
     background.rif.lumino.listenCallback(callbackName, (error, result) => {
@@ -965,7 +985,7 @@ function showRifLandingPage () {
 function setupDefaultLuminoCallbacks () {
   return (dispatch) => {
     return new Promise(resolve => {
-      handleSdkCallback(lumino.callbacks.SIGNING_FAIL, dispatch, (error) => {
+      handleSdkDefaultCallback(lumino.callbacks.SIGNING_FAIL, dispatch, (error) => {
         console.debug('Error Signing', error);
         const errorMessage = parseLuminoError(error);
         if (errorMessage) {
@@ -974,21 +994,33 @@ function setupDefaultLuminoCallbacks () {
           dispatch(niftyActions.displayToast('Error Signing!', false));
         }
       });
-      handleSdkCallback(lumino.callbacks.REQUEST_CLIENT_ONBOARDING, dispatch, (result) => {
+      handleSdkDefaultCallback(lumino.callbacks.REQUEST_CLIENT_ONBOARDING, dispatch, (result) => {
         console.debug('Requesting onboarding', result);
         dispatch(niftyActions.displayToast('Requesting onboard to Hub'));
       });
-      handleSdkCallback(lumino.callbacks.CLIENT_ONBOARDING_SUCCESS, dispatch, (result) => {
+      handleSdkDefaultCallback(lumino.callbacks.CLIENT_ONBOARDING_SUCCESS, dispatch, (result) => {
         console.debug('Onboarding success', result);
         dispatch(niftyActions.displayToast('Onboarding completed successfully'));
       });
-      handleSdkCallback(lumino.callbacks.RECEIVED_PAYMENT, dispatch, (result) => {
+      handleSdkDefaultCallback(lumino.callbacks.CLIENT_ONBOARDING_FAILURE, dispatch, (result) => {
+        console.debug('Onboarding failure', result);
+        dispatch(niftyActions.displayToast('Onboarding failure'));
+      });
+      handleSdkDefaultCallback(lumino.callbacks.RECEIVED_PAYMENT, dispatch, (result) => {
         console.debug('Received Payment', result);
         dispatch(niftyActions.displayToast('Received a payment'));
       });
+      dispatch(luminoCallbacksRunning(true));
       return resolve();
     });
   };
+}
+
+function luminoCallbacksRunning (running) {
+  return {
+    type: rifActions.LUMINO_CALLBACKS_RUNNING,
+    data: running,
+  }
 }
 
 function createNetworkPayment (network, destination, amountInWei) {
@@ -1060,6 +1092,20 @@ function rifEnabled () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.rif.enabled((error, enabled) => {
+        if (error) {
+          dispatch(niftyActions.displayWarning(error));
+          return reject(error);
+        }
+        return resolve(enabled);
+      });
+    });
+  };
+}
+
+function walletUnlocked () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.walletUnlocked((error, enabled) => {
         if (error) {
           dispatch(niftyActions.displayWarning(error));
           return reject(error);

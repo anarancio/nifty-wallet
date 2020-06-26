@@ -53,9 +53,16 @@ function landingPage (appState, action) {
   })
 }
 
+function luminoCallbacksRunning (appState, action) {
+  return extend(appState, {
+    luminoCallbacksRunning: action.data,
+  });
+}
+
 export const rifReducers = {
   navigateTo,
   showMenu,
   showModal,
   landingPage,
+  luminoCallbacksRunning,
 }

@@ -875,6 +875,9 @@ function reduceApp (state, action) {
     case rifActions.RIF_LANDING_PAGE:
       return rifReducers.landingPage(appState, action)
 
+    case rifActions.LUMINO_CALLBACKS_RUNNING:
+      return rifReducers.luminoCallbacksRunning(appState, action)
+
     default:
       return appState
   }
