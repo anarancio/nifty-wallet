@@ -57,7 +57,7 @@ class OpenChannel extends Component {
       tokensOptions: [],
       selectedToken: selectedToken,
       loading: false,
-      loadingMessage: 'Wait please...',
+      loadingMessage: 'Please Wait...',
     };
   }
 

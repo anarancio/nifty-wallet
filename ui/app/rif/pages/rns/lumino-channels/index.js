@@ -34,7 +34,7 @@ class LuminoChannels extends Component {
       isOpen: props.channel.sdk_status === 'CHANNEL_OPENED',
       channelStatus: this.getStatus(props.channel.sdk_status),
       loading: false,
-      loadingMessage: 'Wait please...',
+      loadingMessage: 'Please Wait...',
     };
   }
   buildTabs () {

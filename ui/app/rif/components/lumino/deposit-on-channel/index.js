@@ -28,7 +28,7 @@ class DepositOnChannel extends Component {
     this.state = {
       amount: null,
       loading: false,
-      loadingMessage: 'Wait please...',
+      loadingMessage: 'Please Wait...',
     };
   }
 

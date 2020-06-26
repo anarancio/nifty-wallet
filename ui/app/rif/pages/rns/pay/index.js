@@ -100,7 +100,7 @@ class Pay extends Component {
       destination: '',
       selectedNetwork: null,
       loading: true,
-      loadingMessage: 'Wait please...',
+      loadingMessage: 'Please Wait...',
       selectedToken: null,
       selectedMode: modeOptions[0],
     };
