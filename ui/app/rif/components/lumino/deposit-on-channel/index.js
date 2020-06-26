@@ -13,7 +13,7 @@ class DepositOnChannel extends Component {
 
   static propTypes = {
     destination: PropTypes.string.isRequired,
-    channelIdentifier: PropTypes.string.isRequired,
+    channelIdentifier: PropTypes.number.isRequired,
     tokenAddress: PropTypes.string.isRequired,
     tokenNetworkAddress: PropTypes.string.isRequired,
     tokenName: PropTypes.string.isRequired,
@@ -21,6 +21,7 @@ class DepositOnChannel extends Component {
     showToast: PropTypes.func,
     showPopup: PropTypes.func,
     createDeposit: PropTypes.func,
+    afterDepositCreated: PropTypes.func,
   }
 
   constructor (props) {
@@ -79,6 +80,9 @@ class DepositOnChannel extends Component {
         });
         console.debug('DEPOSIT DONE', result);
         this.props.showToast('Deposit Done Successfully');
+        if (this.props.afterDepositCreated) {
+          this.props.afterDepositCreated(result);
+        }
       };
       callbackHandlers.errorHandler = (result) => {
         this.setState({
