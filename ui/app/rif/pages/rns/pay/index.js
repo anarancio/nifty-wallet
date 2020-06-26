@@ -13,6 +13,7 @@ import ethUtils from 'ethereumjs-util';
 import {isValidRNSDomain} from '../../../utils/parse';
 import web3Utils from 'web3-utils';
 import {validateDecimalAmount} from '../../../utils/validations';
+import {getLoader} from '../../../utils/components';
 
 class ModeOption extends Select.Option {
   render () {
@@ -99,6 +100,7 @@ class Pay extends Component {
       destination: '',
       selectedNetwork: null,
       loading: true,
+      loadingMessage: 'Please Wait...',
       selectedToken: null,
       selectedMode: modeOptions[0],
     };
@@ -182,9 +184,11 @@ class Pay extends Component {
         if (this.state.selectedNetwork && this.state.destination && this.state.amount) {
           if (this.state.amount <= 0) {
             this.props.showToast('Amount has to be greater than 0.', false);
+            return;
           }
           if (!ethUtils.isValidChecksumAddress(this.state.destination) && !isValidRNSDomain(this.state.destination)) {
-            this.props.showToast('Destination has to be a valid checksum address.', false);
+            this.props.showToast('Destination has to be a valid domain name or checksum address.', false);
+            return;
           }
           if (this.state.amount > 0 && (ethUtils.isValidChecksumAddress(this.state.destination) || isValidRNSDomain(this.state.destination))) {
             let destination = this.state.destination;
@@ -208,10 +212,16 @@ class Pay extends Component {
       this.props.showToast('Payment Sent');
     };
     callbackHandlers.successHandler = (result) => {
+      this.setState({
+        loading: false,
+      });
       console.debug('PAYMENT DONE', result);
       this.props.showToast('Payment Delivered');
     };
     callbackHandlers.errorHandler = (error) => {
+      this.setState({
+        loading: false,
+      });
       console.debug('PAYMENT ERROR', error);
       this.props.showToast('Error trying to pay!', false);
     };
@@ -220,7 +230,15 @@ class Pay extends Component {
       confirmLabel: 'Pay',
       confirmCallback: async () => {
         if (this.state.selectedToken && this.state.destination && this.state.amount) {
-          this.props.sendLuminoPayment(this.state.selectedToken, this.state.destination, this.state.amount, callbackHandlers);
+          if (this.state.amount > 0 && (ethUtils.isValidChecksumAddress(this.state.destination) || isValidRNSDomain(this.state.destination))) {
+            this.setState({
+              loading: true,
+              loadingMessage: 'Paying...',
+            });
+            this.props.sendLuminoPayment(this.state.selectedToken, this.state.destination, this.state.amount, callbackHandlers);
+          } else {
+            this.props.showToast('Destination has to be a valid domain name or checksum address.', false);
+          }
         } else {
           this.props.showToast('You need to select a token and put the partner and amount first.', false);
         }
@@ -342,6 +360,10 @@ class Pay extends Component {
     const header = this.getHeaderFragment();
     const modeDropdown = this.getModeDropdown();
     const body = this.getBody();
+    const loading = this.state.loading;
+    if (loading) {
+      return getLoader(this.state.loadingMessage);
+    }
     return (
       <div className="body">
         {header}

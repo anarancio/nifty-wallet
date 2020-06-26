@@ -5,6 +5,9 @@ import {validateAmountValue, validateDecimalAmount} from '../../../utils/validat
 import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
+import {getLoader} from '../../../utils/components';
+import ethUtils from 'ethereumjs-util';
+import {isValidRNSDomain} from '../../../utils/parse';
 
 class DepositOnChannel extends Component {
 
@@ -24,6 +27,8 @@ class DepositOnChannel extends Component {
     super(props);
     this.state = {
       amount: null,
+      loading: false,
+      loadingMessage: 'Please Wait...',
     };
   }
 
@@ -69,10 +74,16 @@ class DepositOnChannel extends Component {
         this.props.showToast('Deposit Requested');
       };
       callbackHandlers.successHandler = (result) => {
+        this.setState({
+          loading: false,
+        });
         console.debug('DEPOSIT DONE', result);
         this.props.showToast('Deposit Done Successfully');
       };
       callbackHandlers.errorHandler = (result) => {
+        this.setState({
+          loading: false,
+        });
         console.debug('DEPOSIT ERROR', result);
         const errorMessage = result.response.data.errors;
         if (errorMessage) {
@@ -84,6 +95,14 @@ class DepositOnChannel extends Component {
       this.props.showPopup('Deposit on Channel', {
         text: `Are you sure you want to deposit ${this.state.amount} ${this.props.tokenSymbol} tokens on channel ${this.props.channelIdentifier} with partner ${this.props.destination}?`,
         confirmCallback: async () => {
+          if (!ethUtils.isValidChecksumAddress(this.props.destination) && !isValidRNSDomain(this.props.destination)) {
+            this.props.showToast('Destination has to be a valid domain name or checksum address.', false);
+            return;
+          }
+          this.setState({
+            loading: true,
+            loadingMessage: 'Making deposit...',
+          });
           await this.props.createDeposit(
             this.props.destination,
             this.props.tokenAddress,
@@ -99,7 +118,7 @@ class DepositOnChannel extends Component {
   }
 
   render () {
-    return (this.getBody());
+    return (this.state.loading ? getLoader(this.state.loadingMessage) : this.getBody());
   }
 }
 

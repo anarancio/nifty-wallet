@@ -5,10 +5,12 @@ import {validateAmountValue, validateDecimalAmount} from '../../../utils/validat
 import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
-import {parseLuminoError} from '../../../utils/parse';
+import {isValidRNSDomain, parseLuminoError} from '../../../utils/parse';
 import Select from 'react-select';
 import {DEFAULT_ICON} from '../../../constants';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {getLoader} from '../../../utils/components';
+import ethUtils from 'ethereumjs-util';
 
 class OpenChannel extends Component {
 
@@ -54,6 +56,8 @@ class OpenChannel extends Component {
       showAddChannel: false,
       tokensOptions: [],
       selectedToken: selectedToken,
+      loading: false,
+      loadingMessage: 'Please Wait...',
     };
   }
 
@@ -80,7 +84,12 @@ class OpenChannel extends Component {
   }
 
   getBody () {
-    const {tokensOptions, selectedToken} = this.state;
+    const {tokensOptions, selectedToken, loading} = this.state;
+
+    if (loading) {
+      return getLoader(this.state.loadingMessage);
+    }
+
     const selectValue = ({value}) => {
       const icon = value.icon ? value.icon : DEFAULT_ICON;
       return (
@@ -115,8 +124,11 @@ class OpenChannel extends Component {
       )
     }
 
-    if (!this.state.selectedToken) {
-      return (<div>Loading...</div>)
+    // this is because the tokenOptions can be undefined or empty some times since the service takes time to retrieve the tokens
+    // also the selected token on those cases can be undefined or null because of that, so we control those cases and we add a loader until the
+    // data it's available
+    if (!this.state.selectedToken || !tokensOptions || (tokensOptions && tokensOptions.length <= 0)) {
+      return getLoader(this.state.loadingMessage);
     }
 
     return (
@@ -188,12 +200,19 @@ class OpenChannel extends Component {
         this.props.afterChannelCreated(response);
       }
       if (this.state.amount) {
+        this.setState({
+          loading: true,
+          loadingMessage: 'Making deposit...',
+        });
         const depositCallbackHandlers = new CallbackHandlers();
         depositCallbackHandlers.requestHandler = (result) => {
           console.debug('DEPOSIT REQUESTED', result);
           this.props.showToast('Deposit Requested');
         };
         depositCallbackHandlers.successHandler = (result) => {
+          this.setState({
+            loading: false,
+          });
           console.debug('DEPOSIT DONE', result);
           if (this.props.afterDepositCreated) {
             this.props.afterDepositCreated(result);
@@ -201,6 +220,9 @@ class OpenChannel extends Component {
           this.props.showToast('Deposit Done Successfully');
         };
         depositCallbackHandlers.errorHandler = (result) => {
+          this.setState({
+            loading: false,
+          });
           console.debug('DEPOSIT ERROR', result);
           const errorMessage = parseLuminoError(result);
           if (errorMessage) {
@@ -222,9 +244,16 @@ class OpenChannel extends Component {
           channelIdentifier,
           this.state.amount,
           depositCallbackHandlers);
+      } else {
+        this.setState({
+          loading: false,
+        });
       }
     };
     callbackHandlers.errorHandler = (result) => {
+      this.setState({
+        loading: false,
+      });
       console.debug('OPEN CHANNEL ERROR', result);
       const errorMessage = parseLuminoError(result);
       if (errorMessage) {
@@ -237,6 +266,14 @@ class OpenChannel extends Component {
       text: 'Are you sure you want to open channel with partner ' + this.state.destination + ' using token ' + this.state.selectedToken.name + '?',
       confirmCallback: async () => {
         if (this.state.destination) {
+          if (!ethUtils.isValidChecksumAddress(this.state.destination) && !isValidRNSDomain(this.state.destination)) {
+            this.props.showToast('Destination has to be a valid domain name or checksum address.', false);
+            return;
+          }
+          this.setState({
+            loading: true,
+            loadingMessage: 'Opening...',
+          });
           await this.props.openChannel(this.state.destination, this.state.selectedToken.address, callbackHandlers);
         } else {
           this.props.showToast('You need to select a token and put the partner and amount first.', false);

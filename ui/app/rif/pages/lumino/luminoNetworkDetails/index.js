@@ -85,7 +85,7 @@ class LuminoNetworkDetails extends Component {
       accessor: 'content',
     }];
     return (
-      <div className="lumino-network-detail-container">
+      <div className="body lumino-network-detail-container">
         <div className="d-flex align-items-center">
           <div className="network-detail__name">{networkSymbol} Network</div>
           <button className="btn-primary btn-primary-outlined ml-auto">Leave</button>
