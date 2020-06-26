@@ -17,10 +17,9 @@ export default class Pagination extends Component {
     page: PropTypes.number,
     PageButtonComponent: PropTypes.any,
     onPageChange: PropTypes.func,
-    previousPage: PropTypes.func,
-    nextPage: PropTypes.func,
     canNextPage: PropTypes.bool,
     canPreviousPage: PropTypes.bool,
+    changePageIndex: PropTypes.func,
     className: PropTypes.any,
   };
 
@@ -32,7 +31,7 @@ export default class Pagination extends Component {
       });
     }
     if (nextProps.page !== this.props.page) {
-      this.changePage(nextProps.page + 1);
+      this.props.onPageChange(nextProps.page);
     }
   }
 
@@ -46,14 +45,13 @@ export default class Pagination extends Component {
     if (page === activePage) {
       return;
     }
-
     const visiblePages = this.getVisiblePages(page, this.props.pages);
 
     this.setState({
       visiblePages: this.filterPages(visiblePages, this.props.pages),
     });
 
-    this.props.onPageChange(page - 1);
+    this.props.changePageIndex(page - 1);
   }
 
   getVisiblePages = (page, total) => {
@@ -73,17 +71,16 @@ export default class Pagination extends Component {
   render () {
     const {
       PageButtonComponent = defaultButton,
-      previousPage,
       canPreviousPage,
-      nextPage,
       canNextPage,
       className,
+      page,
     } = this.props;
-    const activePage = this.props.page + 1;
+    const activePage = page + 1;
     const classNames = className || {};
     return (
       <div className={classNames.body}>
-        <button className={classNames.buttonBack} onClick={() => previousPage()} disabled={!canPreviousPage}>
+        <button className={classNames.buttonBack} onClick={() => this.changePage(activePage - 1)} disabled={!canPreviousPage}>
           {'<'}
         </button>{' '}
         <div className={classNames.indexes}>
@@ -103,7 +100,7 @@ export default class Pagination extends Component {
             );
           })}
         </div>
-        <button className={classNames.buttonNext} onClick={() => nextPage()} disabled={!canNextPage}>
+        <button className={classNames.buttonNext} onClick={() => this.changePage(activePage + 1)} disabled={!canNextPage}>
           {'>'}
         </button>{' '}
       </div>
