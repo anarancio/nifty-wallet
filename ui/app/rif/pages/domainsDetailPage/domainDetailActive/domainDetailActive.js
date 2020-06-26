@@ -160,6 +160,7 @@ class DomainsDetailActiveScreen extends Component {
       content,
       selectedResolverAddress,
     };
+
     return (
       <div className="domain-detail">
         <DomainHeader domainName={domainName}
@@ -245,7 +246,7 @@ function mapStateToProps (state) {
     isRifStorage: details.isRifStorage,
     selectedResolverAddress: params.selectedResolverAddress ? params.selectedResolverAddress : details.selectedResolverAddress,
     newChainAddresses: details.newChainAddresses || [],
-    newSubdomains: details.newSubdomains || [],
+    newSubdomains: params.newSubdomains || details.newSubdomains || [],
     disableResolvers: details.disableResolvers,
     domain: domain,
   }
