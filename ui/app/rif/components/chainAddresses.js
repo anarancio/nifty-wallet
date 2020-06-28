@@ -25,6 +25,7 @@ class ChainAddresses extends Component {
     selectedResolverAddress: PropTypes.string,
     getChainAddresses: PropTypes.func,
     newChainAddresses: PropTypes.array,
+    pendingChainAddress: PropTypes.string,
     waitForListener: PropTypes.func,
     displayWarning: PropTypes.func,
     showTransactionConfirmPage: PropTypes.func,
@@ -78,7 +79,7 @@ class ChainAddresses extends Component {
   }
 
   convertChainAddressesToTableData () {
-    const { isOwner, classes } = this.props;
+    const { isOwner, pendingChainAddress, classes } = this.props;
     return this.state.chainAddresses.map((chainAddress) => {
       const address = getChainAddressByChainAddress(chainAddress.chain);
       const icon = address.icon ? address.icon : DEFAULT_ICON;
@@ -86,7 +87,8 @@ class ChainAddresses extends Component {
         <ItemWithActions
           contentClasses={classes.content}
           actionClasses={classes.contentActions}
-          enableEdit={isOwner} enableDelete={isOwner}
+          enableEdit={isOwner && pendingChainAddress.chainAddress !== chainAddress.chain}
+          enableDelete={isOwner && pendingChainAddress.chainAddress !== chainAddress.chain}
           text={chainAddress.address} leftIcon={icon}
           onDeleteClick={this.onDeleteClick.bind(this, chainAddress.chain)}
         >
@@ -101,14 +103,14 @@ class ChainAddresses extends Component {
 
   onChangeSubmit = (address, selectedChainAddress) => {
     if (address) {
-      this.addAddress(address, selectedChainAddress, 'Updating chain address');
+      this.addAddress(address, selectedChainAddress, 'Updating chain address', 'update');
     } else {
       this.props.displayWarning('Address cannot be empty');
     }
   }
 
   onDeleteClick = (selectedChainAddress) => {
-    this.addAddress(null, selectedChainAddress, 'Deleting chain address');
+    this.addAddress(null, selectedChainAddress, 'Deleting chain address', 'delete');
   }
 
   updateChainAddress = (selectedOption) => {
@@ -119,7 +121,7 @@ class ChainAddresses extends Component {
     this.setState({ insertedAddress: address });
   }
 
-  async addAddress (address = null, chainAddress = null, toastMessage = 'Adding chain address') {
+  async addAddress (address = null, chainAddress = null, toastMessage = 'Adding chain address', action = 'add') {
     const insertedAddress = address || this.state.insertedAddress;
     const selectedChainAddress = chainAddress || this.state.selectedChainAddress;
     const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName);
@@ -137,9 +139,17 @@ class ChainAddresses extends Component {
       });
     this.props.showTransactionConfirmPage({
       action: () => {
+        const pendingChainAddress = {
+          action: action,
+          chainAddress: selectedChainAddress,
+          address: insertedAddress,
+        }
         this.props.showThis(
           this.props.redirectPage,
-          this.props.redirectParams);
+          {
+            ...this.props.redirectParams,
+            pendingChainAddress: pendingChainAddress,
+          });
         if (toastMessage) {
           this.props.showToast(toastMessage);
         }
