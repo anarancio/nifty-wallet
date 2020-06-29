@@ -127,7 +127,7 @@ class OpenChannel extends Component {
     // this is because the tokenOptions can be undefined or empty some times since the service takes time to retrieve the tokens
     // also the selected token on those cases can be undefined or null because of that, so we control those cases and we add a loader until the
     // data it's available
-    if (!this.state.selectedToken || !tokensOptions || (tokensOptions && tokensOptions.length <= 0)) {
+    if (!this.state.selectedToken && (!tokensOptions || (tokensOptions && tokensOptions.length <= 0))) {
       return getLoader(this.state.loadingMessage);
     }
 

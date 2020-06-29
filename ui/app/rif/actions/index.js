@@ -56,7 +56,7 @@ const rifActions = {
   getLuminoNetworks,
   getLuminoNetworkData,
   getUserChannelsInNetwork,
-  listenCallback,
+  listenCallbacks,
   createPayment,
   createDeposit,
   getTokens,
@@ -631,9 +631,16 @@ function listenToSdkCallback (callbackName) {
   });
 }
 
-function listenCallback (callbackName) {
-  return () => {
-    return listenToSdkCallback(callbackName);
+function listenCallbacks (callbackNames, callbackHandler) {
+  return (dispatch) => {
+    return new Promise(resolve => {
+      if (callbackHandler && callbackNames && callbackNames.length > 0) {
+        callbackNames.forEach(callbackName => {
+          handleSdkCallback(callbackName, dispatch, callbackHandler);
+        });
+      }
+      return resolve();
+    });
   };
 }
 
@@ -741,8 +748,13 @@ function createPayment (partner, tokenAddress, netAmount, callbackHandlers = new
         handleSdkCallback(lumino.callbacks.SENT_PAYMENT, dispatch, callbackHandlers.requestHandler);
       }
       if (callbackHandlers && callbackHandlers.successHandler) {
-        handleSdkCallback(lumino.callbacks.COMPLETED_PAYMENT, dispatch, callbackHandlers.successHandler);
-        handleSdkCallback(lumino.callbacks.RECEIVED_PAYMENT, dispatch, callbackHandlers.successHandler);
+        handleSdkCallback(lumino.callbacks.COMPLETED_PAYMENT, dispatch, (result) => {
+          if (!result.isReceived) {
+            console.debug('Payment Completed', result);
+            dispatch(niftyActions.displayToast('Payment Completed'));
+            callbackHandlers.successHandler(result);
+          }
+        });
       }
       if (callbackHandlers && callbackHandlers.errorHandler) {
         handleSdkCallback(lumino.callbacks.FAILED_CREATE_PAYMENT, dispatch, callbackHandlers.errorHandler);
@@ -1007,8 +1019,17 @@ function setupDefaultLuminoCallbacks () {
         dispatch(niftyActions.displayToast('Onboarding failure'));
       });
       handleSdkDefaultCallback(lumino.callbacks.RECEIVED_PAYMENT, dispatch, (result) => {
-        console.debug('Received Payment', result);
-        dispatch(niftyActions.displayToast('Received a payment'));
+        console.debug('Receiving a payment', result);
+        dispatch(niftyActions.displayToast('Receiving a payment from ' + result.payments.partner));
+      });
+      handleSdkDefaultCallback(lumino.callbacks.COMPLETED_PAYMENT, dispatch, (result) => {
+        if (result.isReceived) {
+          console.debug('Payment received', result);
+          dispatch(niftyActions.displayToast('Payment received from ' + result.partner));
+        } else {
+          console.debug('Payment Completed', result);
+          dispatch(niftyActions.displayToast('Payment Completed'));
+        }
       });
       dispatch(luminoCallbacksRunning(true));
       return resolve();
