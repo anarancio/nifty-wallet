@@ -147,7 +147,7 @@ class DomainsDetailActiveScreen extends Component {
   }
 
   render () {
-    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay} = this.props;
+    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay } = this.props;
     const {resolvers, isLuminoNode} = this.state;
     const domainInfo = {
       domainName,
