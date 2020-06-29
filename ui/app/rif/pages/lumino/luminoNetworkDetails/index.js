@@ -6,6 +6,7 @@ import LuminoChannelItem from '../../../components/luminoChannelItem';
 import OpenChannel from '../../../components/lumino/open-channel';
 import {GenericTable} from '../../../components';
 import {pageNames} from '../../names';
+import {lumino} from '../../../../../../app/scripts/controllers/rif/constants';
 
 const styles = {
   myLuminoChannels: {
@@ -33,6 +34,7 @@ class LuminoNetworkDetails extends Component {
     tokenAddress: PropTypes.string,
     networkName: PropTypes.string,
     showChannelDetails: PropTypes.func,
+    startListening: PropTypes.func,
   }
 
   constructor (props) {
@@ -45,6 +47,14 @@ class LuminoNetworkDetails extends Component {
       },
       userChannels: [],
     }
+    this.startListeningToEvents();
+  }
+
+  startListeningToEvents () {
+    this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT], (result) => {
+      this.reloadChannelsData();
+      this.startListeningToEvents();
+    });
   }
 
   reloadChannelsData = async () => {
@@ -158,6 +168,7 @@ function mapDispatchToProps (dispatch) {
     })),
     getUserChannels: tokenAddress => dispatch(rifActions.getUserChannelsInNetwork(tokenAddress)),
     getNetworkData: tokenAddress => dispatch(rifActions.getLuminoNetworkData(tokenAddress)),
+    startListening: (callbackNames, callbackHandler) => dispatch(rifActions.listenCallbacks(callbackNames, callbackHandler)),
   }
 }
 

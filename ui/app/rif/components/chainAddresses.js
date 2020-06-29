@@ -11,6 +11,7 @@ import AddNewChainAddressToResolver
   from '../pages/domainsDetailPage/domainDetailActive/addNewTokenNetworkAddress/addNewChainAddressToResolver';
 import {SLIP_ADDRESSES} from '../constants/slipAddresses';
 import * as niftyActions from '../../actions';
+import * as lodash from 'lodash';
 
 class ChainAddresses extends Component {
 
@@ -44,7 +45,7 @@ class ChainAddresses extends Component {
           resolvers,
         });
       });
-    const slipChainAddresses = Object.assign([], SLIP_ADDRESSES);
+    const slipChainAddresses = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
     this.state = {
       chainAddresses: [],
       resolvers: [],
@@ -92,7 +93,7 @@ class ChainAddresses extends Component {
           text={chainAddress.address} leftIcon={icon}
           onDeleteClick={this.onDeleteClick.bind(this, chainAddress.chain)}
         >
-          <InputWithSubmit classes={classes.editSubmit} hiddenValue={chainAddress.chain} submit={this.onChangeSubmit} placeholderText={'Type new address'} />
+          <InputWithSubmit classes={classes.editSubmit} hiddenValue={chainAddress.chain} submit={this.onChangeSubmit} textInput={chainAddress.address} />
         </ItemWithActions>
       )
       return {

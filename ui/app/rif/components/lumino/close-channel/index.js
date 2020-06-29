@@ -13,7 +13,7 @@ class CloseChannel extends Component {
     tokenAddress: PropTypes.string.isRequired,
     tokenNetworkAddress: PropTypes.string.isRequired,
     tokenName: PropTypes.string.isRequired,
-    channelIdentifier: PropTypes.string.isRequired,
+    channelIdentifier: PropTypes.number.isRequired,
     showToast: PropTypes.func,
     showPopup: PropTypes.func,
     closeChannel: PropTypes.func,
