@@ -21,11 +21,11 @@ class ChainAddresses extends Component {
     showThis: PropTypes.func.isRequired,
     redirectParams: PropTypes.any.isRequired,
     isOwner: PropTypes.bool.isRequired,
+    deletePendingChainAddress: PropTypes.func,
     subdomainName: PropTypes.string,
     selectedResolverAddress: PropTypes.string,
     getChainAddresses: PropTypes.func,
     newChainAddresses: PropTypes.array,
-    pendingChainAddress: PropTypes.string,
     waitForListener: PropTypes.func,
     displayWarning: PropTypes.func,
     showTransactionConfirmPage: PropTypes.func,
@@ -79,16 +79,16 @@ class ChainAddresses extends Component {
   }
 
   convertChainAddressesToTableData () {
-    const { isOwner, pendingChainAddress, classes } = this.props;
+    const { isOwner, classes } = this.props;
     return this.state.chainAddresses.map((chainAddress) => {
       const address = getChainAddressByChainAddress(chainAddress.chain);
       const icon = address.icon ? address.icon : DEFAULT_ICON;
       const item = (
         <ItemWithActions
-          contentClasses={classes.content}
+          contentClasses={chainAddress.action === '' ? classes.content : classes.contentPending}
           actionClasses={classes.contentActions}
-          enableEdit={isOwner && pendingChainAddress.chainAddress !== chainAddress.chain}
-          enableDelete={isOwner && pendingChainAddress.chainAddress !== chainAddress.chain}
+          enableEdit={isOwner && chainAddress.action === ''}
+          enableDelete={isOwner && chainAddress.action === ''}
           text={chainAddress.address} leftIcon={icon}
           onDeleteClick={this.onDeleteClick.bind(this, chainAddress.chain)}
         >
@@ -124,10 +124,11 @@ class ChainAddresses extends Component {
   async addAddress (address = null, chainAddress = null, toastMessage = 'Adding chain address', action = 'add') {
     const insertedAddress = address || this.state.insertedAddress;
     const selectedChainAddress = chainAddress || this.state.selectedChainAddress;
-    const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName);
+    const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName, action);
     this.props.waitForListener(transactionListenerId)
       .then(async (transactionReceipt) => {
         if (this.state.resolvers.find(resolver => resolver.address === this.props.selectedResolverAddress)) {
+          await this.props.deletePendingChainAddress(selectedChainAddress);
           const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
           this.props.showThis(
             this.props.redirectPage,
@@ -139,17 +140,9 @@ class ChainAddresses extends Component {
       });
     this.props.showTransactionConfirmPage({
       action: () => {
-        const pendingChainAddress = {
-          action: action,
-          chainAddress: selectedChainAddress,
-          address: insertedAddress,
-        }
         this.props.showThis(
           this.props.redirectPage,
-          {
-            ...this.props.redirectParams,
-            pendingChainAddress: pendingChainAddress,
-          });
+            this.props.redirectParams);
         if (toastMessage) {
           this.props.showToast(toastMessage);
         }
@@ -234,7 +227,8 @@ function mapDispatchToProps (dispatch) {
   return {
     displayWarning: (error) => dispatch(niftyActions.displayWarning(error)),
     getChainAddresses: (domainName, subdomain) => dispatch(rifActions.getChainAddresses(domainName, subdomain)),
-    setChainAddressForResolver: (domainName, chain, chainAddress, subdomain) => dispatch(rifActions.setChainAddressForResolver(domainName, chain, chainAddress, subdomain)),
+    setChainAddressForResolver: (domainName, chain, chainAddress, subdomain, action) => dispatch(rifActions.setChainAddressForResolver(domainName, chain, chainAddress, subdomain, action)),
+    deletePendingChainAddress: (chain) => dispatch(rifActions.deletePendingChainAddress(chain)),
     showThis: (pageName, props) => dispatch(rifActions.navigateTo(pageName, props)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),

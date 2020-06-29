@@ -5,8 +5,9 @@
  * @attribute address: Address of the network
  */
 export default class ChainAddress {
-  constructor(chain, address) {
+  constructor(chain, address, action) {
     this.chain = chain;
     this.address = address;
+    this.action = action;
   }
 }

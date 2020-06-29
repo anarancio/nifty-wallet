@@ -22,6 +22,7 @@ const styles = {
     tbodyTd: 'n-table-td',
     noData: '',
     content: 'n-table-content-address',
+    contentPending: 'n-table-content-address',
     contentActions: 'n-table-actions',
     customButton: {
       button: 'btn-add',
@@ -117,7 +118,6 @@ class DomainsDetailActiveScreen extends Component {
     displayToast: PropTypes.func.isRequired,
     disableResolvers: PropTypes.bool,
     newChainAddresses: PropTypes.array,
-    pendingChainAddress: PropTypes.string,
     newSubdomains: PropTypes.array,
     getDomain: PropTypes.func,
     showToast: PropTypes.func,
@@ -148,7 +148,7 @@ class DomainsDetailActiveScreen extends Component {
   }
 
   render () {
-    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay, pendingChainAddress } = this.props;
+    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay } = this.props;
     const {resolvers, isLuminoNode} = this.state;
     const domainInfo = {
       domainName,
@@ -196,7 +196,6 @@ class DomainsDetailActiveScreen extends Component {
               classes={styles.chainAddresses}
               isOwner={isOwner}
               newChainAddresses={newChainAddresses}
-              pendingChainAddress={pendingChainAddress}
               redirectParams={{
                 domain: this.props.domain,
                 status: this.props.domain.status,
@@ -248,7 +247,6 @@ function mapStateToProps (state) {
     isRifStorage: details.isRifStorage,
     selectedResolverAddress: params.selectedResolverAddress ? params.selectedResolverAddress : details.selectedResolverAddress,
     newChainAddresses: details.newChainAddresses || [],
-    pendingChainAddress: params.pendingChainAddress || '',
     newSubdomains: params.newSubdomains || details.newSubdomains || [],
     disableResolvers: details.disableResolvers,
     domain: domain,
