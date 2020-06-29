@@ -128,7 +128,7 @@ class ChainAddresses extends Component {
     this.props.waitForListener(transactionListenerId)
       .then(async (transactionReceipt) => {
         if (this.state.resolvers.find(resolver => resolver.address === this.props.selectedResolverAddress)) {
-          await this.props.deletePendingChainAddress(selectedChainAddress);
+          await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
           const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
           this.props.showThis(
             this.props.redirectPage,
@@ -228,7 +228,7 @@ function mapDispatchToProps (dispatch) {
     displayWarning: (error) => dispatch(niftyActions.displayWarning(error)),
     getChainAddresses: (domainName, subdomain) => dispatch(rifActions.getChainAddresses(domainName, subdomain)),
     setChainAddressForResolver: (domainName, chain, chainAddress, subdomain, action) => dispatch(rifActions.setChainAddressForResolver(domainName, chain, chainAddress, subdomain, action)),
-    deletePendingChainAddress: (chain) => dispatch(rifActions.deletePendingChainAddress(chain)),
+    deletePendingChainAddress: (chain, isSubdomain) => dispatch(rifActions.deletePendingChainAddress(chain, isSubdomain)),
     showThis: (pageName, props) => dispatch(rifActions.navigateTo(pageName, props)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),

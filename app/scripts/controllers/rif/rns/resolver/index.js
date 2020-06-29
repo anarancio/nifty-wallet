@@ -198,7 +198,7 @@ export default class RnsResolver extends RnsJsDelegate {
         });
         // Here we need to add the chainAddress that still pending to add
         pendingChainAddressesActions.map(chainAddr => {
-          if (chainAddr.action === 'add') {
+          if (chainAddr.action === 'add' && chainAddr.isSubdomain === !!subdomain) {
             arrChains.push(new ChainAddress(chainAddr.chain, chainAddr.chainAddress, 'add'));
           }
         });
@@ -214,9 +214,9 @@ export default class RnsResolver extends RnsJsDelegate {
    * @param chain ChainId that you want to delete from the pending queue
    * @returns {Promise<unknown>}
    */
-  deletePendingChainAddress (chain) {
+  deletePendingChainAddress (chain, isSubdomain) {
     return new Promise((resolve, reject) => {
-      const index = this.store.pendingChainAddressesActions.findIndex((e) => e.chain === chain);
+      const index = this.store.pendingChainAddressesActions.findIndex((e) => e.chain === chain && e.isSubdomain === isSubdomain);
       if (index >= 0) {
         this.store.pendingChainAddressesActions.splice(index, 1);
       }
@@ -244,6 +244,7 @@ export default class RnsResolver extends RnsJsDelegate {
       this.store.pendingChainAddressesActions.push({
         chainAddress: toBeSettedChainAddress,
         chain: chain,
+        isSubdomain: !!subdomain,
         action: action,
       });
       const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])

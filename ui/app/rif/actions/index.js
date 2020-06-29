@@ -219,10 +219,10 @@ function setChainAddressForResolver (domainName, chain, chainAddress, subdomain 
     })
   }
 }
-function deletePendingChainAddress (chain) {
+function deletePendingChainAddress (chain, isSubdomain) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.rns.resolver.deletePendingChainAddress(chain, (error, result) => {
+      background.rif.rns.resolver.deletePendingChainAddress(chain, isSubdomain, (error, result) => {
         if (error) {
           dispatch(niftyActions.displayWarning(error));
           return reject(error);
