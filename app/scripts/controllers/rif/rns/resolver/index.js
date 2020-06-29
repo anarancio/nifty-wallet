@@ -208,6 +208,12 @@ export default class RnsResolver extends RnsJsDelegate {
     });
   }
 
+  /**
+   * This function stores a pending array of chainAddresses, every time you add, update or delete a chainaddress will be a pending action stored in the this.store.pendingCHainAdddressesActions
+   * Call this in the success callback, so the UI can continue it's normal flow
+   * @param chain ChainId that you want to delete from the pending queue
+   * @returns {Promise<unknown>}
+   */
   deletePendingChainAddress (chain) {
     return new Promise((resolve, reject) => {
       const index = this.store.pendingChainAddressesActions.findIndex((e) => e.chain === chain);
