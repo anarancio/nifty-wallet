@@ -11,7 +11,7 @@ import AddNewChainAddressToResolver
   from '../pages/domainsDetailPage/domainDetailActive/addNewTokenNetworkAddress/addNewChainAddressToResolver';
 import {SLIP_ADDRESSES} from '../constants/slipAddresses';
 import * as niftyActions from '../../actions';
-import _ from 'lodash';
+import * as lodash from 'lodash';
 
 class ChainAddresses extends Component {
 
@@ -44,7 +44,7 @@ class ChainAddresses extends Component {
           resolvers,
         });
       });
-    const slipChainAddresses = Object.assign([], _.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
+    const slipChainAddresses = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
     this.state = {
       chainAddresses: [],
       resolvers: [],
