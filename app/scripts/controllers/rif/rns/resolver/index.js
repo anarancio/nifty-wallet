@@ -132,6 +132,8 @@ export default class RnsResolver extends RnsJsDelegate {
             this.updateDomains(domain);
           });
           console.debug('setResolver success', transactionReceipt);
+          // Now i need to subscribe to notifier events to get chainAddresses
+          
         }).catch(transactionReceiptOrError => {
           console.debug('Error when trying to set resolver', transactionReceiptOrError);
         });

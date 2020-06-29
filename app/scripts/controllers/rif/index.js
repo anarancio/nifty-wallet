@@ -5,6 +5,7 @@ import {LuminoManager} from './lumino';
 import {bindOperation, isRskNetwork} from './utils/general';
 import {RifConfigurationProvider} from './configuration';
 import {global} from './constants';
+import {NotifierManager} from './notifier';
 
 /**
  * RIF Controller
@@ -62,6 +63,11 @@ export default class RifController {
       RnsManager: this.rnsManager.store,
       LuminoManager: this.luminoManager.store,
       RifConfigurationProvider: this.configurationProvider.store,
+    });
+
+    this.notifierManager = new NotifierManager({
+      configurationProvider: this.configurationProvider,
+      keyringController: this.metamaskController.keyringController,
     });
 
     this.metamaskController.preferencesController.store.subscribe(updatedPreferences => this.preferencesUpdated(updatedPreferences));
@@ -126,6 +132,7 @@ export default class RifController {
     this.configurationProvider.onUnlock();
     this.rnsManager.onUnlock();
     this.luminoManager.onUnlock();
+    this.notifierManager.onUnlock();
   }
 
   /**
@@ -136,6 +143,7 @@ export default class RifController {
     this.configurationProvider.onNetworkChanged(network);
     this.rnsManager.onNetworkChanged(network);
     this.luminoManager.onNetworkChanged(network);
+    this.notifierManager.onNetworkChanged(network);
   }
 
   /**
@@ -145,6 +153,7 @@ export default class RifController {
   onAddressChanged (address) {
     this.rnsManager.onAddressChanged(address);
     this.luminoManager.onAddressChanged(address);
+    this.notifierManager.onAddressChanged(address);
   }
 
   /**
@@ -175,6 +184,7 @@ export default class RifController {
       this.configurationProvider.setConfiguration(configuration);
       this.rnsManager.onConfigurationUpdated(configuration);
       this.luminoManager.onConfigurationUpdated(configuration);
+      this.notifierManager.onConfigurationUpdated(configuration);
     }
     return Promise.resolve();
   }
@@ -194,6 +204,7 @@ export default class RifController {
       setConfiguration: bindOperation(this.setConfiguration, this),
       rns: this.rnsManager.bindApi(),
       lumino: this.luminoManager.bindApi(),
+      notifier: this.notifierManager.bindApi(),
       cleanStore: bindOperation(this.cleanStore, this),
       enabled: bindOperation(this.enabled, this),
       walletUnlocked: bindOperation(this.walletUnlocked, this),
