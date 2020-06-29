@@ -90,7 +90,7 @@ class ChainAddresses extends Component {
           text={chainAddress.address} leftIcon={icon}
           onDeleteClick={this.onDeleteClick.bind(this, chainAddress.chain)}
         >
-          <InputWithSubmit classes={classes.editSubmit} hiddenValue={chainAddress.chain} submit={this.onChangeSubmit} placeholderText={'Type new address'} />
+          <InputWithSubmit classes={classes.editSubmit} hiddenValue={chainAddress.chain} submit={this.onChangeSubmit} textInput={chainAddress.address} />
         </ItemWithActions>
       )
       return {

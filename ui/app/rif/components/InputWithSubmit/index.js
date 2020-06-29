@@ -9,12 +9,13 @@ class InputWithSubmit extends Component {
     submit: PropTypes.func,
     classes: PropTypes.string,
     placeholderText: PropTypes.string,
+    textInput: PropTypes.string,
   }
 
   constructor (props) {
     super(props);
     this.state = {
-      value: '',
+      value: props.textInput || '',
     }
   }
 
