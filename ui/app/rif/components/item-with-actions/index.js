@@ -17,7 +17,7 @@ class ItemWithActions extends Component {
     text: PropTypes.string.isRequired,
     onEditClick: PropTypes.func,
     onDeleteClick: PropTypes.func,
-    leftIcon: PropTypes.shape({icon: PropTypes.string, color: PropTypes.string }),
+    leftIcon: PropTypes.shape({icon: PropTypes.any, color: PropTypes.string }),
     leftContent: PropTypes.element,
     children: PropTypes.element,
     contentClasses: PropTypes.string,
@@ -25,6 +25,7 @@ class ItemWithActions extends Component {
     enableRightChevron: PropTypes.bool,
     onRightChevronClick: PropTypes.func,
     hiddenValue: PropTypes.any,
+    showPending: PropTypes.bool,
   }
 
   constructor (props) {
@@ -53,8 +54,9 @@ class ItemWithActions extends Component {
         onDeleteClick,
         enableRightChevron,
         onRightChevronClick,
+        showPending,
         contentClasses = '',
-        actionClasses = ''
+        actionClasses = '',
       } = this.props;
       const {showEditChildren} = this.state;
       return (
@@ -71,6 +73,14 @@ class ItemWithActions extends Component {
            <div className={contentClasses}>
              <p>{text}</p>
            </div>
+           {showPending &&
+             <div className={'chiplet-status-wrapper chiplet-status-pending'}>
+               <div id="chipletStatus" className={'chiplet-status-text'}>
+                 <div className="chiplet-status-circle"/>
+                 <span className="chiplet-status">pending</span>
+               </div>
+             </div>
+           }
            <div className={actionClasses}>
              {enableEdit && (
                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={this.onEditClick}>

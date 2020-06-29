@@ -17,6 +17,7 @@ export default class RnsResolver extends RnsJsDelegate {
     const configuration = this.configurationProvider.getConfigurationObject();
     this.rskOwnerContractInstance = this.web3.eth.contract(RSKOwner).at(configuration.rns.contracts.rskOwner);
     this.multiChainresolverContractInstance = this.web3.eth.contract(MultiChainresolver).at(configuration.rns.contracts.multiChainResolver);
+    this.store.pendingChainAddressesActions = [];
   }
 
   onConfigurationUpdated (configuration) {
@@ -34,6 +35,7 @@ export default class RnsResolver extends RnsJsDelegate {
       setResolver: this.bindOperation(this.setResolver, this),
       getChainAddressForResolvers: this.bindOperation(this.getChainAddressForResolvers, this),
       setChainAddressForResolver: this.bindOperation(this.setChainAddressForResolver, this),
+      deletePendingChainAddress: this.bindOperation(this.deletePendingChainAddress, this),
       ...rnsJsApi,
     }
   }
@@ -156,26 +158,31 @@ export default class RnsResolver extends RnsJsDelegate {
       const chainAddrChangedEvent = this.multiChainresolverContractInstance.ChainAddrChanged({node: node}, {fromBlock: 0, toBlock: 'latest'});
       const arrChains = [];
       const errorLogs = [];
-      addrChangedEvent.get(function (error, result){
+      const pendingChainAddressesActions = this.store.pendingChainAddressesActions;
+      addrChangedEvent.get(function (error, result) {
         if (error) {
           console.debug('Error when trying to get addrChangedEvent for resolver', error);
           errorLogs.push(error);
         }
         result.forEach(event => {
           if (event.args.addr !== rns.zeroAddress) {
-            arrChains[0] = new ChainAddress(ChainId.RSK, event.args.addr);
+            const chainAddressPending = pendingChainAddressesActions.find(chainAddr => chainAddr.chain === ChainId.RSK);
+            arrChains[0] = new ChainAddress(ChainId.RSK, event.args.addr, chainAddressPending ? chainAddressPending.action : '');
+          } else {
+            arrChains.splice(0, 1);
           }
         });
         console.debug('getChainAddressForResolvers success', arrChains);
       });
-      chainAddrChangedEvent.get(function (error, result){
+      chainAddrChangedEvent.get(function (error, result) {
         if (error) {
           console.debug('Error when trying to get chainAddrChangedEvent for resolver', error);
           errorLogs.push(error);
           reject(errorLogs);
         }
         result.forEach(event => {
-          const chainAddrToPush = new ChainAddress(event.args.chain, event.args.addr);
+          const chainAddressPending = pendingChainAddressesActions.find(chainAddr => chainAddr.chain === event.args.chain);
+          const chainAddrToPush = new ChainAddress(event.args.chain, event.args.addr, chainAddressPending ? chainAddressPending.action : '');
           const index = arrChains.findIndex((e) => e.chain === chainAddrToPush.chain);
           if (index === -1) {
             if (event.args.addr !== rns.zeroAddress) {
@@ -189,9 +196,31 @@ export default class RnsResolver extends RnsJsDelegate {
             }
           }
         });
+        // Here we need to add the chainAddress that still pending to add
+        pendingChainAddressesActions.map(chainAddr => {
+          if (chainAddr.action === 'add' && chainAddr.isSubdomain === !!subdomain) {
+            arrChains.push(new ChainAddress(chainAddr.chain, chainAddr.chainAddress, 'add'));
+          }
+        });
         console.debug('getChainAddressForResolvers success', arrChains);
         resolve(arrChains);
       });
+    });
+  }
+
+  /**
+   * This function stores a pending array of chainAddresses, every time you add, update or delete a chainaddress will be a pending action stored in the this.store.pendingCHainAdddressesActions
+   * Call this in the success callback, so the UI can continue it's normal flow
+   * @param chain ChainId that you want to delete from the pending queue
+   * @returns {Promise<unknown>}
+   */
+  deletePendingChainAddress (chain, isSubdomain) {
+    return new Promise((resolve, reject) => {
+      const index = this.store.pendingChainAddressesActions.findIndex((e) => e.chain === chain && e.isSubdomain === isSubdomain);
+      if (index >= 0) {
+        this.store.pendingChainAddressesActions.splice(index, 1);
+      }
+      resolve();
     });
   }
 
@@ -203,7 +232,7 @@ export default class RnsResolver extends RnsJsDelegate {
    * @param subdomain
    * @returns {Promise<unknown>}
    */
-  setChainAddressForResolver (domainName, chain, chainAddress, subdomain = '') {
+  setChainAddressForResolver (domainName, chain, chainAddress, subdomain = '', action = 'add') {
     return new Promise((resolve, reject) => {
       let node = namehash.hash(domainName);
       if (subdomain) {
@@ -212,6 +241,12 @@ export default class RnsResolver extends RnsJsDelegate {
         node = web3Utils.soliditySha3(node, label);
       }
       const toBeSettedChainAddress = chainAddress || rns.zeroAddress;
+      this.store.pendingChainAddressesActions.push({
+        chainAddress: toBeSettedChainAddress,
+        chain: chain,
+        isSubdomain: !!subdomain,
+        action: action,
+      });
       const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
       transactionListener.transactionConfirmed()
         .then(transactionReceipt => {
