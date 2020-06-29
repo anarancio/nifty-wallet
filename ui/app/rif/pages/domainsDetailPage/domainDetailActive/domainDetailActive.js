@@ -22,7 +22,6 @@ const styles = {
     tbodyTd: 'n-table-td',
     noData: '',
     content: 'n-table-content-address',
-    contentPending: 'n-table-content-address',
     contentActions: 'n-table-actions',
     customButton: {
       button: 'btn-add',

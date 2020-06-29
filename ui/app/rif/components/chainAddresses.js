@@ -86,7 +86,8 @@ class ChainAddresses extends Component {
       const icon = address.icon ? address.icon : DEFAULT_ICON;
       const item = (
         <ItemWithActions
-          contentClasses={chainAddress.action === '' ? classes.content : classes.contentPending}
+          contentClasses={classes.content}
+          showPending={chainAddress.action}
           actionClasses={classes.contentActions}
           enableEdit={isOwner && chainAddress.action === ''}
           enableDelete={isOwner && chainAddress.action === ''}
