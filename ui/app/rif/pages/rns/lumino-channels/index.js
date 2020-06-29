@@ -138,7 +138,7 @@ class LuminoChannels extends Component {
         break;
       default:
         retVal = (
-          <div className="lumino-channel-close mb-1">Close</div>
+          <div className="lumino-channel-close mb-1">Closed</div>
         )
     }
     return retVal;
@@ -157,7 +157,7 @@ class LuminoChannels extends Component {
             tokenNetworkAddress={channel.token_network_identifier}
             tokenName={channel.token_name}
             channelIdentifier={channel.channel_identifier}
-            afterCloseChannel={() => this.setState({isOpen: false, channelStatus: 'Close'})}
+            afterCloseChannel={() => this.setState({isOpen: false, channelStatus: 'Closed'})}
           />
         }
         <div id="description" className="lumino-channel-detail__description">
