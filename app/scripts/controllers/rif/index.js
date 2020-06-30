@@ -113,9 +113,26 @@ export default class RifController {
     if (networkState.network && networkState.network !== 'loading') {
       this.network = {
         id: networkState.network,
-        rskEndpoint: networkState.provider.rpcTarget,
+        rskEndpoint: networkState.provider.rpcTarget ? networkState.provider.rpcTarget : this.getRskEndpoint(networkState.network),
       };
       this.onNetworkChanged(this.network);
+    }
+  }
+
+  // TODO: Remove this when nifty fixes the error.
+  /**
+   * Temporal fix for bad rsk endpoint on nifty dependency
+   * @param chainId
+   * @returns {string}
+   */
+  getRskEndpoint (chainId) {
+    switch (chainId) {
+      case '30':
+        return 'https://public-node.rsk.co';
+      case '31':
+        return 'https://public-node.testnet.rsk.co';
+      default:
+        return 'http:localhost:4444';
     }
   }
 
