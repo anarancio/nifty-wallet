@@ -66,7 +66,8 @@ export class NotifierOperations {
           return response.json();
         })
         .then(response => {
-          resolve(response.data.topicId);
+          const data = JSON.parse(response.data);
+          resolve(data.topicId);
         }).catch(err => reject(err));
     });
   }
