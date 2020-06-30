@@ -7,7 +7,6 @@ const RIF_NOTIFIER_TOPIC_SUBSCRIBE = '/subscribeToTopic';
 export class NotifierOperations {
 
   constructor (props) {
-    this.notifier = props.notifier;
     this.signingHandler = props.signingHandler;
     this.address = web3Utils.toChecksumAddress(props.address);
     this.configurationProvider = props.configurationProvider;
@@ -38,7 +37,7 @@ export class NotifierOperations {
   subscribe (apiKey) {
     return new Promise(async (resolve, reject) => {
       const notifierEndpoint = this.configurationProvider.getConfigurationObject().notifier.availableNodes[0];
-      fetch(notifierEndpoint + RIF_NOTIFIER_TOPIC_SUBSCRIBE, {
+      fetch(notifierEndpoint + RIF_NOTIFIER_ONBOARDING_SUBSCRIBE, {
         method: 'POST',
         headers: {
           'apiKey': apiKey,
@@ -55,7 +54,8 @@ export class NotifierOperations {
   subscribeToTopic (apiKey, topic) {
     return new Promise(async (resolve, reject) => {
       const notifierEndpoint = this.configurationProvider.getConfigurationObject().notifier.availableNodes[0];
-      fetch(notifierEndpoint + RIF_NOTIFIER_ONBOARDING_SUBSCRIBE, {
+      console.debug('=========================JSON.stringify(topic)', JSON.stringify(topic));
+      fetch(notifierEndpoint + RIF_NOTIFIER_TOPIC_SUBSCRIBE, {
         method: 'POST',
         body: JSON.stringify(topic),
         headers: {
@@ -66,8 +66,7 @@ export class NotifierOperations {
           return response.json();
         })
         .then(response => {
-          console.debug('Response subscribed to topic', response);
-          resolve();
+          resolve(response.data.topicId);
         }).catch(err => reject(err));
     });
   }

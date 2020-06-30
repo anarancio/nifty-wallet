@@ -18,12 +18,14 @@ export default class RnsResolver extends RnsJsDelegate {
     this.rskOwnerContractInstance = this.web3.eth.contract(RSKOwner).at(configuration.rns.contracts.rskOwner);
     this.multiChainresolverContractInstance = this.web3.eth.contract(MultiChainresolver).at(configuration.rns.contracts.multiChainResolver);
     this.store.pendingChainAddressesActions = [];
+    this.store.notifierTopics = [];
   }
 
   onConfigurationUpdated (configuration) {
     super.onConfigurationUpdated(configuration);
     this.rskOwnerContractInstance = this.web3.eth.contract(RSKOwner).at(configuration.rns.contracts.rskOwner);
     this.multiChainresolverContractInstance = this.web3.eth.contract(MultiChainresolver).at(configuration.rns.contracts.multiChainResolver);
+    this.store.notifierTopics = [];
   }
 
   buildApi () {
@@ -135,7 +137,77 @@ export default class RnsResolver extends RnsJsDelegate {
           });
           console.debug('setResolver success', transactionReceipt);
           // Now i need to subscribe to notifier events to get chainAddresses
-          
+          if (resolverAddress === this.configurationProvider.getConfigurationObject().rns.contracts.multiChainResolver) {
+            const node = namehash.hash(domainName);
+            const topicRsk = {
+              'type': 'CONTRACT_EVENT',
+              'topicParams': [
+                {
+                  'type': 'CONTRACT_ADDRESS',
+                  'value': this.configurationProvider.getConfigurationObject().rns.contracts.multiChainResolver,
+                },
+                {
+                  'type': 'EVENT_NAME',
+                  'value': 'AddrChanged',
+                },
+                {
+                  'type': 'EVENT_PARAM',
+                  'value': 'node',
+                  'order': 0,
+                  'valueType': 'Bytes32',
+                  'indexed': 1,
+                  'filter': node,
+                },
+                {
+                  'type': 'EVENT_PARAM',
+                  'value': 'addr',
+                  'order': 1,
+                  'valueType': 'Address',
+                  'indexed': 0,
+                },
+              ],
+            };
+            this.store.notifierTopics.push(this.notifierManager.operations.subscribeToTopic(this.notifierManager.apiKey, topicRsk));
+            const topicOtherChains = {
+              'type': 'CONTRACT_EVENT',
+              'topicParams': [
+                {
+                  'type': 'CONTRACT_ADDRESS',
+                  'value': this.configurationProvider.getConfigurationObject().rns.contracts.multiChainResolver,
+                },
+                {
+                  'type': 'EVENT_NAME',
+                  'value': 'ChainAddrChanged',
+                },
+                {
+                  'type': 'EVENT_PARAM',
+                  'value': 'node',
+                  'order': 0,
+                  'valueType': 'Bytes32',
+                  'indexed': 1,
+                  'filter': node,
+                },
+                {
+                  'type': 'EVENT_PARAM',
+                  'value': 'chain',
+                  'order': 1,
+                  'valueType': 'Bytes4',
+                  'indexed': 0,
+                },
+                {
+                  'type': 'EVENT_PARAM',
+                  'value': 'addr',
+                  'order': 2,
+                  'valueType': 'String',
+                  'indexed': 0,
+                },
+              ],
+            };
+            this.store.notifierTopics.push(this.notifierManager.operations.subscribeToTopic(this.notifierManager.apiKey, topicOtherChains));
+          } else {
+            // TODO Rodrigo
+            // Unsuscribe from topics
+          }
         }).catch(transactionReceiptOrError => {
           console.debug('Error when trying to set resolver', transactionReceiptOrError);
         });
@@ -149,6 +221,8 @@ export default class RnsResolver extends RnsJsDelegate {
    * @returns {Promise<unknown>}
    */
   getChainAddressForResolvers (domainName, subdomain = '') {
+    // TODO Rodrigo
+    // Get notifications for the topicIds stored in the class
     return new Promise((resolve, reject) => {
       let node = namehash.hash(domainName);
       if (subdomain) {

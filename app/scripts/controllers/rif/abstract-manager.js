@@ -15,6 +15,7 @@ export class AbstractManager {
     this.unlocked = false;
     const initState = extend(initStoreState || {}, props.initState);
     this.store = new ObservableStore(initState);
+    this.notifierManager = props.notifierManager;
   }
 
   /**
