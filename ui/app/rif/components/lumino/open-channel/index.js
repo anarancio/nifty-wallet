@@ -219,17 +219,13 @@ class OpenChannel extends Component {
           }
           this.props.showToast('Deposit Done Successfully');
         };
-        depositCallbackHandlers.errorHandler = (result) => {
+        depositCallbackHandlers.errorHandler = (error) => {
           this.setState({
             loading: false,
           });
-          console.debug('DEPOSIT ERROR', result);
-          const errorMessage = parseLuminoError(result);
-          if (errorMessage) {
-            this.props.showToast(errorMessage, false);
-          } else {
-            this.props.showToast('Unknown Error Trying to Deposit', false);
-          }
+          console.debug('DEPOSIT ERROR', error);
+          const errorMessage = parseLuminoError(error);
+          this.props.showToast(errorMessage || 'Unknown Error trying to deposit on channel!', false);
         };
 
         const channelIdentifier = response.channel_identifier;
@@ -250,17 +246,13 @@ class OpenChannel extends Component {
         });
       }
     };
-    callbackHandlers.errorHandler = (result) => {
+    callbackHandlers.errorHandler = (error) => {
       this.setState({
         loading: false,
       });
-      console.debug('OPEN CHANNEL ERROR', result);
-      const errorMessage = parseLuminoError(result);
-      if (errorMessage) {
-        this.props.showToast(errorMessage, false);
-      } else {
-        this.props.showToast('Unknown Error trying to open channel!', false);
-      }
+      console.debug('OPEN CHANNEL ERROR', error);
+      const errorMessage = parseLuminoError(error);
+      this.props.showToast(errorMessage || 'Unknown Error trying to open channel!', false);
     };
     this.props.showPopup('Open Channel', {
       text: 'Are you sure you want to open channel with partner ' + this.state.destination + ' using token ' + this.state.selectedToken.name + '?',

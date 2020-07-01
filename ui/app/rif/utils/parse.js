@@ -27,7 +27,7 @@ function isValidRNSDomain (value) {
 }
 
 function parseLuminoError (error) {
-  return error && error.response && error.response.data && error.response.data.errors && error.response.data.errors ? error.response.data.errors : null;
+  return error && error.response && error.response.data && error.response.data.errors && error.response.data.errors ? error.response.data.errors : error;
 }
 
 export {

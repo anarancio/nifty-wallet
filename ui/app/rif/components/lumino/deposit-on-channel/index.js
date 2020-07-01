@@ -7,7 +7,7 @@ import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
 import {getLoader} from '../../../utils/components';
 import ethUtils from 'ethereumjs-util';
-import {isValidRNSDomain} from '../../../utils/parse';
+import {isValidRNSDomain, parseLuminoError} from '../../../utils/parse';
 
 class DepositOnChannel extends Component {
 
@@ -84,17 +84,13 @@ class DepositOnChannel extends Component {
           this.props.afterDepositCreated(result);
         }
       };
-      callbackHandlers.errorHandler = (result) => {
+      callbackHandlers.errorHandler = (error) => {
         this.setState({
           loading: false,
         });
-        console.debug('DEPOSIT ERROR', result);
-        const errorMessage = result.response.data.errors;
-        if (errorMessage) {
-          this.props.showToast(errorMessage, false);
-        } else {
-          this.props.showToast('Unknown Error Trying to Deposit');
-        }
+        console.debug('DEPOSIT ERROR', error);
+        const errorMessage = parseLuminoError(error);
+        this.props.showToast(errorMessage || 'Unknown Error trying to deposit!', false);
       };
       this.props.showPopup('Deposit on Channel', {
         text: `Are you sure you want to deposit ${this.state.amount} ${this.props.tokenSymbol} tokens on channel ${this.props.channelIdentifier} with partner ${this.props.destination}?`,

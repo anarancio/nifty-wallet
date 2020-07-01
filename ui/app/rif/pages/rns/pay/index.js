@@ -10,7 +10,7 @@ import rifActions from '../../../actions';
 import niftyActions from '../../../../../../ui/app/actions';
 import {connect} from 'react-redux';
 import ethUtils from 'ethereumjs-util';
-import {isValidRNSDomain} from '../../../utils/parse';
+import {isValidRNSDomain, parseLuminoError} from '../../../utils/parse';
 import web3Utils from 'web3-utils';
 import {validateDecimalAmount} from '../../../utils/validations';
 import {getLoader} from '../../../utils/components';
@@ -223,7 +223,8 @@ class Pay extends Component {
         loading: false,
       });
       console.debug('PAYMENT ERROR', error);
-      this.props.showToast('Error trying to pay!', false);
+      const errorMessage = parseLuminoError(error);
+      this.props.showToast(errorMessage || 'Unknown Error trying to pay!', false);
     };
     this.props.showPopup('Pay', {
       text: 'Are you sure you want to pay ' + this.state.amount + ' tokens to partner ' + this.state.destination + '?',
