@@ -112,14 +112,17 @@ class OpenChannel extends Component {
             event.stopPropagation();
             props.onSelect(option, event);
           }}
+          className="select-token-item"
           onMouseEnter={(event) => props.onFocus(option, event)}
           onMouseMove={(event) => {
             if (props.isFocused) return;
             props.onFocus(option, event)
           }}
         >
-          <FontAwesomeIcon icon={icon.icon} color={icon.color}/>
-          <span>{option.name}</span>
+          <span>
+            <FontAwesomeIcon icon={icon.icon} color={icon.color}/>
+            <span className="select-token-item-text">{option.name}</span>
+          </span>
         </div>
       )
     }
@@ -127,7 +130,8 @@ class OpenChannel extends Component {
     // this is because the tokenOptions can be undefined or empty some times since the service takes time to retrieve the tokens
     // also the selected token on those cases can be undefined or null because of that, so we control those cases and we add a loader until the
     // data it's available
-    if (!this.state.selectedToken && (!tokensOptions || (tokensOptions && tokensOptions.length <= 0))) {
+    if (!this.state.selectedToken && (!tokensOptions || (tokensOptions && tokensOptions.length
+      <= 0))) {
       return getLoader(this.state.loadingMessage);
     }
 

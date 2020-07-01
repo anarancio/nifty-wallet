@@ -13,3 +13,16 @@
 .select-token-container .Select-control svg + span {
   margin-left: 5px;
 }
+
+.select-token-item {
+  width: 100%;
+  display: flex;
+  margin-left: 0.75rem;
+  height: auto;
+}
+
+.select-token-item-text {
+  margin-left: 0.5rem;
+  font-size: 12px;
+  color: var(--gray-text);
+}
