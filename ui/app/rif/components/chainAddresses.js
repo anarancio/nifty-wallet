@@ -71,7 +71,7 @@ class ChainAddresses extends Component {
 
   async loadChainAddresses () {
     const configuration = await this.props.getConfiguration();
-    if (this.state.resolvers.find(resolver => resolver.address === this.props.selectedResolverAddress && resolver.isMultiChain)) {
+    if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.props.selectedResolverAddress.toLowerCase() && resolver.isMultiChain)) {
       const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
       this.setState({chainAddresses: chainAddresses});
     } else if (configuration.mocksEnabled) {
@@ -125,6 +125,7 @@ class ChainAddresses extends Component {
   }
 
  timeoutToRedirect = (selectedChainAddress, isRetry = true) => setTimeout(async () => {
+    console.log('TIMEOUT TO REDIRECT');
     if (!isRetry) {
      await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
     }
@@ -147,7 +148,7 @@ class ChainAddresses extends Component {
     const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName, action);
     this.props.waitForListener(transactionListenerId)
       .then(async (transactionReceipt) => {
-        if (this.state.resolvers.find(resolver => resolver.address === this.props.selectedResolverAddress)) {
+        if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.props.selectedResolverAddress.toLowerCase())) {
           // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
           this.timeoutToRedirect(selectedChainAddress, false);
         }
@@ -198,7 +199,7 @@ class ChainAddresses extends Component {
             <span className={classes.notFound}>No addresses found</span>
           </div>
         }
-        {(isOwner && resolvers.find(resolver => resolver.address === selectedResolverAddress && resolver.isMultiChain)) &&
+        {(isOwner && resolvers.find(resolver => resolver.address.toLowerCase() === selectedResolverAddress.toLowerCase() && resolver.isMultiChain)) &&
         <div>
           <CustomButton
             svgIcon={SVG_PLUS}
