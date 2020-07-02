@@ -743,6 +743,7 @@ function createDeposit (partner, tokenAddress, tokenNetworkAddress, channelIdent
       }
       if (callbackHandlers && callbackHandlers.errorHandler) {
         handleSdkCallback(lumino.callbacks.FAILED_DEPOSIT_CHANNEL, dispatch, callbackHandlers.errorHandler);
+        handleSdkCallback(lumino.callbacks.DEPOSIT_CHANNEL_VALUE_TOO_LOW, dispatch, callbackHandlers.errorHandler);
       }
       background.rif.lumino.createDeposit(partner, tokenAddress, tokenNetworkAddress, channelIdentifier, netAmount, (error) => {
         if (error) {
@@ -1044,6 +1045,10 @@ function setupDefaultLuminoCallbacks () {
           console.debug('Payment Completed', result);
           dispatch(niftyActions.displayToast('Payment Completed'));
         }
+      });
+      handleSdkDefaultCallback(lumino.callbacks.OPEN_CHANNEL, dispatch, (result) => {
+        console.debug('A channel has been opened', result);
+        dispatch(niftyActions.displayToast('A channel has been opened!'));
       });
       dispatch(luminoCallbacksRunning(true));
       return resolve();

@@ -19,6 +19,7 @@ class CloseChannel extends Component {
     showPopup: PropTypes.func,
     closeChannel: PropTypes.func,
     afterCloseChannel: PropTypes.func,
+    afterCloseChannelRequest: PropTypes.func,
     subscribeToCloseChannel: PropTypes.func,
   }
 
@@ -31,6 +32,9 @@ class CloseChannel extends Component {
           console.debug('CLOSE CHANNEL REQUESTED', result);
           this.props.showToast('Requesting Close Channel');
           await this.props.subscribeToCloseChannel(this.props.channelIdentifier, this.props.tokenNetworkAddress);
+          if (this.props.afterCloseChannelRequest) {
+            this.props.afterCloseChannelRequest(result);
+          }
         };
         callbackHandlers.successHandler = async (result) => {
           console.debug('CLOSE CHANNEL DONE', result);

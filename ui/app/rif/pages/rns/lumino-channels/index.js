@@ -44,17 +44,21 @@ class LuminoChannels extends Component {
 
   startListeningToEvents () {
     this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT], (result) => {
-      this.updateBalance();
+      this.updateChannelState();
       this.startListeningToEvents();
     });
   }
 
-  updateBalance () {
+  updateChannelState () {
     this.props.getChannels(this.props.channel.token_address).then(channels => {
       const channel = channels.find(ch => ch.channel_identifier === this.props.channel.channel_identifier);
       const balance = getBalanceInEth(channel.offChainBalance);
+      const isOpen = channel.sdk_status === 'CHANNEL_OPENED';
+      const channelStatus = this.getStatus(channel.sdk_status);
       this.setState({
         balance,
+        isOpen,
+        channelStatus,
       });
     });
   }
@@ -73,7 +77,7 @@ class LuminoChannels extends Component {
           tokenNetworkAddress={channel.token_network_identifier}
           tokenName={channel.token_name}
           tokenSymbol={channel.token_symbol}
-          afterDepositCreated={(result) => this.updateBalance()}
+          afterDepositCreated={(result) => this.updateChannelState()}
         />
       ),
     };
@@ -119,7 +123,7 @@ class LuminoChannels extends Component {
       });
       console.debug('PAYMENT DONE', result);
       this.props.showToast('Payment Delivered');
-      this.updateBalance();
+      this.updateChannelState();
     };
     callbackHandlers.errorHandler = (error) => {
       this.setState({
@@ -128,7 +132,7 @@ class LuminoChannels extends Component {
       console.debug('PAYMENT ERROR', error);
       const errorMessage = parseLuminoError(error);
       this.props.showToast(errorMessage || 'Unknown Error trying to pay!', false);
-      this.updateBalance();
+      this.updateChannelState();
     };
     this.props.showPopup('Pay', {
       text: 'Are you sure you want to pay ' + this.state.paymentInput + ' tokens to partner ' + channel.partner_address + '?',
@@ -157,15 +161,19 @@ class LuminoChannels extends Component {
               <path d="M6.5 1C3.46243 1 0.999999 3.46243 1 6.5C1 9.53757 3.46243 12 6.5 12" stroke="#59A42A"/>
               <path d="M4 6.375L5.09091 7.5L8.5 5" stroke="#59A42A"/>
             </svg>
-
             Open
           </div>
-        )
+        );
+        break;
+      case 'CHANNEL_WAITING_FOR_CLOSE':
+        retVal = (
+          <div className="lumino-channel-close mb-1">Waiting for Close</div>
+        );
         break;
       default:
         retVal = (
           <div className="lumino-channel-close mb-1">Closed</div>
-        )
+        );
     }
     return retVal;
   }
@@ -183,7 +191,8 @@ class LuminoChannels extends Component {
             tokenNetworkAddress={channel.token_network_identifier}
             tokenName={channel.token_name}
             channelIdentifier={channel.channel_identifier}
-            afterCloseChannel={() => this.setState({isOpen: false, channelStatus: 'Closed'})}
+            afterCloseChannel={() => this.updateChannelState()}
+            afterCloseChannelRequest={() => this.updateChannelState()}
           />
         }
         <div id="description" className="lumino-channel-detail__description">
