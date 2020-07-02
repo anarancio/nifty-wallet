@@ -98,7 +98,6 @@ class LuminoNetworkDetails extends Component {
       <div className="body lumino-network-detail-container">
         <div className="d-flex align-items-center">
           <div className="network-detail__name">{networkSymbol} Network</div>
-          <button className="btn-primary btn-primary-outlined ml-auto">Leave</button>
         </div>
         <div className="row-data-container mb-4">
           <span className="lumino-text-symbol mr-1">
