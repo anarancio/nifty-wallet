@@ -6,7 +6,7 @@ import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
 import {validateAmountValue, validateDecimalAmount} from '../../../utils/validations';
-import {getBalanceInEth} from '../../../utils/parse';
+import {getBalanceInEth, parseLuminoError} from '../../../utils/parse';
 import {getLoader} from '../../../utils/components';
 import {lumino} from '../../../../../../app/scripts/controllers/rif/constants';
 
@@ -126,7 +126,8 @@ class LuminoChannels extends Component {
         loading: false,
       });
       console.debug('PAYMENT ERROR', error);
-      this.props.showToast('Error trying to pay!', false);
+      const errorMessage = parseLuminoError(error);
+      this.props.showToast(errorMessage || 'Unknown Error trying to pay!', false);
       this.updateBalance();
     };
     this.props.showPopup('Pay', {

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
+import {parseLuminoError} from '../../../utils/parse';
 
 class CloseChannel extends Component {
 
@@ -38,14 +39,10 @@ class CloseChannel extends Component {
           }
           this.props.showToast('Channel Closed Successfully!');
         };
-        callbackHandlers.errorHandler = (result) => {
-          console.debug('CLOSE CHANNEL ERROR', result);
-          const errorMessage = result.response.data.errors;
-          if (errorMessage) {
-            this.props.showToast(errorMessage, false);
-          } else {
-            this.props.showToast('Unknown Error trying to close channel!', false);
-          }
+        callbackHandlers.errorHandler = (error) => {
+          console.debug('CLOSE CHANNEL ERROR', error);
+          const errorMessage = parseLuminoError(error);
+          this.props.showToast(errorMessage || 'Unknown Error trying to close channel!', false);
         };
         await this.props.closeChannel(this.props.partner, this.props.tokenAddress, this.props.tokenNetworkAddress, this.props.channelIdentifier, callbackHandlers);
       },
