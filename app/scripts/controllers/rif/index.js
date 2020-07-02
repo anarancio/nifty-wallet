@@ -5,6 +5,7 @@ import {LuminoManager} from './lumino';
 import {bindOperation, isRskNetwork} from './utils/general';
 import {RifConfigurationProvider} from './configuration';
 import {global} from './constants';
+import {NotifierManager} from './notifier';
 
 /**
  * RIF Controller
@@ -39,6 +40,11 @@ export default class RifController {
 
     this.configurationProvider.loadConfiguration(currentNetworkId);
 
+    this.notifierManager = new NotifierManager({
+      configurationProvider: this.configurationProvider,
+      keyringController: this.metamaskController.keyringController,
+    });
+
     this.rnsManager = new RnsManager({
       initState: initState.RnsManager,
       configurationProvider: this.configurationProvider,
@@ -46,6 +52,7 @@ export default class RifController {
       networkController: this.metamaskController.networkController,
       transactionController: this.metamaskController.txController,
       web3: this.web3,
+      notifierManager: this.notifierManager,
     });
 
     this.luminoManager = new LuminoManager({
@@ -141,6 +148,7 @@ export default class RifController {
    */
   onUnlocked () {
     this.configurationProvider.onUnlock();
+    this.notifierManager.onUnlock();
     this.rnsManager.onUnlock();
     this.luminoManager.onUnlock();
   }
@@ -151,6 +159,7 @@ export default class RifController {
    */
   onNetworkChanged (network) {
     this.configurationProvider.onNetworkChanged(network);
+    this.notifierManager.onNetworkChanged(network);
     this.rnsManager.onNetworkChanged(network);
     this.luminoManager.onNetworkChanged(network);
   }
@@ -160,6 +169,7 @@ export default class RifController {
    * @param address the new address
    */
   onAddressChanged (address) {
+    this.notifierManager.onAddressChanged(address);
     this.rnsManager.onAddressChanged(address);
     this.luminoManager.onAddressChanged(address);
   }
@@ -190,6 +200,7 @@ export default class RifController {
   setConfiguration (configuration) {
     if (configuration) {
       this.configurationProvider.setConfiguration(configuration);
+      this.notifierManager.onConfigurationUpdated(configuration);
       this.rnsManager.onConfigurationUpdated(configuration);
       this.luminoManager.onConfigurationUpdated(configuration);
     }

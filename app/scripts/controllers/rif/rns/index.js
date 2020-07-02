@@ -48,6 +48,7 @@ export default class RnsManager extends AbstractManager {
       address: this.address,
       store: this.store,
       configurationProvider: this.configurationProvider,
+      notifierManager: this.notifierManager,
     });
     const transfer = new RnsTransfer({
       web3: this.web3,

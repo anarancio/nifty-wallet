@@ -18,6 +18,7 @@ export default class RnsDelegate {
     this.store = props.store;
     this.store.transactionListeners = {};
     this.configurationProvider = props.configurationProvider;
+    this.notifierManager = props.notifierManager;
     this.initialize();
   }
 
