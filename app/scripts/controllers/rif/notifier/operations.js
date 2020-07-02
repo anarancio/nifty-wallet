@@ -3,6 +3,7 @@ import web3Utils from 'web3-utils';
 const RIF_NOTIFIER_ONBOARDING_REGISTER = '/users';
 const RIF_NOTIFIER_ONBOARDING_SUBSCRIBE = '/subscribe';
 const RIF_NOTIFIER_TOPIC_SUBSCRIBE = '/subscribeToTopic';
+const RIF_NOTIFIER_GET_RNS_EVENTS = '/getRnsEvents';
 
 export class NotifierOperations {
 
@@ -54,7 +55,6 @@ export class NotifierOperations {
   subscribeToTopic (apiKey, topic) {
     return new Promise(async (resolve, reject) => {
       const notifierEndpoint = this.configurationProvider.getConfigurationObject().notifier.availableNodes[0];
-      console.debug('=========================JSON.stringify(topic)', JSON.stringify(topic));
       fetch(notifierEndpoint + RIF_NOTIFIER_TOPIC_SUBSCRIBE, {
         method: 'POST',
         body: JSON.stringify(topic),
@@ -68,6 +68,25 @@ export class NotifierOperations {
         .then(response => {
           const data = JSON.parse(response.data);
           resolve(data.topicId);
+        }).catch(err => reject(err));
+    });
+  }
+  getRnsEvents (apiKey, nodehash = '', eventName = '') {
+    return new Promise(async (resolve, reject) => {
+      const notifierEndpoint = this.configurationProvider.getConfigurationObject().notifier.availableNodes[0];
+      const endpointParams = (nodehash || eventName ? '?' : '') + (nodehash ? 'nodehash=' + nodehash + (eventName ? '&' : '') : '') + (eventName ? 'eventName=' + eventName : '');
+      console.debug('==========================================================endpointParams', endpointParams);
+      fetch(notifierEndpoint + RIF_NOTIFIER_GET_RNS_EVENTS + endpointParams, {
+        method: 'GET',
+        headers: {
+          'apiKey': apiKey,
+        }})
+        .then(response => {
+          return response.json();
+        })
+        .then(response => {
+          console.debug('===========================================response', response);
+          resolve(response.data);
         }).catch(err => reject(err));
     });
   }

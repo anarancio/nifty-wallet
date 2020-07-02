@@ -130,14 +130,17 @@ class ChainAddresses extends Component {
     this.props.waitForListener(transactionListenerId)
       .then(async (transactionReceipt) => {
         if (this.state.resolvers.find(resolver => resolver.address === this.props.selectedResolverAddress)) {
-          await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
-          const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
-          this.props.showThis(
-            this.props.redirectPage,
-            {
-              ...this.props.redirectParams,
-              newChainAddresses: chainAddresses,
-            });
+          // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
+          setTimeout(async () => {
+            await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
+            const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
+            this.props.showThis(
+              this.props.redirectPage,
+              {
+                ...this.props.redirectParams,
+                newChainAddresses: chainAddresses,
+              });
+          }, 5000);
         }
       });
     this.props.showTransactionConfirmPage({

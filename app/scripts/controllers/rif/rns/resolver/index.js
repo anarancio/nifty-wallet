@@ -136,97 +136,11 @@ export default class RnsResolver extends RnsJsDelegate {
             this.updateDomains(domain);
           });
           console.debug('setResolver success', transactionReceipt);
-          // Now i need to subscribe to notifier events to get chainAddresses
-          if (resolverAddress === this.configurationProvider.getConfigurationObject().rns.contracts.multiChainResolver) {
-            this.suscribeToMulticriptoEvents(domainName);
-          } else {
-            // TODO Rodrigo
-            // Unsuscribe from topics
-          }
         }).catch(transactionReceiptOrError => {
           console.debug('Error when trying to set resolver', transactionReceiptOrError);
         });
       resolve(transactionListener.id);
     });
-  }
-
-  async suscribeToMulticriptoEvents(domainName) {
-    const node = namehash.hash(domainName);
-    console.debug('===============================================================================')
-    const topicRsk = {
-      'type': 'CONTRACT_EVENT',
-      'topicParams': [
-        {
-          'type': 'CONTRACT_ADDRESS',
-          'value': this.configurationProvider.getConfigurationObject().rns.contracts.multiChainResolver,
-        },
-        {
-          'type': 'EVENT_NAME',
-          'value': 'AddrChanged',
-        },
-        {
-          'type': 'EVENT_PARAM',
-          'value': 'node',
-          'order': 0,
-          'valueType': 'Bytes32',
-          'indexed': 1,
-          'filter': node,
-        },
-        {
-          'type': 'EVENT_PARAM',
-          'value': 'addr',
-          'order': 1,
-          'valueType': 'Address',
-          'indexed': 0,
-        },
-      ],
-    };
-    const topicIdRsk = await this.notifierManager.operations.subscribeToTopic(this.notifierManager.apiKey, topicRsk);
-    console.debug('===================================================topicIdRsk', topicIdRsk);
-    if (this.store.notifierTopics.findIndex(topic => topic === topicRsk) === -1) {
-      this.store.notifierTopics.push(topicIdRsk);
-    }
-    console.debug('===================================================PASE FIND INDEX');
-    const topicOtherChains = {
-      'type': 'CONTRACT_EVENT',
-      'topicParams': [
-        {
-          'type': 'CONTRACT_ADDRESS',
-          'value': this.configurationProvider.getConfigurationObject().rns.contracts.multiChainResolver,
-        },
-        {
-          'type': 'EVENT_NAME',
-          'value': 'ChainAddrChanged',
-        },
-        {
-          'type': 'EVENT_PARAM',
-          'value': 'node',
-          'order': 0,
-          'valueType': 'Bytes32',
-          'indexed': 1,
-          'filter': node,
-        },
-        {
-          'type': 'EVENT_PARAM',
-          'value': 'chain',
-          'order': 1,
-          'valueType': 'Bytes4',
-          'indexed': 0,
-        },
-        {
-          'type': 'EVENT_PARAM',
-          'value': 'addr',
-          'order': 2,
-          'valueType': 'Utf8String',
-          'indexed': 0,
-        },
-      ],
-    };
-    const topicIdChains = await this.notifierManager.operations.subscribeToTopic(this.notifierManager.apiKey, topicOtherChains);
-    console.debug('===================================================topicIdChains', topicIdChains);
-    if (this.store.notifierTopics.findIndex(topicIdChains) === -1) {
-      this.store.notifierTopics.push(topicIdChains);
-    }
   }
 
   /**
@@ -235,68 +149,54 @@ export default class RnsResolver extends RnsJsDelegate {
    * @returns {Promise<unknown>}
    */
   getChainAddressForResolvers (domainName, subdomain = '') {
-    console.debug('===================================================getChainAddressForResolvers');
-    this.suscribeToMulticriptoEvents(domainName);
-    // TODO Rodrigo
-    // Get notifications for the topicIds stored in the class
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let node = namehash.hash(domainName);
       if (subdomain) {
         node = rskNameHash(domainName);
         const label = web3Utils.sha3(subdomain);
         node = web3Utils.soliditySha3(node, label);
       }
-      const addrChangedEvent = this.multiChainresolverContractInstance.AddrChanged({node: node}, {fromBlock: 0, toBlock: 'latest'});
-      const chainAddrChangedEvent = this.multiChainresolverContractInstance.ChainAddrChanged({node: node}, {fromBlock: 0, toBlock: 'latest'});
+      const addrChangedEvent = await this.notifierManager.operations.getRnsEvents(this.notifierManager.apiKey, node, 'AddrChanged');
+      const chainAddrChangedEvent = await this.notifierManager.operations.getRnsEvents(this.notifierManager.apiKey, node, 'ChainAddrChanged');
       const arrChains = [];
-      const errorLogs = [];
       const pendingChainAddressesActions = this.store.pendingChainAddressesActions;
-      addrChangedEvent.get(function (error, result) {
-        if (error) {
-          console.debug('Error when trying to get addrChangedEvent for resolver', error);
-          errorLogs.push(error);
-        }
-        result.forEach(event => {
-          if (event.args.addr !== rns.zeroAddress) {
+      if (addrChangedEvent) {
+        addrChangedEvent.forEach(event => {
+          if (event.address !== rns.zeroAddress) {
             const chainAddressPending = pendingChainAddressesActions.find(chainAddr => chainAddr.chain === ChainId.RSK);
-            arrChains[0] = new ChainAddress(ChainId.RSK, event.args.addr, chainAddressPending ? chainAddressPending.action : '');
+            arrChains[0] = new ChainAddress(ChainId.RSK, event.address, chainAddressPending ? chainAddressPending.action : '');
           } else {
             arrChains.splice(0, 1);
           }
         });
-        console.debug('getChainAddressForResolvers success', arrChains);
-      });
-      chainAddrChangedEvent.get(function (error, result) {
-        if (error) {
-          console.debug('Error when trying to get chainAddrChangedEvent for resolver', error);
-          errorLogs.push(error);
-          reject(errorLogs);
-        }
-        result.forEach(event => {
-          const chainAddressPending = pendingChainAddressesActions.find(chainAddr => chainAddr.chain === event.args.chain);
-          const chainAddrToPush = new ChainAddress(event.args.chain, event.args.addr, chainAddressPending ? chainAddressPending.action : '');
+      }
+      console.debug('getChainAddressForResolvers success', arrChains);
+      if (chainAddrChangedEvent) {
+        chainAddrChangedEvent.forEach(event => {
+          const chainAddressPending = pendingChainAddressesActions.find(chainAddr => chainAddr.chain === event.chain);
+          const chainAddrToPush = new ChainAddress(event.chain, event.address, chainAddressPending ? chainAddressPending.action : '');
           const index = arrChains.findIndex((e) => e.chain === chainAddrToPush.chain);
           if (index === -1) {
-            if (event.args.addr !== rns.zeroAddress) {
+            if (event.address !== rns.zeroAddress) {
               arrChains.push(chainAddrToPush);
             }
           } else {
-            if (event.args.addr !== rns.zeroAddress) {
+            if (event.address !== rns.zeroAddress) {
               arrChains[index] = chainAddrToPush;
             } else {
               arrChains.splice(index, 1);
             }
           }
         });
-        // Here we need to add the chainAddress that still pending to add
-        pendingChainAddressesActions.map(chainAddr => {
-          if (chainAddr.action === 'add' && chainAddr.isSubdomain === !!subdomain) {
-            arrChains.push(new ChainAddress(chainAddr.chain, chainAddr.chainAddress, 'add'));
-          }
-        });
-        console.debug('getChainAddressForResolvers success', arrChains);
-        resolve(arrChains);
+      }
+      // Here we need to add the chainAddress that still pending to add
+      pendingChainAddressesActions.map(chainAddr => {
+        if (chainAddr.action === 'add' && chainAddr.isSubdomain === !!subdomain) {
+          arrChains.push(new ChainAddress(chainAddr.chain, chainAddr.chainAddress, 'add'));
+        }
       });
+      console.debug('getChainAddressForResolvers success', arrChains);
+      resolve(arrChains);
     });
   }
 
