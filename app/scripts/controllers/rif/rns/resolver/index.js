@@ -170,7 +170,6 @@ export default class RnsResolver extends RnsJsDelegate {
           }
         });
       }
-      console.debug('getChainAddressForResolvers success', arrChains);
       if (chainAddrChangedEvent) {
         chainAddrChangedEvent.forEach(event => {
           const chainAddressPending = pendingChainAddressesActions.find(chainAddr => chainAddr.chain === event.chain);

@@ -75,7 +75,6 @@ export class NotifierOperations {
     return new Promise(async (resolve, reject) => {
       const notifierEndpoint = this.configurationProvider.getConfigurationObject().notifier.availableNodes[0];
       const endpointParams = (nodehash || eventName ? '?' : '') + (nodehash ? 'nodehash=' + nodehash + (eventName ? '&' : '') : '') + (eventName ? 'eventName=' + eventName : '');
-      console.debug('==========================================================endpointParams', endpointParams);
       fetch(notifierEndpoint + RIF_NOTIFIER_GET_RNS_EVENTS + endpointParams, {
         method: 'GET',
         headers: {
@@ -85,7 +84,6 @@ export class NotifierOperations {
           return response.json();
         })
         .then(response => {
-          console.debug('===========================================response', response);
           resolve(response.data);
         }).catch(err => reject(err));
     });
