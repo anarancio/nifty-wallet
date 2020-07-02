@@ -124,6 +124,23 @@ class ChainAddresses extends Component {
     this.setState({ insertedAddress: address });
   }
 
+ timeoutToRedirect = (selectedChainAddress, isRetry = true) => setTimeout(async () => {
+    if (!isRetry) {
+     await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
+    }
+    const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
+    if (!arraysMatch(this.state.chainAddresses, chainAddresses)) {
+      this.props.showThis(
+        this.props.redirectPage,
+        {
+          ...this.props.redirectParams,
+          newChainAddresses: chainAddresses,
+        });
+    } else {
+      this.timeoutToRedirect(selectedChainAddress);
+    }
+  }, WAIT_FOR_NOTIFIER);
+
   async addAddress (address = null, chainAddress = null, toastMessage = 'Adding chain address', action = 'add') {
     const insertedAddress = address || this.state.insertedAddress;
     const selectedChainAddress = chainAddress || this.state.selectedChainAddress;
@@ -132,16 +149,7 @@ class ChainAddresses extends Component {
       .then(async (transactionReceipt) => {
         if (this.state.resolvers.find(resolver => resolver.address === this.props.selectedResolverAddress)) {
           // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
-          setTimeout(async () => {
-            await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
-            const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
-            this.props.showThis(
-              this.props.redirectPage,
-              {
-                ...this.props.redirectParams,
-                newChainAddresses: chainAddresses,
-              });
-          }, WAIT_FOR_NOTIFIER);
+          this.timeoutToRedirect(selectedChainAddress, false);
         }
       });
     this.props.showTransactionConfirmPage({

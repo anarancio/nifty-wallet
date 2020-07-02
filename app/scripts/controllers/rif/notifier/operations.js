@@ -74,7 +74,10 @@ export class NotifierOperations {
   getRnsEvents (apiKey, nodehash = '', eventName = '') {
     return new Promise(async (resolve, reject) => {
       const notifierEndpoint = this.configurationProvider.getConfigurationObject().notifier.availableNodes[0];
-      const endpointParams = (nodehash || eventName ? '?' : '') + (nodehash ? 'nodehash=' + nodehash + (eventName ? '&' : '') : '') + (eventName ? 'eventName=' + eventName : '');
+      const endpointParams =
+        (nodehash || eventName ? '?' : '') // If we got a param, lets put the ? for initialize the params
+        + (nodehash ? 'nodehash=' + nodehash + (eventName ? '&' : '') : '') // If we got nodehash (And checks if eventname comes too, so it puts the &)
+        + (eventName ? 'eventName=' + eventName : ''); // If we got eventName, put the param
       fetch(notifierEndpoint + RIF_NOTIFIER_GET_RNS_EVENTS + endpointParams, {
         method: 'GET',
         headers: {
