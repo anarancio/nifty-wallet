@@ -95,14 +95,18 @@ export class RifConfigurationProvider {
         return {
           lumino: {
             hub: {
-              endpoint: '',
+              endpoint: 'http://165.227.110.216:5001/api/v1',
             },
             explorer: {
-              endpoint: '',
+              endpoint: 'http://165.227.110.216:8080/api/v1',
             },
           },
           notifier: {
-            availableNodes: [],
+            availableNodes: [
+              'http://138.197.6.5:8081',
+              'http://138.197.6.5:8082',
+              'http://138.197.6.5:8083',
+            ],
           },
           rns: {
             contracts: {
