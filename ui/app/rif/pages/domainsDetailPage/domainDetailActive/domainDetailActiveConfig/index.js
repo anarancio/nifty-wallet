@@ -39,7 +39,7 @@ class DomainsDetailConfigurationScreen extends Component {
   }
 
   getDefaultSelectedValue (resolvers, selectedResolverAddress) {
-    const selectedResolver = resolvers.find(resolver => resolver.address === selectedResolverAddress);
+    const selectedResolver = resolvers.find(resolver => resolver.address.toLowerCase() === selectedResolverAddress.toLowerCase());
     if (selectedResolver) {
       return selectedResolver.name;
     }
