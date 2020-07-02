@@ -12,6 +12,7 @@ import AddNewChainAddressToResolver
 import {SLIP_ADDRESSES} from '../constants/slipAddresses';
 import * as niftyActions from '../../actions';
 import * as lodash from 'lodash';
+import {WAIT_FOR_NOTIFIER} from '../../constants/common';
 
 class ChainAddresses extends Component {
 
@@ -140,7 +141,7 @@ class ChainAddresses extends Component {
                 ...this.props.redirectParams,
                 newChainAddresses: chainAddresses,
               });
-          }, 5000);
+          }, WAIT_FOR_NOTIFIER);
         }
       });
     this.props.showTransactionConfirmPage({
