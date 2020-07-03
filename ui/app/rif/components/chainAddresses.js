@@ -25,7 +25,6 @@ class ChainAddresses extends Component {
     isOwner: PropTypes.bool.isRequired,
     deletePendingChainAddress: PropTypes.func,
     subdomainName: PropTypes.string,
-    selectedResolverAddress: PropTypes.string,
     getChainAddresses: PropTypes.func,
     newChainAddresses: PropTypes.array,
     waitForListener: PropTypes.func,
@@ -65,12 +64,8 @@ class ChainAddresses extends Component {
     };
   }
 
-  componentDidMount () {
-    this.loadChainAddresses();
-  }
-
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.domainName !== this.props.domainName) {
+    if (prevProps.domainName !== this.props.domainName || prevState.selectedResolverAddress !== this.state.selectedResolverAddress) {
       this.loadChainAddresses();
     } else if (!arraysMatch(prevProps.newChainAddresses, this.props.newChainAddresses)) {
       this.setState({chainAddresses: this.props.newChainAddresses});

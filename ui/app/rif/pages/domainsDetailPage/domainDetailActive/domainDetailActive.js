@@ -190,7 +190,6 @@ class DomainsDetailActiveScreen extends Component {
           <div id="chainAddressesBody" className={''}>
             <ChainAddresses
               domainName={domainName}
-              selectedResolverAddress={selectedResolverAddress}
               paginationSize={PAGINATION_DEFAULT_SIZE}
               classes={styles.chainAddresses}
               isOwner={isOwner}
