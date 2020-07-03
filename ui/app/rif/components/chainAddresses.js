@@ -65,10 +65,6 @@ class ChainAddresses extends Component {
     };
   }
 
-  componentDidMount () {
-    this.loadChainAddresses();
-  }
-
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.domainName !== this.props.domainName || prevState.selectedResolverAddress !== this.state.selectedResolverAddress) {
       this.loadChainAddresses();
