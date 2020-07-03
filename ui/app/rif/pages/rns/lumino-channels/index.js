@@ -9,6 +9,7 @@ import {validateAmountValue, validateDecimalAmount} from '../../../utils/validat
 import {getBalanceInEth, parseLuminoError} from '../../../utils/parse';
 import {getLoader} from '../../../utils/components';
 import {lumino} from '../../../../../../app/scripts/controllers/rif/constants';
+import {getStatus} from '../../../utils/utils';
 
 const styles = {
   tabs: '',
@@ -152,6 +153,7 @@ class LuminoChannels extends Component {
   }
   getStatus (sdkStatus) {
     let retVal;
+    const statusText = getStatus(sdkStatus);
     switch (sdkStatus) {
       case 'CHANNEL_OPENED':
         retVal = (
@@ -161,18 +163,18 @@ class LuminoChannels extends Component {
               <path d="M6.5 1C3.46243 1 0.999999 3.46243 1 6.5C1 9.53757 3.46243 12 6.5 12" stroke="#59A42A"/>
               <path d="M4 6.375L5.09091 7.5L8.5 5" stroke="#59A42A"/>
             </svg>
-            Open
+            {statusText}
           </div>
         );
         break;
       case 'CHANNEL_WAITING_FOR_CLOSE':
         retVal = (
-          <div className="lumino-channel-close mb-1">Waiting for Close</div>
+          <div className="lumino-channel-close mb-1">{statusText}</div>
         );
         break;
       default:
         retVal = (
-          <div className="lumino-channel-close mb-1">Closed</div>
+          <div className="lumino-channel-close mb-1">{statusText}</div>
         );
     }
     return retVal;

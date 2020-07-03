@@ -7,6 +7,7 @@ import OpenChannel from '../../../components/lumino/open-channel';
 import {GenericTable} from '../../../components';
 import {pageNames} from '../../names';
 import {lumino} from '../../../../../../app/scripts/controllers/rif/constants';
+import {getStatus} from '../../../utils/utils';
 
 const styles = {
   myLuminoChannels: {
@@ -78,7 +79,7 @@ class LuminoNetworkDetails extends Component {
       return {
         content: <LuminoChannelItem key={c.channel_identifier} partnerAddress={c.partner_address}
                                     balance={c.offChainBalance}
-                                    state={c.state} tokenSymbol={networkSymbol}
+                                    state={getStatus(c.sdk_status)} tokenSymbol={networkSymbol}
                                     onRightChevronClick={() => this.props.showChannelDetails({
                                       channel: c,
                                     })}/>,

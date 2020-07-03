@@ -35,6 +35,7 @@ class ChainAddresses extends Component {
     classes: PropTypes.any,
     getConfiguration: PropTypes.func,
     showToast: PropTypes.func,
+    getResolverAddress: PropTypes.func,
   }
 
   constructor (props) {
@@ -46,6 +47,12 @@ class ChainAddresses extends Component {
           resolvers,
         });
       });
+    this.props.getResolverAddress(this.props.domainName)
+      .then(resolverAddress => {
+        this.setState({
+          selectedResolverAddress: resolverAddress.toLowerCase(),
+        });
+      });
     const slipChainAddresses = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
     this.state = {
       chainAddresses: [],
@@ -54,6 +61,7 @@ class ChainAddresses extends Component {
       selectedChainAddress: slipChainAddresses[0].chain,
       insertedAddress: '',
       addChainAddress: false,
+      selectedResolverAddress: '',
     };
   }
 
@@ -71,7 +79,7 @@ class ChainAddresses extends Component {
 
   async loadChainAddresses () {
     const configuration = await this.props.getConfiguration();
-    if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.props.selectedResolverAddress.toLowerCase() && resolver.isMultiChain)) {
+    if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.state.selectedResolverAddress && resolver.isMultiChain)) {
       const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
       this.setState({chainAddresses: chainAddresses});
     } else if (configuration.mocksEnabled) {
@@ -125,7 +133,6 @@ class ChainAddresses extends Component {
   }
 
  timeoutToRedirect = (selectedChainAddress, isRetry = true) => setTimeout(async () => {
-    console.log('TIMEOUT TO REDIRECT');
     if (!isRetry) {
      await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
     }
@@ -148,7 +155,7 @@ class ChainAddresses extends Component {
     const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName, action);
     this.props.waitForListener(transactionListenerId)
       .then(async (transactionReceipt) => {
-        if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.props.selectedResolverAddress.toLowerCase())) {
+        if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.state.selectedResolverAddress)) {
           // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
           this.timeoutToRedirect(selectedChainAddress, false);
         }
@@ -170,8 +177,8 @@ class ChainAddresses extends Component {
   }
 
   render () {
-    const { isOwner, selectedResolverAddress, redirectPage, paginationSize, classes } = this.props;
-    const { resolvers } = this.state;
+    const { isOwner, redirectPage, paginationSize, classes } = this.props;
+    const { resolvers, selectedResolverAddress } = this.state;
     const data = this.convertChainAddressesToTableData();
     return (
       <div>
@@ -199,7 +206,7 @@ class ChainAddresses extends Component {
             <span className={classes.notFound}>No addresses found</span>
           </div>
         }
-        {(isOwner && resolvers.find(resolver => resolver.address.toLowerCase() === selectedResolverAddress.toLowerCase() && resolver.isMultiChain)) &&
+        {(isOwner && resolvers.find(resolver => resolver.address.toLowerCase() === selectedResolverAddress && resolver.isMultiChain)) &&
         <div>
           <CustomButton
             svgIcon={SVG_PLUS}
@@ -249,6 +256,7 @@ function mapDispatchToProps (dispatch) {
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
+    getResolverAddress: (domainName) => dispatch(rifActions.getResolverAddress(domainName)),
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ChainAddresses);

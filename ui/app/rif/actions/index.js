@@ -19,6 +19,7 @@ const rifActions = {
   checkDomainAvailable,
   getDomainDetails,
   setResolverAddress,
+  getResolverAddress,
   getChainAddresses,
   setChainAddressForResolver,
   deletePendingChainAddress,
@@ -199,6 +200,20 @@ function setResolverAddress (domainName, resolverAddress) {
           return reject(error);
         }
         return resolve(transactionListenerId);
+      });
+    })
+  }
+}
+
+function getResolverAddress (domainName) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.rns.resolver.getResolver(domainName, (error, resolverAddress) => {
+        if (error) {
+          dispatch(niftyActions.displayWarning(error));
+          return reject(error);
+        }
+        return resolve(resolverAddress);
       });
     })
   }
