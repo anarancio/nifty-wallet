@@ -25,7 +25,6 @@ class ChainAddresses extends Component {
     isOwner: PropTypes.bool.isRequired,
     deletePendingChainAddress: PropTypes.func,
     subdomainName: PropTypes.string,
-    selectedResolverAddress: PropTypes.string,
     getChainAddresses: PropTypes.func,
     newChainAddresses: PropTypes.array,
     waitForListener: PropTypes.func,
