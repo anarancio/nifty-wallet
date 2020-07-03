@@ -1064,6 +1064,11 @@ function setupDefaultLuminoCallbacks () {
       handleSdkDefaultCallback(lumino.callbacks.OPEN_CHANNEL, dispatch, (result) => {
         console.debug('A channel has been opened', result);
         dispatch(niftyActions.displayToast('A channel has been opened!'));
+        if (result.channel_identifier && result.token_network_identifier) {
+          dispatch(subscribeToCloseChannel(result.channel_identifier, result.token_network_identifier))
+        } else {
+          console.error('Insufficient data for close channel subscription', result);
+        }
       });
       dispatch(luminoCallbacksRunning(true));
       return resolve();
