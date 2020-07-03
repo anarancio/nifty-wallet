@@ -31,7 +31,6 @@ class CloseChannel extends Component {
         callbackHandlers.requestHandler = async (result) => {
           console.debug('CLOSE CHANNEL REQUESTED', result);
           this.props.showToast('Requesting Close Channel');
-          await this.props.subscribeToCloseChannel(this.props.channelIdentifier, this.props.tokenNetworkAddress);
           if (this.props.afterCloseChannelRequest) {
             this.props.afterCloseChannelRequest(result);
           }
@@ -73,7 +72,6 @@ function mapDispatchToProps (dispatch) {
         ...opts,
       }));
     },
-    subscribeToCloseChannel: (channelIdentifier, tokenNetworkAddress) => dispatch(rifActions.subscribeToCloseChannel(channelIdentifier, tokenNetworkAddress)),
   };
 }
 
