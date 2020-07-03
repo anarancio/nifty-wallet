@@ -1,5 +1,6 @@
 // Constant names, if you want to add a new token (icon), just go to constant.js and add one to the array, then add it to getNameTokenForIcon
 import {SLIP_ADDRESSES} from '../constants/slipAddresses'
+import React from 'react';
 
 const getChainAddressByChainAddress = function (chainAddress) {
   return SLIP_ADDRESSES.find(e => e.chain === chainAddress);
@@ -32,9 +33,26 @@ const arraysMatch = (arr1, arr2) => {
   return true;
 
 };
+
+const getStatus = (sdkStatus) => {
+  let retVal;
+  switch (sdkStatus) {
+    case 'CHANNEL_OPENED':
+      retVal = 'Open';
+      break;
+    case 'CHANNEL_WAITING_FOR_CLOSE':
+      retVal = 'Waiting for Close';
+      break;
+    default:
+      retVal = 'Closed';
+  }
+  return retVal;
+}
+
 export {
   getChainAddressByChainAddress,
   getStatusForChannel,
   sumValuesOfArray,
   arraysMatch,
+  getStatus,
 }

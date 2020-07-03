@@ -35,6 +35,7 @@ export default class RnsResolver extends RnsJsDelegate {
       isOwner: this.bindOperation(this.isOwner, this),
       getDomainDetails: this.bindOperation(this.getDomainDetails, this),
       setResolver: this.bindOperation(this.setResolver, this),
+      getResolver: this.bindOperation(this.getResolver, this),
       getChainAddressForResolvers: this.bindOperation(this.getChainAddressForResolvers, this),
       setChainAddressForResolver: this.bindOperation(this.setChainAddressForResolver, this),
       deletePendingChainAddress: this.bindOperation(this.deletePendingChainAddress, this),
