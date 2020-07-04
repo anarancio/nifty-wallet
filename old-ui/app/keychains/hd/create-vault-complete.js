@@ -3,6 +3,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../../ui/app/actions')
+const rifActions = require('../../../../ui/app/rif/actions')
 const exportAsFile = require('../../util').exportAsFile
 
 module.exports = connect(mapStateToProps)(CreateVaultCompleteScreen)
@@ -85,5 +86,6 @@ CreateVaultCompleteScreen.prototype.confirmSeedWords = function () {
 }
 
 CreateVaultCompleteScreen.prototype.showAccountDetail = function (account) {
+  this.props.dispatch(rifActions.resetNavigation())
   return this.props.dispatch(actions.showAccountDetail(account))
 }

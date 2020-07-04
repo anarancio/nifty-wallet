@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Dropdown, DropdownMenuItem } from '../dropdown'
 import actions from '../../../../ui/app/actions'
+import rifActions from '../../../../ui/app/rif/actions'
 import { LOCALHOST } from '../../../../app/scripts/controllers/network/enums'
 import { networks } from '../../../../app/scripts/controllers/network/util'
 import ethNetProps from 'eth-net-props'
@@ -238,7 +239,10 @@ const mapDispatchToProps = dispatch => {
   return {
     showConfigPage: () => dispatch(actions.showConfigPage()),
     setRpcTarget: (rpcTarget) => dispatch(actions.setRpcTarget(rpcTarget)),
-    setProviderType: (providerType) => dispatch(actions.setProviderType(providerType)),
+    setProviderType: (providerType) => {
+      dispatch(rifActions.resetNavigation())
+      return dispatch(actions.setProviderType(providerType))
+    },
     showDeleteRPC: (label, transitionForward) => dispatch(actions.showDeleteRPC(label, transitionForward)),
   }
 }

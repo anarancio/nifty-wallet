@@ -34,6 +34,7 @@ const rifActions = {
   hideMenu,
   navigateTo,
   navigateBack,
+  resetNavigation,
   showModal,
   hideModal,
   getSubdomains,
@@ -440,6 +441,18 @@ function navigateTo (screenName, params, resetNavigation = false) {
   }
   backNavigated = false;
   return currentNavigation;
+}
+
+function resetNavigation () {
+  return (dispatch) => {
+    return new Promise((resolve) => {
+      for (let index = 0; index <= navigationStack.length; index++) {
+        dispatch(niftyActions.showLoadingIndication())
+        navigationStack.pop();
+      }
+      resolve();
+    });
+  };
 }
 
 function getSubdomains (domainName) {
