@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Dropdown, DropdownMenuItem } from '../dropdown'
 import actions from '../../../../ui/app/actions'
+import rifActions from '../../../../ui/app/rif/actions'
 import { LOCALHOST } from '../../../../app/scripts/controllers/network/enums'
 import { networks } from '../../../../app/scripts/controllers/network/util'
 import ethNetProps from 'eth-net-props'
@@ -19,6 +20,7 @@ class NetworksMenu extends Component {
     isNetworkMenuOpen: PropTypes.bool,
     setProviderType: PropTypes.func,
     showDeleteRPC: PropTypes.func,
+    goHome: PropTypes.func,
   }
 
   render () {
@@ -110,7 +112,12 @@ class NetworksMenu extends Component {
         <DropdownMenuItem
           key={networkObj.providerName}
           closeMenu={() => props.updateNetworksMenuOpenState(!isOpen)}
-          onClick={() => props.setProviderType(networkObj.providerName)}
+          onClick={() => {
+            if (networkObj.providerName === 'rsk' || networkObj.providerName === 'rsk_testnet') {
+              props.goHome();
+            }
+            return props.setProviderType(networkObj.providerName);
+          }}
           style={{
             paddingLeft: '20px',
             color: providerType === networkObj.providerName ? 'white' : '',
@@ -240,6 +247,7 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: (rpcTarget) => dispatch(actions.setRpcTarget(rpcTarget)),
     setProviderType: (providerType) => dispatch(actions.setProviderType(providerType)),
     showDeleteRPC: (label, transitionForward) => dispatch(actions.showDeleteRPC(label, transitionForward)),
+    goHome: () => dispatch(actions.goHome()),
   }
 }
 
