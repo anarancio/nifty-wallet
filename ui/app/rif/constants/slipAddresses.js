@@ -719,7 +719,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80000091',
     symbol: 'BCH',
-    name: 'Bitcoin',
+    name: 'Bitcoin Cash',
   },
   {
     chain: '0x80000092',
@@ -774,12 +774,12 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x8000009c',
     symbol: 'BTG',
-    name: 'Bitcoin',
+    name: 'Bitcoin Gold',
   },
   {
     chain: '0x8000009d',
     symbol: 'BTC2X',
-    name: 'Bitcoin',
+    name: 'Bitcoin 2x',
   },
   {
     chain: '0x8000009e',
@@ -909,7 +909,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800000b7',
     symbol: 'BTCP',
-    name: 'Bitcoin',
+    name: 'Bitcoin Private',
   },
   {
     chain: '0x800000b8',
@@ -919,7 +919,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800000b9',
     symbol: 'BCA',
-    name: 'Bitcoin',
+    name: 'Bitcoin Atom',
   },
   {
     chain: '0x800000ba',
@@ -1099,7 +1099,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800000de',
     symbol: 'BITG',
-    name: 'Bitcoin',
+    name: 'Bitcoin Green',
   },
   {
     chain: '0x800000df',
@@ -1254,12 +1254,14 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80000100',
     symbol: 'NANO',
-    name: 'Bitcoin',
+    name: 'Bitcoin Nano',
   },
   {
     chain: '0x80000101',
     symbol: 'BTCC',
-    name: 'Bitcoin',
+    name: 'Bitcoin Core' +
+      '' +
+      '',
   },
   {
     chain: '0x80000103',
@@ -1899,7 +1901,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80000182',
     symbol: 'BMV',
-    name: 'Bitcoin',
+    name: 'Bitcoin Matteo\'s Vision',
   },
   {
     chain: '0x80000183',
@@ -2099,7 +2101,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800001aa',
     symbol: 'BC',
-    name: 'Bitcoin',
+    name: 'Bitcoin Confidential',
   },
   {
     chain: '0x800001ab',
@@ -2124,7 +2126,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800001af',
     symbol: 'BTC2',
-    name: 'Bitcoin',
+    name: 'Bitcoin 2',
   },
   {
     chain: '0x800001b0',
@@ -2169,7 +2171,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800001b8',
     symbol: 'BTCR',
-    name: 'Bitcoin',
+    name: 'Bitcoin Royale',
   },
   {
     chain: '0x800001b9',
@@ -2404,7 +2406,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800001e7',
     symbol: 'COIN',
-    name: 'Bitcoin',
+    name: 'Bitcoin Bank',
   },
   {
     chain: '0x800001e8',
@@ -2774,12 +2776,12 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800003e7',
     symbol: 'BCD',
-    name: 'Bitcoin',
+    name: 'Bitcoin Diamond',
   },
   {
     chain: '0x800003e8',
     symbol: 'BTN',
-    name: 'Bitcoin',
+    name: 'Bitcoin New',
   },
   {
     chain: '0x800003e9',
@@ -2844,7 +2846,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80000479',
     symbol: 'CDY',
-    name: 'Bitcoin',
+    name: 'Bitcoin Candy',
   },
   {
     chain: '0x80000539',
@@ -3159,7 +3161,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80001a0a',
     symbol: 'BPA',
-    name: 'Bitcoin',
+    name: 'Bitcoin Pizza',
   },
   {
     chain: '0x80001a20',
@@ -3199,7 +3201,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80002327',
     symbol: 'BTP',
-    name: 'Bitcoin',
+    name: 'Bitcoin Pay',
   },
   {
     chain: '0x80002645',
@@ -3209,12 +3211,12 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x800026a0',
     symbol: 'BTF',
-    name: 'Bitcoin',
+    name: 'Bitcoin Faith',
   },
   {
     chain: '0x8000270f',
     symbol: 'GOD',
-    name: 'Bitcoin',
+    name: 'Bitcoin God',
   },
   {
     chain: '0x80002710',
@@ -3224,7 +3226,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80002833',
     symbol: 'BTR',
-    name: 'Bitcoin',
+    name: 'Bitcoin Rhodium',
   },
   {
     chain: '0x80002b67',
@@ -3313,7 +3315,7 @@ export const SLIP_ADDRESSES = [
   {
     chain: '0x80008456',
     symbol: 'BTCS',
-    name: 'Bitcoin',
+    name: 'Bitcoin Stake',
   },
   {
     chain: '0x80008888',
