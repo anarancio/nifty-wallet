@@ -25,6 +25,7 @@ class OpenChannel extends Component {
     createDeposit: PropTypes.func,
     afterChannelCreated: PropTypes.func,
     afterDepositCreated: PropTypes.func,
+    reloadChannels: PropTypes.func,
     getTokens: PropTypes.func,
     option: PropTypes.object,
   }
@@ -196,6 +197,7 @@ class OpenChannel extends Component {
     callbackHandlers.requestHandler = (result) => {
       console.debug('OPEN CHANNEL REQUESTED', result);
       this.props.showToast('Requesting Open Channel');
+      this.props.reloadChannels();
     };
     callbackHandlers.successHandler = async (response) => {
       console.debug('CHANNEL OPENED', response);
@@ -236,7 +238,6 @@ class OpenChannel extends Component {
 
         // we need to deposit
         this.props.showToast(`Trying to deposit ${this.state.amount} ${this.state.selectedToken.name} on channel ${channelIdentifier}`);
-
         await this.props.createDeposit(
           this.state.destination,
           this.state.selectedToken.address,
