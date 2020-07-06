@@ -70,7 +70,7 @@ class Subdomains extends Component {
             contentClasses={classes.content}
             actionClasses={classes.contentActions}
             text={subdomain.name}
-            enableRightChevron={true}
+            enableRightChevron={true && !subdomain.action}
             onRightChevronClick={() => showSubdomainDetails({
               domainName: domainInfo.domainName,
               selectedResolverAddress: domainInfo.selectedResolverAddress,
@@ -78,6 +78,7 @@ class Subdomains extends Component {
               pageName: pageName,
               redirectParams: redirectParams,
             })}
+            showPending={subdomain.action}
           />
         )
         return {
