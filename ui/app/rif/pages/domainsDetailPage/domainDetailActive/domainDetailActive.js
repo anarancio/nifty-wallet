@@ -232,6 +232,7 @@ function mapStateToProps (state) {
   const params = state.appState.currentView.params;
   const domain = params.domain;
   const details = domain.details || params.details;
+  console.debug('=================================== ESTOS SON LOS NUEVOS2', params.newSubdomains || details.newSubdomains || [])
   return {
     dispatch: state.dispatch,
     status: details.status,
