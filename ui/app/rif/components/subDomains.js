@@ -45,9 +45,6 @@ class Subdomains extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    console.debug('=========================================!arraysMatch(prevProps.newSubdomains, this.props.newSubdomains)', !arraysMatch(prevProps.newSubdomains, this.props.newSubdomains));
-    console.debug('=========================================this.props.newSubdomains', this.props.newSubdomains);
-    console.debug('=========================================prevProps.newSubdomains', prevProps.newSubdomains);
     if (!arraysMatch(prevProps.newSubdomains, this.props.newSubdomains)) {
       this.setState({subdomains: this.props.newSubdomains, filteredSubdomains: this.props.newSubdomains});
     }
