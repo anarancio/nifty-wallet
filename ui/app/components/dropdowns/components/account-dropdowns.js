@@ -2,7 +2,6 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
-const rifActions = require('../../../rif/actions')
 const ethNetProps = require('eth-net-props')
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
@@ -433,10 +432,7 @@ const mapDispatchToProps = (dispatch) => {
     actions: {
       hideSidebar: () => dispatch(actions.hideSidebar()),
       showConfigPage: () => dispatch(actions.showConfigPage()),
-      showAccountDetail: (address) => {
-        dispatch(rifActions.resetNavigation())
-        return dispatch(actions.showAccountDetail(address))
-      },
+      showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
       showAccountDetailModal: () => {
         dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
       },

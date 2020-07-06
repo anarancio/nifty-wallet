@@ -20,6 +20,7 @@ class NetworksMenu extends Component {
     isNetworkMenuOpen: PropTypes.bool,
     setProviderType: PropTypes.func,
     showDeleteRPC: PropTypes.func,
+    goHome: PropTypes.func,
   }
 
   render () {
@@ -111,7 +112,12 @@ class NetworksMenu extends Component {
         <DropdownMenuItem
           key={networkObj.providerName}
           closeMenu={() => props.updateNetworksMenuOpenState(!isOpen)}
-          onClick={() => props.setProviderType(networkObj.providerName)}
+          onClick={() => {
+            if (networkObj.providerName === 'rsk' || networkObj.providerName === 'rsk_testnet') {
+              props.goHome();
+            }
+            return props.setProviderType(networkObj.providerName);
+          }}
           style={{
             paddingLeft: '20px',
             color: providerType === networkObj.providerName ? 'white' : '',
@@ -239,11 +245,9 @@ const mapDispatchToProps = dispatch => {
   return {
     showConfigPage: () => dispatch(actions.showConfigPage()),
     setRpcTarget: (rpcTarget) => dispatch(actions.setRpcTarget(rpcTarget)),
-    setProviderType: (providerType) => {
-      dispatch(rifActions.resetNavigation())
-      return dispatch(actions.setProviderType(providerType))
-    },
+    setProviderType: (providerType) => dispatch(actions.setProviderType(providerType)),
     showDeleteRPC: (label, transitionForward) => dispatch(actions.showDeleteRPC(label, transitionForward)),
+    goHome: () => dispatch(actions.goHome()),
   }
 }
 

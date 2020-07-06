@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import actions from '../../../../ui/app/actions'
-import rifActions from '../../../../ui/app/rif/actions'
 import { connect } from 'react-redux'
 import { DropdownMenuItem } from '../dropdown'
 import Identicon from '../identicon'
@@ -157,10 +156,7 @@ class AccountsDropdownItemView extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
-      showAccountDetail: (address) => {
-        dispatch(rifActions.resetNavigation())
-        return dispatch(actions.showAccountDetail(address))
-      },
+      showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
       showDeleteImportedAccount: (identity, keyring) => dispatch(actions.showDeleteImportedAccount(identity, keyring)),
       getContract: (addr) => dispatch(actions.getContract(addr)),
       connectHardwareAndUnlockAddress: (deviceName, hdPath, address) => {

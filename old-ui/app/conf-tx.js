@@ -3,7 +3,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const rifActions = require('../../ui/app/rif/actions')
 const LoadingIndicator = require('./components/loading')
 const txHelper = require('../lib/tx-helper')
 const log = require('loglevel')
@@ -264,7 +263,6 @@ ConfirmTxScreen.prototype._checkIfContractExecutionAndUnlockContract = function 
 ConfirmTxScreen.prototype._unlockContract = function (to) {
   const currentKeyring = getCurrentKeyring(to, this.props.network, this.props.keyrings, this.props.identities)
   if (ifContractAcc(currentKeyring)) {
-     this.props.dispatch(rifActions.resetNavigation())
      this.props.dispatch(actions.showAccountDetail(to))
   }
 }
