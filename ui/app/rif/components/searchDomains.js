@@ -57,7 +57,12 @@ class SearchDomains extends Component {
           this.props.getDomainDetails(domainName).then(details => {
             console.debug('Details retrieved', details);
             return this.props.showDomainsDetailPage({
-              details: details,
+              status: details.status,
+              domain: {
+                name:details.name,
+                status: details.status,
+                details: details,
+              },
             });
           }).catch(error => {
             console.debug('Error retrieving domain details', error);

@@ -190,7 +190,7 @@ class RifConfiguration extends Component {
             <input value={this.state.configuration.rns.contracts.rif} onChange={(event) => this.updateContractAddress('rif', event)} placeholder="RIF Contract Address" />
           </li>
           <li>
-            <label>IFSAddress Registrar Contract Address</label>
+            <label>FIFSAddress Registrar Contract Address</label>
             <input value={this.state.configuration.rns.contracts.fifsAddrRegistrar} onChange={(event) => this.updateContractAddress('fifsAddrRegistrar', event)} placeholder="FIFSAddress Registrar Contract Address" />
           </li>
           <li>

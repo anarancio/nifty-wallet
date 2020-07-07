@@ -231,6 +231,7 @@ class DomainsDetailActiveScreen extends Component {
 function mapStateToProps (state) {
   const params = state.appState.currentView.params;
   const domain = params.domain;
+  console.debug('====================================================domain', domain);
   const details = domain.details || params.details;
   return {
     dispatch: state.dispatch,
