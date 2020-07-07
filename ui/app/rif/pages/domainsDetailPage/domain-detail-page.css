@@ -23,10 +23,16 @@
 
 .select-token-item-icon {
   width: 18px;
+  height: 18px;
+  max-width: 22px;
+  max-height: 22px;
 }
 
 .row-data-left-icon {
-  width: 18px;
+  width: 20px;
+  height: 20px;
+  max-width: 24px;
+  max-height: 24px;
 }
 
 .not-found-info {
