@@ -114,6 +114,8 @@ export default class RnsDelegate {
           afterClean: (transactionListenerId) => {
             delete this.store.transactionListeners[transactionListenerId];
           },
+          address: this.address,
+          network: this.networkController.getNetworkState(),
         });
         const transactionListenerId = transactionListener.id;
         contractInstance[methodName].sendTransaction(...parameters, transactionOptions, (error, transactionHash) => {
@@ -153,10 +155,10 @@ export default class RnsDelegate {
     return new Promise((resolve, reject) => {
       const listener = this.store.transactionListeners[transactionListenerId];
       if (listener) {
-        listener.transactionConfirmed().then(transactionReceipt => {
-          resolve(transactionReceipt);
-        }).catch(transactionReceiptOrError => {
-          reject(transactionReceiptOrError);
+        listener.transactionConfirmed().then(result => {
+          resolve(result);
+        }).catch(result => {
+          reject(result);
         });
       } else {
         reject('No listener found for this id' + transactionListenerId);
@@ -207,41 +209,44 @@ export default class RnsDelegate {
    * Gets the store state
    * @returns the current state
    */
-  getStoreState () {
+  getStoreState (networkId = this.networkController.getNetworkState() === 'loading' ? global.networks.main : this.networkController.getNetworkState()) {
     const storeState = this.store.getState();
-    const currentNetworkId = this.networkController.getNetworkState() === 'loading' ? global.networks.main : this.networkController.getNetworkState();
-    return storeState[currentNetworkId] ? storeState[currentNetworkId] : {};
+    return storeState[networkId] ? storeState[networkId] : {};
   }
 
   /**
    * Gets the state of the container for the current selected address.
    * @param containerName
+   * @param address the address to use for retrieve information
+   * @param networkId the networkId to use to retrieve the information
    * @returns the current container state
    */
-  getStateForContainer (containerName) {
-    return this.getStoreState() &&
-      this.getStoreState()[containerName] &&
-        this.getStoreState()[containerName][this.address] ?
-          this.getStoreState()[containerName][this.address] : {};
+  getStateForContainer (containerName, address = this.address, networkId) {
+    return this.getStoreState(networkId) &&
+      this.getStoreState(networkId)[containerName] &&
+        this.getStoreState(networkId)[containerName][address] ?
+          this.getStoreState(networkId)[containerName][address] : {};
   }
 
   /**
    * Updates the state for a container on the current selected address
    * @param containerName the container name
+   * @param address the address to use to update the information
+   * @param networkId the networkId to use to update the information
    * @param newState to update with
    */
-  updateStateForContainer (containerName, newState) {
-    let currentState = this.getStoreState();
+  updateStateForContainer (containerName, newState, address = this.address, networkId) {
+    let currentState = this.getStoreState(networkId);
     if (!currentState) {
       currentState = {};
     }
     if (!currentState[containerName]) {
       currentState[containerName] = {};
     }
-    if (!currentState[containerName][[this.address]]) {
-      currentState[containerName][[this.address]] = {};
+    if (!currentState[containerName][address]) {
+      currentState[containerName][address] = {};
     }
-    currentState[containerName][[this.address]] = extend(currentState[containerName][[this.address]], newState);
+    currentState[containerName][address] = extend(currentState[containerName][address], newState);
     this.updateStoreState(currentState);
   }
 

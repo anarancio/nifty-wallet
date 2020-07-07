@@ -18,14 +18,12 @@ export default class RnsResolver extends RnsJsDelegate {
     this.rskOwnerContractInstance = this.web3.eth.contract(RSKOwner).at(configuration.rns.contracts.rskOwner);
     this.multiChainresolverContractInstance = this.web3.eth.contract(MultiChainresolver).at(configuration.rns.contracts.multiChainResolver);
     this.store.pendingChainAddressesActions = [];
-    this.store.notifierTopics = [];
   }
 
   onConfigurationUpdated (configuration) {
     super.onConfigurationUpdated(configuration);
     this.rskOwnerContractInstance = this.web3.eth.contract(RSKOwner).at(configuration.rns.contracts.rskOwner);
     this.multiChainresolverContractInstance = this.web3.eth.contract(MultiChainresolver).at(configuration.rns.contracts.multiChainResolver);
-    this.store.notifierTopics = [];
   }
 
   buildApi () {
@@ -130,15 +128,15 @@ export default class RnsResolver extends RnsJsDelegate {
     return new Promise((resolve) => {
       const transactionListener = this.send(this.rnsContractInstance, 'setResolver', [namehash.hash(domainName), resolverAddress]);
       transactionListener.transactionConfirmed()
-        .then(transactionReceipt => {
+        .then(result => {
           this.getDomainDetails(domainName).then(domainDetails => {
-            const domain = this.getDomain(domainName);
+            const domain = this.getDomain(domainName, result.address, result.network);
             domain.details = domainDetails;
-            this.updateDomains(domain);
+            this.updateDomain(domain, result.address, result.network);
           });
-          console.debug('setResolver success', transactionReceipt);
-        }).catch(transactionReceiptOrError => {
-          console.debug('Error when trying to set resolver', transactionReceiptOrError);
+          console.debug('setResolver success', result);
+        }).catch(result => {
+          console.debug('Error when trying to set resolver', result);
         });
       resolve(transactionListener.id);
     });
@@ -241,10 +239,10 @@ export default class RnsResolver extends RnsJsDelegate {
       });
       const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
       transactionListener.transactionConfirmed()
-        .then(transactionReceipt => {
-          console.debug('setChainAddressForResolver success', transactionReceipt);
-        }).catch(transactionReceiptOrError => {
-          console.debug('Error when trying to set chain address for resolver', transactionReceiptOrError);
+        .then(result => {
+          console.debug('setChainAddressForResolver success', result);
+        }).catch(result => {
+          console.debug('Error when trying to set chain address for resolver', result);
         });
       resolve(transactionListener.id);
     });

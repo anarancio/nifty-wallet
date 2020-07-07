@@ -23,6 +23,7 @@ const rifActions = {
   getChainAddresses,
   setChainAddressForResolver,
   deletePendingChainAddress,
+  deletePendingSubdomain,
   requestDomainRegistration,
   canFinishRegistration,
   finishRegistration,
@@ -34,6 +35,7 @@ const rifActions = {
   hideMenu,
   navigateTo,
   navigateBack,
+  resetNavigation,
   showModal,
   hideModal,
   getSubdomains,
@@ -248,6 +250,20 @@ function deletePendingChainAddress (chain, isSubdomain) {
   }
 }
 
+function deletePendingSubdomain (domainName, subdomain) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.rns.register.deletePendingSubdomain(domainName, subdomain, (error, result) => {
+        if (error) {
+          dispatch(niftyActions.displayWarning(error));
+          return reject(error);
+        }
+        return resolve(result);
+      });
+    });
+  }
+}
+
 function getChainAddresses (domainName, subdomain = '') {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
@@ -440,6 +456,18 @@ function navigateTo (screenName, params, resetNavigation = false) {
   }
   backNavigated = false;
   return currentNavigation;
+}
+
+function resetNavigation () {
+  return (dispatch) => {
+    return new Promise((resolve) => {
+      for (let index = 0; index <= navigationStack.length; index++) {
+        dispatch(niftyActions.showLoadingIndication())
+        navigationStack.pop();
+      }
+      resolve();
+    });
+  };
 }
 
 function getSubdomains (domainName) {

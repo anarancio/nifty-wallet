@@ -55,16 +55,16 @@ export default class RnsRegister extends RnsJsDelegate {
               console.debug('Commitment received', commitment);
               const transactionListener = this.send(this.fifsAddrRegistrarInstance, 'commit', [commitment]);
               transactionListener.transactionConfirmed()
-                .then(transactionReceipt => {
+                .then(result => {
                   const domain = this.createNewDomainObject(domainName);
                   domain.registration.rifCost = rifCost.toString();
                   domain.registration.yearsToRegister = yearsToRegister;
                   domain.registration.secret = secret;
                   domain.registration.commitment = commitment;
-                  this.updateDomains(domain);
-                  this.startWatchingCommitment(domainName, commitment);
-              }).catch(transactionReceiptOrError => {
-                console.debug('Transaction Failed', transactionReceiptOrError);
+                  this.updateDomain(domain, result.address, result.network);
+                  this.startWatchingCommitment(domainName, commitment, result.address, result.network);
+              }).catch(result => {
+                console.debug('Transaction Failed', result);
               });
               resolve({
                 commitment,
@@ -89,23 +89,25 @@ export default class RnsRegister extends RnsJsDelegate {
    * Watchs for commitment reveal status for a domain and updates the domain after is ready to reveal.
    * @param domainName the domainName to check
    * @param commitment the commitment to check for reveal
+   * @param address
+   * @param network
    */
-  startWatchingCommitment (domainName, commitment) {
+  startWatchingCommitment (domainName, commitment, address, network) {
     let time = 0;
     const interval = setInterval(async () => {
-      const domain = this.getDomain(domainName);
+      const domain = this.getDomain(domainName, address, network);
       if (domain && domain.registration) {
         const readyToRegister = await this.canFinishRegistration(commitment);
         if (readyToRegister) {
           domain.registration.readyToRegister = true;
-          this.updateDomains(domain);
+          this.updateDomain(domain, address, network);
           clearInterval(interval);
         }
       } else {
         time += rns.domainRegister.secondsToUpdateCommitment * 1000;
       }
       if (time >= rns.domainRegister.minutesWaitingForCommitmentReveal * 60 * 1000) {
-        this.deleteDomain(domain.name);
+        this.deleteDomain(domain.name, address, network);
         clearInterval(interval);
       }
     }, rns.domainRegister.secondsToUpdateCommitment * 1000);
@@ -160,15 +162,16 @@ export default class RnsRegister extends RnsJsDelegate {
               const data = this.getAddrRegisterData(cleanDomainName, this.address, secret, durationBN, this.address);
               const transactionListener = this.send(this.rifContractInstance, 'transferAndCall', [this.fifsAddrRegistrarAddress, rifCost, data]);
               transactionListener.transactionConfirmed()
-                .then(transactionReceipt => {
-                  console.debug('Transaction success', transactionReceipt);
+                .then(result => {
+                  console.debug('Transaction success', result);
                   pendingDomain.registration = null;
                   this.container.resolver.getDomainDetails(domainName).then(domainDetails => {
                     pendingDomain.details = domainDetails;
-                    this.updateDomains(pendingDomain);
+                    pendingDomain.status = 'active';
+                    this.updateDomain(pendingDomain, result.address, result.network);
                   });
-                }).catch(transactionReceipt => {
-                console.debug('Transaction failed', transactionReceipt);
+                }).catch(result => {
+                console.debug('Transaction failed', result);
               });
               return resolve(transactionListener.id);
             } else {

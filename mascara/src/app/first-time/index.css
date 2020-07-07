@@ -405,7 +405,7 @@
   bottom: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -705,7 +705,7 @@ button.backup-phrase__confirm-seed-option:hover {
 .first-time-flow__button {
   height: 54px;
   width: 198px;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.14);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   color: #FFFFFF;
   font-size: 20px;
   font-weight: 500;
@@ -784,8 +784,8 @@ button.first-time-flow__button--tertiary:hover {
 .loading-screen__message {
   color: #1B344D;
   font-size: 20px;
-  line-height: 26px;
   text-align: center;
+  white-space: pre;
   font-family: Roboto;
 }
 

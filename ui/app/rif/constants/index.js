@@ -1,4 +1,4 @@
-import { DEFAULT_ICON, domainIconProps, luminoNodeIconProps, rifStorageIconProps, tokenIcons, SVG_PLUS} from './icons';
+import { DEFAULT_ICON, DEFAULT_ICON_SVG, domainIconProps, luminoNodeIconProps, rifStorageIconProps, tokenIcons, SVG_PLUS} from './icons';
 
 export const registrationTimeouts = {
   // number of seconds to wait before updating the page for the clock waiting.
@@ -29,6 +29,7 @@ const PAGINATION_DEFAULT_SIZE = 3;
 
 export {
   DEFAULT_ICON,
+  DEFAULT_ICON_SVG,
   domainIconProps,
   luminoNodeIconProps,
   rifStorageIconProps,

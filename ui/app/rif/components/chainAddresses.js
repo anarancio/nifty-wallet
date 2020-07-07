@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import rifActions from '../actions';
 import {CustomButton, GenericTable} from './index';
 import {getChainAddressByChainAddress, arraysMatch} from '../utils/utils';
-import {DEFAULT_ICON, GET_RESOLVERS, SVG_PLUS} from '../constants';
+import {DEFAULT_ICON_SVG, GET_RESOLVERS, SVG_PLUS} from '../constants';
 import ItemWithActions from './item-with-actions';
 import InputWithSubmit from './InputWithSubmit';
 import AddNewChainAddressToResolver
@@ -87,7 +87,7 @@ class ChainAddresses extends Component {
     const { isOwner, classes } = this.props;
     return this.state.chainAddresses.map((chainAddress) => {
       const address = getChainAddressByChainAddress(chainAddress.chain);
-      const icon = address.icon ? address.icon : DEFAULT_ICON;
+      const icon = address.icon ? address.icon : DEFAULT_ICON_SVG;
       const item = (
         <ItemWithActions
           contentClasses={classes.content}
@@ -95,7 +95,8 @@ class ChainAddresses extends Component {
           actionClasses={classes.contentActions}
           enableEdit={isOwner && chainAddress.action === ''}
           enableDelete={isOwner && chainAddress.action === ''}
-          text={chainAddress.address} leftIcon={icon}
+          text={chainAddress.address}
+          leftIcon={icon}
           onDeleteClick={this.onDeleteClick.bind(this, chainAddress.chain)}
         >
           <InputWithSubmit classes={classes.editSubmit} hiddenValue={chainAddress.chain} submit={this.onChangeSubmit} textInput={chainAddress.address} />

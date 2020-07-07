@@ -21,6 +21,21 @@
   margin-bottom: 0;
 }
 
+.select-token-item-icon {
+  width: 18px;
+  height: 18px;
+  max-width: 22px;
+  max-height: 22px;
+}
+
+.row-data-left-icon {
+  width: 20px;
+  height: 20px;
+  max-width: 24px;
+  max-height: 24px;
+  margin-right: 5px;
+}
+
 .not-found-info {
   font-family: var(--primary-font);
   color: var(--gray-text);
