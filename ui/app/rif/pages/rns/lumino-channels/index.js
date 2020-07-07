@@ -234,11 +234,11 @@ class LuminoChannels extends Component {
             </svg>
             <span>{channel.partner_address}</span>
           </div>
-          {isOpen &&
-          <Tabs tabs={tabs} classes={styles}/>
-          }
-          {!isOpen && <div className="mt-2">{getLoader(this.closingMessage())}</div>}
         </div>
+        {isOpen &&
+        <Tabs tabs={tabs} classes={styles}/>
+        }
+        {!isOpen && <div className="mt-2">{getLoader(this.closingMessage())}</div>}
       </div>
     );
   }
