@@ -21,6 +21,14 @@
   margin-bottom: 0;
 }
 
+.select-token-item-icon {
+  width: 18px;
+}
+
+.row-data-left-icon {
+  width: 18px;
+}
+
 .not-found-info {
   font-family: var(--primary-font);
   color: var(--gray-text);
