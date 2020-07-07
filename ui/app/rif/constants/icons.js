@@ -7,6 +7,8 @@ export const DEFAULT_ICON = {
   icon: faCoins,
 }
 
+export const DEFAULT_ICON_SVG = 'coinstack.svg'
+
 export const domainIconProps = {
   color: '#000080',
   icon: faCheckCircle,
