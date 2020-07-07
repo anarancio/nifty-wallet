@@ -61,7 +61,8 @@ class LuminoChannels extends Component {
         balance,
         isOpen,
         channelStatus,
-      });
+      })
+      ;
     });
   }
 
@@ -184,13 +185,22 @@ class LuminoChannels extends Component {
     return retVal;
   }
 
+  closingMessage = () => {
+    // eslint-disable-next-line camelcase
+    const {channel: {sdk_status}} = this.props;
+    const messages = {
+      'CHANNEL_WAITING_FOR_CLOSE': 'Closing channel\nPlease wait, this operation could take around 4 minutes',
+      'CHANNEL_CLOSED': 'Channel has been closed\nThe settlement will take around 2 hours',
+    }
+    return messages[sdk_status]
+  }
+
   render () {
     const {channel} = this.props;
     const {isOpen, channelStatus} = this.state;
     const tabs = this.buildTabs();
     return (
       <div className="lumino-channel-detail">
-
         <div className="d-flex align-items-center justify-center">
           {channelStatus}
           <div className="lumino-channel-detail__amount mx-auto">
@@ -228,6 +238,7 @@ class LuminoChannels extends Component {
         {isOpen &&
         <Tabs tabs={tabs} classes={styles}/>
         }
+        {!isOpen && <div className="mt-2">{getLoader(this.closingMessage())}</div>}
       </div>
     );
   }
