@@ -17,7 +17,7 @@ class ItemWithActions extends Component {
     text: PropTypes.string.isRequired,
     onEditClick: PropTypes.func,
     onDeleteClick: PropTypes.func,
-    leftIcon: PropTypes.shape({icon: PropTypes.any, color: PropTypes.string }),
+    leftIcon: PropTypes.string,
     leftContent: PropTypes.element,
     children: PropTypes.element,
     contentClasses: PropTypes.string,
@@ -63,11 +63,7 @@ class ItemWithActions extends Component {
        <div>
          <div className="row-data-container">
            {leftIcon && (
-             <FontAwesomeIcon
-               icon={leftIcon.icon}
-               color={leftIcon.color}
-               className={''}
-             />
+             <img className="row-data-left-icon" src={'/images/rif/' + leftIcon} />
            )}
            {leftContent && <div>{leftContent}</div>}
            <div className={contentClasses}>

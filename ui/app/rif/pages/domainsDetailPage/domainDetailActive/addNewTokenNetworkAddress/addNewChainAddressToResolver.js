@@ -1,9 +1,8 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import Select from 'react-select'
-import {DEFAULT_ICON} from '../../../../constants';
+import {DEFAULT_ICON_SVG} from '../../../../constants';
 
 class AddNewChainAddressToResolver extends Component {
   static propTypes = {
@@ -35,11 +34,11 @@ class AddNewChainAddressToResolver extends Component {
 
   render () {
     const selectValue = ({value}) => {
-      const icon = value.icon ? value.icon : DEFAULT_ICON;
+      const icon = value.icon ? value.icon : DEFAULT_ICON_SVG;
       return (
         <div>
           <span>
-          <FontAwesomeIcon icon={icon.icon} color={icon.color}/>
+            <img className="select-token-item-icon" src={'/images/rif/' + icon}/>
             <span>{value.name}</span>
           </span>
         </div>
@@ -47,7 +46,7 @@ class AddNewChainAddressToResolver extends Component {
     }
     const selectOption = (props) => {
       const {option} = props;
-      const icon = option.icon ? option.icon : DEFAULT_ICON;
+      const icon = option.icon ? option.icon : DEFAULT_ICON_SVG;
       return (
         <div
           onMouseDown={(event) => {
@@ -64,7 +63,7 @@ class AddNewChainAddressToResolver extends Component {
           }}
         >
           <span>
-            <FontAwesomeIcon icon={icon.icon} color={icon.color}/>
+            <img className="select-token-item-icon" src={'/images/rif/' + icon}/>
             <span className="select-token-item-text">{option.name}</span>
           </span>
         </div>
