@@ -189,7 +189,7 @@ class LuminoChannels extends Component {
     // eslint-disable-next-line camelcase
     const {channel: {sdk_status}} = this.props;
     const messages = {
-      'CHANNEL_WAITING_FOR_CLOSE': 'Closing channel\nThis operation can take around 4 minutes',
+      'CHANNEL_WAITING_FOR_CLOSE': 'Closing channel\nPlease wait, this operation could take around 4 minutes',
       'CHANNEL_CLOSED': 'Channel has been closed\nThe settlement will take around 2 hours',
     }
     return messages[sdk_status]

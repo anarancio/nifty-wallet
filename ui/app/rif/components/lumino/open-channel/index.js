@@ -208,7 +208,7 @@ class OpenChannel extends Component {
       if (this.state.amount) {
         this.setState({
           loading: true,
-          loadingMessage: 'Making deposit\nThis operation can take around 6 minutes',
+          loadingMessage: 'Making deposit\nPlease wait, this operation could take around 6 minutes',
         });
         const depositCallbackHandlers = new CallbackHandlers();
         depositCallbackHandlers.requestHandler = (result) => {
@@ -269,7 +269,7 @@ class OpenChannel extends Component {
           }
           this.setState({
             loading: true,
-            loadingMessage: 'Opening channel\nThis operation can take around 4 minutes',
+            loadingMessage: 'Opening channel\nPlease wait, this operation could take around 4 minutes',
           });
           await this.props.openChannel(this.state.destination, this.state.selectedToken.address, callbackHandlers);
         } else {
