@@ -24,7 +24,9 @@
 }
 
 .lumino-channel-detail__description {
-  padding: 0 30px;
+  display: flex;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 .channel-partner-address {
@@ -34,9 +36,8 @@
 }
 
 .channel-partner-address span {
-  width: 60px;
+  font-size: 0.75rem;
   text-overflow: ellipsis;
-  overflow: hidden;
   display: inline-block;
   margin-left: 6px;
 }
@@ -59,7 +60,6 @@
 .lumino-channel-detail__amount {
   display: flex;
   align-items: baseline;
-  margin-right: 38px;
   font-family: var(--primary-font);
   font-size: 22px;
   color: #7D7D7D;

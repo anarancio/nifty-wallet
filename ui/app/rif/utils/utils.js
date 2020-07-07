@@ -43,6 +43,9 @@ const getStatus = (sdkStatus) => {
     case 'CHANNEL_WAITING_FOR_CLOSE':
       retVal = 'Waiting for Close';
       break;
+    case 'CHANNEL_WAITING_OPENING':
+      retVal = 'Opening';
+      break;
     default:
       retVal = 'Closed';
   }

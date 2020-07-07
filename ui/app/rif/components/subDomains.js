@@ -25,7 +25,6 @@ class Subdomains extends Component {
     showToast: PropTypes.func,
     showTransactionConfirmPage: PropTypes.func,
     isSubdomainAvailable: PropTypes.func,
-    deleteSubdomain: PropTypes.func,
     showSubdomainDetails: PropTypes.func,
     newSubdomains: PropTypes.array,
     paginationSize: PropTypes.number,
@@ -70,7 +69,7 @@ class Subdomains extends Component {
             contentClasses={classes.content}
             actionClasses={classes.contentActions}
             text={subdomain.name}
-            enableRightChevron={true}
+            enableRightChevron={!subdomain.action}
             onRightChevronClick={() => showSubdomainDetails({
               domainName: domainInfo.domainName,
               selectedResolverAddress: domainInfo.selectedResolverAddress,
@@ -78,6 +77,7 @@ class Subdomains extends Component {
               pageName: pageName,
               redirectParams: redirectParams,
             })}
+            showPending={subdomain.action}
           />
         )
         return {
@@ -183,7 +183,6 @@ function mapDispatchToProps (dispatch) {
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
     isSubdomainAvailable: (domainName, subdomain) => dispatch(rifActions.isSubdomainAvailable(domainName, subdomain)),
-    deleteSubdomain: (domainName, subdomain) => dispatch(rifActions.deleteSubdomain(domainName, subdomain)),
   }
 }
 
