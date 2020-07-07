@@ -31,7 +31,7 @@ class LuminoNetworkChannels extends Component {
     if (this.state.networkChannels) {
       return this.state.networkChannels.map(networkChannel => {
         const item = (<ItemWithActions
-          leftIcon={{icon: faCoins, color: '#05836D'}}
+          leftIcon={'rif.png'}
           contentClasses={classes.content}
           actionClasses={classes.contentActions}
           text={networkChannel.symbol}

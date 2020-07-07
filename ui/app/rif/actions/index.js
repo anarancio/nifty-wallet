@@ -23,7 +23,6 @@ const rifActions = {
   getChainAddresses,
   setChainAddressForResolver,
   deletePendingChainAddress,
-  deletePendingSubdomain,
   requestDomainRegistration,
   canFinishRegistration,
   finishRegistration,
@@ -236,24 +235,10 @@ function setChainAddressForResolver (domainName, chain, chainAddress, subdomain 
     })
   }
 }
-function deletePendingChainAddress (chain, isSubdomain) {
+function deletePendingChainAddress (domainName, chain, isSubdomain) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.rns.resolver.deletePendingChainAddress(chain, isSubdomain, (error, result) => {
-        if (error) {
-          dispatch(niftyActions.displayWarning(error));
-          return reject(error);
-        }
-        return resolve(result);
-      });
-    });
-  }
-}
-
-function deletePendingSubdomain (domainName, subdomain) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      background.rif.rns.register.deletePendingSubdomain(domainName, subdomain, (error, result) => {
+      background.rif.rns.resolver.deletePendingChainAddress(domainName, chain, isSubdomain, (error, result) => {
         if (error) {
           dispatch(niftyActions.displayWarning(error));
           return reject(error);

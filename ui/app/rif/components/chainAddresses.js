@@ -23,7 +23,6 @@ class ChainAddresses extends Component {
     showThis: PropTypes.func.isRequired,
     redirectParams: PropTypes.any.isRequired,
     isOwner: PropTypes.bool.isRequired,
-    deletePendingChainAddress: PropTypes.func,
     subdomainName: PropTypes.string,
     getChainAddresses: PropTypes.func,
     newChainAddresses: PropTypes.array,
@@ -128,10 +127,7 @@ class ChainAddresses extends Component {
     this.setState({ insertedAddress: address });
   }
 
- timeoutToRedirect = (selectedChainAddress, isRetry = true) => setTimeout(async () => {
-    if (!isRetry) {
-     await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
-    }
+ timeoutToRedirect = (selectedChainAddress) => setTimeout(async () => {
     const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
     if (!arraysMatch(this.state.chainAddresses, chainAddresses)) {
       this.props.showThis(
@@ -153,7 +149,7 @@ class ChainAddresses extends Component {
       .then(async (transactionReceipt) => {
         if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.state.selectedResolverAddress)) {
           // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
-          this.timeoutToRedirect(selectedChainAddress, false);
+          this.timeoutToRedirect(selectedChainAddress);
         }
       });
     this.props.showTransactionConfirmPage({
@@ -246,7 +242,6 @@ function mapDispatchToProps (dispatch) {
     displayWarning: (error) => dispatch(niftyActions.displayWarning(error)),
     getChainAddresses: (domainName, subdomain) => dispatch(rifActions.getChainAddresses(domainName, subdomain)),
     setChainAddressForResolver: (domainName, chain, chainAddress, subdomain, action) => dispatch(rifActions.setChainAddressForResolver(domainName, chain, chainAddress, subdomain, action)),
-    deletePendingChainAddress: (chain, isSubdomain) => dispatch(rifActions.deletePendingChainAddress(chain, isSubdomain)),
     showThis: (pageName, props) => dispatch(rifActions.navigateTo(pageName, props)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
