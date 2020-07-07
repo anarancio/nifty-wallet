@@ -56,7 +56,9 @@ class SearchDomains extends Component {
           // We need to put an else here, so we can redirect to details page, remember that the localstorage part of code, will not be anymore here
           this.props.getDomainDetails(domainName).then(details => {
             console.debug('Details retrieved', details);
-            return this.props.showDomainsDetailPage(details);
+            return this.props.showDomainsDetailPage({
+              details: details,
+            });
           }).catch(error => {
             console.debug('Error retrieving domain details', error);
             this.props.displayWarning('An error happend trying to get details from domain, please try again later.');
