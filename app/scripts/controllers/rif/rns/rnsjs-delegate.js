@@ -3,6 +3,8 @@ import RNS from '@rsksmart/rns'
 import {rns} from '../constants'
 import {namehash} from '@rsksmart/rns/lib/utils'
 import web3Utils from 'web3-utils'
+import {ChainAddress} from './classes';
+import {ChainId} from '@rsksmart/rns/lib/types';
 
 /**
  * This class encapsulates all the RNSJS logic, it initializes rnsjs library and uses it as a wrapper.
@@ -11,6 +13,7 @@ export default class RnsJsDelegate extends RnsDelegate {
   constructor (props) {
     super(props);
     this.rnsJs = new RNS(this.web3, this.getRNSOptions());
+    this.store.pendingSubdomainsActions = [];
   }
 
   buildApi () {
@@ -30,6 +33,7 @@ export default class RnsJsDelegate extends RnsDelegate {
       getDomains: this.bindOperation(this.getDomainsForUi, this),
       getDomain: this.bindOperation(this.getDomainForUi, this),
       updateDomain: this.bindOperation(this.updateDomainsForUi, this),
+      deletePendingSubdomain: this.bindOperation(this.deletePendingSubdomain, this),
     }
   }
 
@@ -174,6 +178,11 @@ export default class RnsJsDelegate extends RnsDelegate {
    * @returns {Promise<>} TransactionReceipt of the latest transaction
    */
   createSubdomain (domainName, subdomain, ownerAddress, parentOwnerAddress) {
+    this.store.pendingSubdomainsActions.push({
+      domainName: domainName,
+      subdomain: subdomain,
+      action: 'add',
+    });
     return this.setSubdomainOwner(domainName, subdomain, ownerAddress, parentOwnerAddress);
   }
 
@@ -184,7 +193,23 @@ export default class RnsJsDelegate extends RnsDelegate {
    * @returns {Promise} containing the transaction listener id to track this operation.
    */
   deleteSubdomain (domainName, subdomain) {
+    this.store.pendingSubdomainsActions.push({
+      domainName: domainName,
+      subdomain: subdomain,
+      action: 'delete',
+    });
     return this.setSubdomainOwner(domainName, subdomain, rns.zeroAddress, this.address);
+  }
+
+  deletePendingSubdomain (domainName, subdomain) {
+    return new Promise((resolve, reject) => {
+      domainName = this.addRskSuffix(domainName);
+      const index = this.store.pendingSubdomainsActions.findIndex((e) => e.domainName === domainName && e.subdomain === subdomain);
+      if (index >= 0) {
+        this.store.pendingSubdomainsActions.splice(index, 1);
+      }
+      resolve();
+    });
   }
 
   /**
@@ -194,11 +219,30 @@ export default class RnsJsDelegate extends RnsDelegate {
    */
   getSubdomains (domainName) {
     domainName = this.addRskSuffix(domainName);
+    const pendingSubdomainsActions = this.store.pendingSubdomainsActions;
+    const subdomainsLst = [];
     const state = this.getStateForContainer(rns.storeContainers.register);
+    // Here we need to add the subdomains that still pending to add
+    pendingSubdomainsActions.map(subdomain => {
+      if (subdomain.action === 'add' && subdomain.domainName === domainName) {
+        subdomainsLst.push({
+          action: subdomain.action,
+          domainName: subdomain.domainName,
+          name: subdomain.subdomain,
+          ownerAddress: '',
+          parentOwnerAddress: '',
+        });
+      }
+    });
     if (!state || !state.domains || !state.domains[domainName] || !state.domains[domainName].subdomains) {
-      return [];
+      return subdomainsLst;
     }
-    return state.domains[domainName].subdomains;
+    state.domains[domainName].subdomains.map(subdomain => {
+      const subdomainPending = pendingSubdomainsActions.find(subdomainPend => subdomainPend.domainName === domainName && subdomainPend.subdomain === subdomain.name);
+      subdomain.action = subdomainPending ? subdomainPending.action : '';
+      subdomainsLst.push(subdomain);
+    });
+    return subdomainsLst;
   }
 
   /**

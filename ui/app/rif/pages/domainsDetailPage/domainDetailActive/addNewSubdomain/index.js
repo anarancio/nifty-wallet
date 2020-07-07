@@ -17,6 +17,7 @@ class AddNewSubdomain extends Component {
     showPopup: PropTypes.func,
     showThis: PropTypes.func,
     showTransactionConfirmPage: PropTypes.func,
+    deletePendingSubdomain: PropTypes.func,
   }
   constructor(props) {
     super(props);
@@ -31,7 +32,8 @@ class AddNewSubdomain extends Component {
       this.state.newSubdomain.name.toLowerCase(),
       this.state.newSubdomain.owner,
       this.props.ownerAddress);
-    this.props.waitForListener(transactionListenerId).then(transactionReceipt => {
+    this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
+      await this.props.deletePendingSubdomain(this.props.domainName, this.state.newSubdomain.name.toLowerCase());
       this.props.getSubdomains(this.props.domainName)
         .then(subdomains => {
           this.props.showThis(
@@ -103,6 +105,7 @@ function mapDispatchToProps (dispatch) {
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
+    deletePendingSubdomain: (domainName, subdomain) => dispatch(rifActions.deletePendingSubdomain(domainName, subdomain)),
   }
 }
 

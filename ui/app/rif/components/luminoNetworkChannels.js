@@ -106,7 +106,7 @@ class LuminoNetworkChannels extends Component {
           </div>
         }
         {isOwner &&
-        <OpenChannel afterChannelCreated={() => this.loadChannels()}/>
+        <OpenChannel reloadChannels={() => this.loadChannels()} afterChannelCreated={() => this.loadChannels()}/>
         }
       </div>
     );
