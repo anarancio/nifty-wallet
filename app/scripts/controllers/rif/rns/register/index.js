@@ -165,6 +165,7 @@ export default class RnsRegister extends RnsJsDelegate {
                   pendingDomain.registration = null;
                   this.container.resolver.getDomainDetails(domainName).then(domainDetails => {
                     pendingDomain.details = domainDetails;
+                    pendingDomain.status = 'active';
                     this.updateDomains(pendingDomain);
                   });
                 }).catch(transactionReceipt => {

@@ -47,7 +47,7 @@ class DomainRegisterScreen extends Component {
       if (domain.registration) {
         if (domain.registration.readyToRegister) {
           // domain not available, that means is pending or is already registered.
-          this.showReadyToRegister();
+          this.showReadyToRegister(true);
         } else {
           // domain not available, that means is pending or is already registered.
           this.showWaitingForRegister();
@@ -107,12 +107,12 @@ class DomainRegisterScreen extends Component {
     });
   }
 
-  showReadyToRegister () {
+  showReadyToRegister (showBack = false) {
     this.props.showThis({
       ...this.props,
       currentStep: 'readyToRegister',
       tabOptions: {
-        showBack: false,
+        showBack,
       },
     });
   }
@@ -329,6 +329,7 @@ const mapDispatchToProps = dispatch => {
       tabOptions: {
         showBack: false,
         showTitle: true,
+        screenTitle: 'My Domains',
       },
     })),
     showLoading: (loading = true, message) => loading ? dispatch(niftyActions.showLoadingIndication(message)) : dispatch(niftyActions.hideLoadingIndication()),
