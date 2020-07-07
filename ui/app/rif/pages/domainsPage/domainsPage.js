@@ -58,10 +58,17 @@ class DomainsScreen extends Component {
       </div>
 
       <span className="chiplet-arrow" onClick={() => {
-        this.props.showDomainsDetailPage({
-          domain: data,
-          status: data.status,
-        })
+        if (data.status === 'active') {
+          this.props.showDomainsDetailPage({
+            domain: data,
+            status: data.status,
+          });
+        } else {
+          this.props.showDomainRegisterPage({
+            domain: data,
+            domainName: data.name,
+          });
+        }
       }}>
         <svg width="11" height="17" viewBox="0 0 11 17" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1 1L9 8.5L1 16" stroke="#5B2A92" strokeWidth="2"/>
@@ -89,6 +96,7 @@ class DomainsScreen extends Component {
 
 DomainsScreen.propTypes = {
   showDomainsDetailPage: PropTypes.func.isRequired,
+  showDomainRegisterPage: PropTypes.func.isRequired,
   setAutoRenew: PropTypes.func.isRequired,
   domains: PropTypes.array,
   getDomains: PropTypes.func,
@@ -113,8 +121,10 @@ const mapDispatchToProps = dispatch => {
         tabIndex: 0,
       },
     })),
-    setAutoRenew: (data) => {
-    },
+    showDomainRegisterPage: (data) => dispatch(rifActions.navigateTo(pageNames.rns.domainRegister, {
+      ...data,
+    })),
+    setAutoRenew: (data) => {},
     showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, params)),
     getDomains: () => dispatch(rifActions.getDomains()),
   }

@@ -220,8 +220,9 @@ class AccountDropdowns extends Component {
     global.platform.openWindow({ url })
   }
 
-  exploreRifServices () {
-    this.props.actions.exploreRifServices();
+  async exploreRifServices () {
+    await this.props.actions.resetNavigation();
+    await this.props.actions.exploreRifServices();
   }
 
   showQRCode = () => {
@@ -359,6 +360,7 @@ const mapDispatchToProps = (dispatch) => {
       getContract: (addr) => dispatch(actions.getContract(addr)),
       updateABI: (address, network, abi) => dispatch(actions.updateABI(address, network, abi)),
       exploreRifServices: () => dispatch(rifActions.showRifLandingPage()),
+      resetNavigation: () => dispatch(rifActions.resetNavigation()),
     },
   }
 }

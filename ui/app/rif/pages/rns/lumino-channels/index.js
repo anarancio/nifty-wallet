@@ -162,7 +162,7 @@ class LuminoChannels extends Component {
     switch (sdkStatus) {
       case 'CHANNEL_OPENED':
         retVal = (
-          <div className="lumino-channel-open mb-1 d-flex align-items-center">
+          <div className="lumino-channel-open d-flex mx-auto align-items-center">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.5 12C9.53757 12 12 9.53757 12 6.5C12 3.46243 9.53757 1 6.5 1" stroke="#59A42A"/>
               <path d="M6.5 1C3.46243 1 0.999999 3.46243 1 6.5C1 9.53757 3.46243 12 6.5 12" stroke="#59A42A"/>

@@ -87,6 +87,7 @@ class Subdomains extends Component {
     showToast: PropTypes.func,
     getSubdomains: PropTypes.func,
     getConfiguration: PropTypes.func,
+    deletePendingSubdomain: PropTypes.func,
   }
 
   constructor (props) {
@@ -108,7 +109,8 @@ class Subdomains extends Component {
       text: 'Are you sure you want to delete the subdomain ' + subdomain.name + '?',
       confirmCallback: async () => {
         const transactionListenerId = await this.props.deleteSubdomain(subdomain.domainName, subdomain.name);
-        this.props.waitForListener(transactionListenerId).then(transactionReceipt => {
+        this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
+          await this.props.deletePendingSubdomain(this.props.domainName, subdomain.name.toLowerCase());
           this.props.getSubdomains(this.props.domainName)
             .then(subdomains => {
               this.props.showThis(
@@ -121,9 +123,15 @@ class Subdomains extends Component {
         });
         this.props.showTransactionConfirmPage({
           action: () => {
-            this.props.showThis(
-              this.props.pageName,
-              this.props.redirectParams);
+            this.props.getSubdomains(this.props.domainName)
+              .then(subdomains => {
+                this.props.showThis(
+                  this.props.pageName,
+                  {
+                    ...this.props.redirectParams,
+                    newSubdomains: subdomains,
+                  });
+              });
             this.props.showToast('Waiting for confirmation');
           },
         });
@@ -210,6 +218,7 @@ function mapDispatchToProps (dispatch) {
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
     isSubdomainAvailable: (domainName, subdomain) => dispatch(rifActions.isSubdomainAvailable(domainName, subdomain)),
     deleteSubdomain: (domainName, subdomain) => dispatch(rifActions.deleteSubdomain(domainName, subdomain)),
+    deletePendingSubdomain: (domainName, subdomain) => dispatch(rifActions.deletePendingSubdomain(domainName, subdomain)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
   }
 }
