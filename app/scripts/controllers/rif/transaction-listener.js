@@ -15,6 +15,8 @@ export class TransactionListener extends EventEmitter {
     this.confirmed = false;
     this.currentListeners = 0;
     this.afterClean = props.afterClean;
+    this.address = props.address;
+    this.network = props.network;
     this.id = createId();
   }
 
@@ -79,17 +81,29 @@ export class TransactionListener extends EventEmitter {
       this.on('transactionSuccess', (transactionReceipt) => {
         this.currentListeners--;
         this.shouldClean();
-        resolve(transactionReceipt);
+        resolve({
+          address: this.address,
+          network: this.network,
+          transactionReceipt,
+        });
       });
       this.on('transactionFailed', (transactionReceipt) => {
         this.currentListeners--;
         this.shouldClean();
-        reject(transactionReceipt);
+        reject({
+          address: this.address,
+          network: this.network,
+          transactionReceipt,
+        });
       });
       this.on('submitError', (error) => {
         this.currentListeners--;
         this.shouldClean();
-        reject(error);
+        reject({
+          address: this.address,
+          network: this.network,
+          error,
+        });
       });
     });
   }
