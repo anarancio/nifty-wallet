@@ -23,7 +23,6 @@ class ChainAddresses extends Component {
     showThis: PropTypes.func.isRequired,
     redirectParams: PropTypes.any.isRequired,
     isOwner: PropTypes.bool.isRequired,
-    deletePendingChainAddress: PropTypes.func,
     subdomainName: PropTypes.string,
     getChainAddresses: PropTypes.func,
     newChainAddresses: PropTypes.array,
@@ -53,6 +52,7 @@ class ChainAddresses extends Component {
         });
       });
     const slipChainAddresses = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
+    this.timeouts = [];
     this.state = {
       chainAddresses: [],
       resolvers: [],
@@ -91,7 +91,7 @@ class ChainAddresses extends Component {
       const item = (
         <ItemWithActions
           contentClasses={classes.content}
-          showPending={chainAddress.action}
+          showPending={chainAddress.action !== ''}
           actionClasses={classes.contentActions}
           enableEdit={isOwner && chainAddress.action === ''}
           enableDelete={isOwner && chainAddress.action === ''}
@@ -128,12 +128,16 @@ class ChainAddresses extends Component {
     this.setState({ insertedAddress: address });
   }
 
- timeoutToRedirect = (selectedChainAddress, isRetry = true) => setTimeout(async () => {
-    if (!isRetry) {
-     await this.props.deletePendingChainAddress(selectedChainAddress, !!this.props.subdomainName);
-    }
-    const chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
-    if (!arraysMatch(this.state.chainAddresses, chainAddresses)) {
+ timeoutToRedirect = (chainAddressesCopy, selectedChainAddress) => setTimeout(async () => {
+    let chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
+    // I need to compare the chainaddresses without the actions setted, cause the actions will be variant in time, but will send the chainaddresses to the component
+    const chainAddressesWithoutActions = chainAddresses.map(chainaddress => {
+      chainaddress.action = '';
+      return chainaddress;
+    });
+    console.debug('chainAddresses to compare', chainAddressesWithoutActions);
+    console.debug('This are the chainaddresses copied', chainAddressesCopy);
+    if (!arraysMatch(chainAddressesCopy, chainAddressesWithoutActions)) {
       this.props.showThis(
         this.props.redirectPage,
         {
@@ -141,9 +145,13 @@ class ChainAddresses extends Component {
           newChainAddresses: chainAddresses,
         });
     } else {
-      this.timeoutToRedirect(selectedChainAddress);
+      this.timeouts.push(this.timeoutToRedirect(chainAddressesCopy, selectedChainAddress));
     }
   }, WAIT_FOR_NOTIFIER);
+
+  componentWillUnmount () {
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
+  }
 
   async addAddress (address = null, chainAddress = null, toastMessage = 'Adding chain address', action = 'add') {
     const insertedAddress = address || this.state.insertedAddress;
@@ -152,8 +160,14 @@ class ChainAddresses extends Component {
     this.props.waitForListener(transactionListenerId)
       .then(async (transactionReceipt) => {
         if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.state.selectedResolverAddress)) {
+          // This is a copy of the actual state, so we can compare with this
+          let chainAddressesState = [...this.state.chainAddresses];
+          chainAddressesState = chainAddressesState.map(chainAddress => {
+            chainAddress.action = ''
+            return chainAddress;
+          });
           // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
-          this.timeoutToRedirect(selectedChainAddress, false);
+          this.timeouts.push(this.timeoutToRedirect(chainAddressesState, selectedChainAddress));
         }
       });
     this.props.showTransactionConfirmPage({
@@ -246,7 +260,6 @@ function mapDispatchToProps (dispatch) {
     displayWarning: (error) => dispatch(niftyActions.displayWarning(error)),
     getChainAddresses: (domainName, subdomain) => dispatch(rifActions.getChainAddresses(domainName, subdomain)),
     setChainAddressForResolver: (domainName, chain, chainAddress, subdomain, action) => dispatch(rifActions.setChainAddressForResolver(domainName, chain, chainAddress, subdomain, action)),
-    deletePendingChainAddress: (chain, isSubdomain) => dispatch(rifActions.deletePendingChainAddress(chain, isSubdomain)),
     showThis: (pageName, props) => dispatch(rifActions.navigateTo(pageName, props)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
