@@ -157,7 +157,7 @@ export default class RnsResolver extends RnsJsDelegate {
       const addrChangedEvent = await this.notifierManager.operations.getRnsEvents(this.notifierManager.apiKey, node, 'AddrChanged');
       const chainAddrChangedEvent = await this.notifierManager.operations.getRnsEvents(this.notifierManager.apiKey, node, 'ChainAddrChanged');
       const arrChains = [];
-      const domain = this.getDomainForPendingChainAddresses(domainName);
+      const domain = this.getDomain(domainName);
       const pendingChainAddressesActions = domain.pendingChainAddresses;
       if (addrChangedEvent) {
         addrChangedEvent.forEach(event => {
@@ -206,7 +206,7 @@ export default class RnsResolver extends RnsJsDelegate {
    */
   deletePendingChainAddress (domainName, chain, isSubdomain) {
     return new Promise((resolve, reject) => {
-      const domain = this.getDomainForPendingChainAddresses(domainName);
+      const domain = this.getDomain(domainName);
       const pendingChainAddressesActions = domain.pendingChainAddresses;
       const index = pendingChainAddressesActions.findIndex((e) => e.chain === chain && e.isSubdomain === isSubdomain);
       if (index >= 0) {
@@ -216,16 +216,6 @@ export default class RnsResolver extends RnsJsDelegate {
       resolve();
     });
   }
-
-  getDomainForPendingChainAddresses (domainName) {
-    const domain = this.getDomain(domainName);
-    if (domain.pendingChainAddresses){
-      return domain;
-    }
-    domain.pendingChainAddresses = []
-    this.updateDomain(domain);
-    return domain;
-}
 
   /**
    * Calls the contract and sets a new chain address calling the setChainAddr function in the contract of multichainresolver
@@ -244,7 +234,7 @@ export default class RnsResolver extends RnsJsDelegate {
         node = web3Utils.soliditySha3(node, label);
       }
       const toBeSettedChainAddress = chainAddress || rns.zeroAddress;
-      const domain = this.getDomainForPendingChainAddresses(domainName);
+      const domain = this.getDomain(domainName);
       const pendingChainAddressesActions = domain.pendingChainAddresses;
       pendingChainAddressesActions.push({
         chainAddress: toBeSettedChainAddress,
@@ -256,6 +246,7 @@ export default class RnsResolver extends RnsJsDelegate {
       const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
       transactionListener.transactionConfirmed()
         .then(result => {
+          this.deletePendingChainAddress(domainName, chain, !!subdomain);
           console.debug('setChainAddressForResolver success', result);
         }).catch(result => {
           console.debug('Error when trying to set chain address for resolver', result);
