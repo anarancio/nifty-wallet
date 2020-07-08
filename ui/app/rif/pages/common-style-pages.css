@@ -1,17 +1,20 @@
 .label-spacing-left {
-    margin-left: 0.3rem;
+  margin-left: 0.3rem;
 }
+
 .combo-selector-triangle {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 1rem 0.6rem 0 0.6rem;
-    border-color: #007bff transparent transparent transparent;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 1rem 0.6rem 0 0.6rem;
+  border-color: #007bff transparent transparent transparent;
 }
+
 .default-icon {
-    font-size: 1.3rem;
-    margin-left: 0.5rem;
+  font-size: 1.3rem;
+  margin-left: 0.5rem;
 }
+
 .hand-over {
   cursor: pointer;
 }
@@ -23,6 +26,7 @@
   overflow-x: hidden;
   font-family: var(--primary-font);
 }
+
 .delete-button {
   background: #FF001F;
   color: white;
@@ -34,7 +38,7 @@
   justify-content: center;
 }
 
-.form-segment>button {
+.form-segment > button {
   margin: 0.2em;
 }
 
@@ -49,7 +53,8 @@
   text-align: center;
   font-family: var(--primary-font);
   color: var(--gray-text);
-  font-size: 16px;
+  white-space: pre;
+  font-size: 0.8rem;
   margin-bottom: 20px;
   font-weight: 300;
 }
