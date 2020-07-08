@@ -161,7 +161,7 @@ ConfirmTxScreen.prototype.buyEth = function (address, isContractExecutionByUser,
 
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   this.stopPropagation(event)
-  const afterApproval = this.props.callbacks ? this.props.callbacks.afterApproval : null;
+  const afterApproval = this.props.callbacks ? this.props.callbacks.afterApproval : null
   this.props.dispatch(actions.updateAndApproveTx(txData, afterApproval))
   this._checkIfContractExecutionAndUnlockContract(txData)
 }
@@ -169,31 +169,17 @@ ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   this.stopPropagation(event)
   event.preventDefault()
-  this.props.dispatch(actions.cancelTx(txData))
+  const afterCancel = this.props.callbacks ? this.props.callbacks.afterCancel : null
+  this.props.dispatch(actions.cancelTx(txData, afterCancel))
   this._checkIfContractExecutionAndUnlockContract(txData)
-  const callbacks = this.props.callbacks
-  if (callbacks && callbacks.afterCancel) {
-    if (callbacks.afterCancel.payload) {
-      callbacks.afterCancel.action(callbacks.afterCancel.payload)
-    } else {
-      callbacks.afterCancel.action()
-    }
-  }
 }
 
 ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event) {
   this.stopPropagation(event)
   event.preventDefault()
-  this.props.dispatch(actions.cancelAllTx(unconfTxList))
+  const afterCancel = this.props.callbacks ? this.props.callbacks.afterCancel : null
+  this.props.dispatch(actions.cancelAllTx(unconfTxList, afterCancel))
   this._checkIfMultipleContractExecutionAndUnlockContract(unconfTxList)
-  const callbacks = this.props.callbacks
-  if (callbacks && callbacks.afterCancel) {
-    if (callbacks.afterCancel.payload) {
-      callbacks.afterCancel.action(callbacks.afterCancel.payload)
-    } else {
-      callbacks.afterCancel.action()
-    }
-  }
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
