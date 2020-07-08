@@ -842,7 +842,7 @@ function getChannelsGroupedByNetwork () {
             }
           }
         }
-        const groupedBy = _.groupBy(arrayWithoutKeys, 'token_network_identifier');
+        const groupedBy = _.groupBy(arrayWithoutKeys, 'token_address');
         return resolve(groupedBy);
       }).catch(error => {
         handleError(error, dispatch);
