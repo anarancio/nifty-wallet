@@ -256,7 +256,6 @@ export default class RnsResolver extends RnsJsDelegate {
       const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
       transactionListener.transactionConfirmed()
         .then(result => {
-          this.deletePendingChainAddress(domainName, chain, !!subdomain);
           console.debug('setChainAddressForResolver success', result);
         }).catch(result => {
           console.debug('Error when trying to set chain address for resolver', result);
