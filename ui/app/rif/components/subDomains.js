@@ -23,7 +23,6 @@ class Subdomains extends Component {
     createSubdomain: PropTypes.func,
     waitForListener: PropTypes.func,
     showToast: PropTypes.func,
-    showTransactionConfirmPage: PropTypes.func,
     isSubdomainAvailable: PropTypes.func,
     showSubdomainDetails: PropTypes.func,
     newSubdomains: PropTypes.array,
@@ -181,7 +180,6 @@ function mapDispatchToProps (dispatch) {
     createSubdomain: (domainName, subdomain, ownerAddress, parentOwnerAddress) => dispatch(rifActions.createSubdomain(domainName, subdomain, ownerAddress, parentOwnerAddress)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
-    showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
     isSubdomainAvailable: (domainName, subdomain) => dispatch(rifActions.isSubdomainAvailable(domainName, subdomain)),
   }
 }

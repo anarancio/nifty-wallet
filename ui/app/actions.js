@@ -1411,7 +1411,7 @@ function cancelTypedMsg (msgData) {
   }
 }
 
-function cancelTx (txData) {
+function cancelTx (txData, afterCancel) {
   return (dispatch, getState) => {
     log.debug(`background.cancelTransaction`)
     dispatch(actions.showLoadingIndication())
@@ -1428,9 +1428,19 @@ function cancelTx (txData) {
       .then(() => updateMetamaskStateFromBackground())
       .then(newState => dispatch(actions.updateMetamaskState(newState)))
       .then(() => {
-        dispatch(actions.clearSend())
-        dispatch(actions.completedTx(txData.id))
-        dispatch(actions.hideLoadingIndication())
+
+        if (afterCancel) {
+          dispatch(actions.hideLoadingIndication())
+          if (afterCancel.payload) {
+            afterCancel.action(afterCancel.payload);
+          } else {
+            afterCancel.action();
+          }
+        } else {
+          dispatch(actions.clearSend())
+          dispatch(actions.completedTx(txData.id))
+          dispatch(actions.hideLoadingIndication())
+        }
 
         if (!hasUnconfirmedTransactions(getState())) {
           return global.platform.closeNotificationWindow()
@@ -1482,14 +1492,23 @@ function cancelTxs (txDataList) {
  * @param {Array<object>} txsData
  * @return {Function}
  */
-function cancelAllTx (txsData) {
+function cancelAllTx (txsData, afterCancel) {
   return (dispatch) => {
     txsData.forEach((txData, i) => {
       background.cancelTransaction(txData.id, () => {
         dispatch(actions.completedTx(txData.id))
         if (i === txsData.length - 1) {
-          dispatch(actions.goHome())
-          global.platform.closeNotificationWindow()
+          if (afterCancel) {
+            dispatch(actions.hideLoadingIndication())
+            if (afterCancel.payload) {
+              afterCancel.action(afterCancel.payload);
+            } else {
+              afterCancel.action();
+            }
+          } else {
+            dispatch(actions.goHome())
+            global.platform.closeNotificationWindow()
+          }
         }
       })
     })
