@@ -138,7 +138,6 @@ class ChainAddresses extends Component {
     console.debug('chainAddresses to compare', chainAddressesWithoutActions);
     console.debug('This are the chainaddresses copied', chainAddressesCopy);
     if (!arraysMatch(chainAddressesCopy, chainAddressesWithoutActions)) {
-      console.debug('Arrays dont match');
       this.props.showThis(
         this.props.redirectPage,
         {
