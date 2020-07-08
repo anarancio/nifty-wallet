@@ -162,6 +162,12 @@ export default class RnsJsDelegate extends RnsDelegate {
         }
         this.updateSubdomains(domainName, subdomains, result.address, result.network);
       }).catch(result => {
+        let subdomains = this.getSubdomains(domainName, result.address, result.network);
+        const foundSubdomain = subdomains.find(sd => sd.name === subdomain);
+        if (foundSubdomain) {
+          subdomains = subdomains.filter(sd => sd.name !== subdomain);
+          this.updateSubdomains(domainName, subdomains, result.address, result.network);
+        }
       console.log('Transaction failed', result);
     });
     return Promise.resolve(transactionListener.id);
