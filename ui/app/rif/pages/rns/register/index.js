@@ -34,11 +34,20 @@ class DomainRegisterScreen extends Component {
     showLoading: PropTypes.func,
   }
 
+  constructor (props) {
+    super(props);
+    this.timeouts = [];
+  }
+
   componentDidMount () {
     this.props.showLoading();
     this.initialize().then(() => {
       this.props.showLoading(false);
     });
+  }
+
+  componentWillUnmount () {
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 
   async initialize () {
@@ -255,8 +264,10 @@ class DomainRegisterScreen extends Component {
             this.showWaitingForRegister();
           }
           clearTimeout(timeout);
+          this.timeouts = this.timeouts.filter(timeoutRunning => timeoutRunning !== timeout);
         });
       }, registrationTimeouts.secondsToCheckForCommitment * 1000);
+      this.timeouts.push(timeout);
     }
     return partials[currentStep];
   }

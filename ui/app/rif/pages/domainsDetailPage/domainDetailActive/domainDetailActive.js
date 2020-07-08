@@ -169,21 +169,23 @@ class DomainsDetailActiveScreen extends Component {
                       showRifStorageIcon={isRifStorage}
                       onClickLuminoNode={() => showPay(domainInfo)}
         >
-          <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg"
-               className="config-domain-btn"
-               onClick={() => this.props.showConfigPage({
-                 domain: domain,
-                 domainName: domainName,
-                 selectedResolverAddress: selectedResolverAddress,
-               })}
-          >
-            <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>
-            <line x1="9" y1="4.37114e-08" x2="9" y2="23" stroke="#602A95" strokeWidth="2"/>
-            <line x1="3" y1="4.37114e-08" x2="3" y2="23" stroke="#602A95" strokeWidth="2"/>
-            <ellipse cx="9" cy="17" rx="3" ry="3" transform="rotate(90 9 17)" fill="#602A95"/>
-            <ellipse cx="16" cy="5" rx="3" ry="3" transform="rotate(90 16 5)" fill="#602A95"/>
-            <ellipse cx="3" cy="8" rx="3" ry="3" transform="rotate(90 3 8)" fill="#602A95"/>
-          </svg>
+          {isOwner &&
+            <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg"
+                 className="config-domain-btn"
+                 onClick={() => this.props.showConfigPage({
+                   domain: domain,
+                   domainName: domainName,
+                   selectedResolverAddress: selectedResolverAddress,
+                 })}
+            >
+              <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>
+              <line x1="9" y1="4.37114e-08" x2="9" y2="23" stroke="#602A95" strokeWidth="2"/>
+              <line x1="3" y1="4.37114e-08" x2="3" y2="23" stroke="#602A95" strokeWidth="2"/>
+              <ellipse cx="9" cy="17" rx="3" ry="3" transform="rotate(90 9 17)" fill="#602A95"/>
+              <ellipse cx="16" cy="5" rx="3" ry="3" transform="rotate(90 16 5)" fill="#602A95"/>
+              <ellipse cx="3" cy="8" rx="3" ry="3" transform="rotate(90 3 8)" fill="#602A95"/>
+            </svg>
+          }
         </DomainHeader>
         <div id="domainDetailBody" className={''}>
           {resolvers &&

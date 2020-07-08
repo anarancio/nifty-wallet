@@ -87,7 +87,6 @@ class Subdomains extends Component {
     showToast: PropTypes.func,
     getSubdomains: PropTypes.func,
     getConfiguration: PropTypes.func,
-    deletePendingSubdomain: PropTypes.func,
   }
 
   constructor (props) {
@@ -110,7 +109,6 @@ class Subdomains extends Component {
       confirmCallback: async () => {
         const transactionListenerId = await this.props.deleteSubdomain(subdomain.domainName, subdomain.name);
         this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
-          await this.props.deletePendingSubdomain(this.props.domainName, subdomain.name.toLowerCase());
           this.props.getSubdomains(this.props.domainName)
             .then(subdomains => {
               this.props.showThis(
@@ -220,7 +218,6 @@ function mapDispatchToProps (dispatch) {
     showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     isSubdomainAvailable: (domainName, subdomain) => dispatch(rifActions.isSubdomainAvailable(domainName, subdomain)),
     deleteSubdomain: (domainName, subdomain) => dispatch(rifActions.deleteSubdomain(domainName, subdomain)),
-    deletePendingSubdomain: (domainName, subdomain) => dispatch(rifActions.deletePendingSubdomain(domainName, subdomain)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
   }
 }

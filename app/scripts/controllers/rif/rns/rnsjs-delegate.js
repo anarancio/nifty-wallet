@@ -3,9 +3,7 @@ import RNS from '@rsksmart/rns'
 import {rns} from '../constants'
 import {namehash} from '@rsksmart/rns/lib/utils'
 import web3Utils from 'web3-utils'
-import {ChainAddress} from './classes';
-import {ChainId} from '@rsksmart/rns/lib/types';
-2
+
 /**
  * This class encapsulates all the RNSJS logic, it initializes rnsjs library and uses it as a wrapper.
  */
@@ -13,7 +11,6 @@ export default class RnsJsDelegate extends RnsDelegate {
   constructor (props) {
     super(props);
     this.rnsJs = new RNS(this.web3, this.getRNSOptions());
-    this.store.pendingSubdomainsActions = [];
   }
 
   buildApi () {
@@ -33,7 +30,6 @@ export default class RnsJsDelegate extends RnsDelegate {
       getDomains: this.bindOperation(this.getDomainsForUi, this),
       getDomain: this.bindOperation(this.getDomainForUi, this),
       updateDomain: this.bindOperation(this.updateDomainsForUi, this),
-      deletePendingSubdomain: this.bindOperation(this.deletePendingSubdomain, this),
     }
   }
 
@@ -115,6 +111,19 @@ export default class RnsJsDelegate extends RnsDelegate {
     return this.rnsJs.subdomains.available(domainName, subdomain);
   }
 
+  setStatusSubdomain (domainName, subdomain, status, address, network) {
+    domainName = this.addRskSuffix(domainName);
+    const subdomains = this.getSubdomains(domainName, address, network);
+    const foundSubdomain = subdomains.find(sd => sd.name === subdomain);
+    if (foundSubdomain) {
+      foundSubdomain.status = status;
+    } else {
+      // new subdomain
+      subdomains.push(this.createNewSubdomainObject(domainName, subdomain, status));
+    }
+    this.updateSubdomains(domainName, subdomains, address, network);
+  }
+
   /**
    * Creates a new subdomain under the given domain tree if it is available.
    * Precondition: the sender should be the owner of the parent domain.
@@ -146,15 +155,10 @@ export default class RnsJsDelegate extends RnsDelegate {
           } else {
             // updating subdomain
             foundSubdomain.ownerAddress = ownerAddress;
+            foundSubdomain.parentOwnerAddress = parentOwnerAddress;
+            // Just update the status to none, and dont call the setStatusSubdomain because otherwise we're going to call twiche the getSubdomains and is redundant
+            foundSubdomain.status = '';
           }
-        } else {
-          // new subdomain
-          subdomains.push({
-            domainName,
-            name: subdomain,
-            ownerAddress,
-            parentOwnerAddress,
-          });
         }
         this.updateSubdomains(domainName, subdomains, result.address, result.network);
       }).catch(result => {
@@ -178,11 +182,7 @@ export default class RnsJsDelegate extends RnsDelegate {
    * @returns {Promise<>} TransactionReceipt of the latest transaction
    */
   createSubdomain (domainName, subdomain, ownerAddress, parentOwnerAddress) {
-    this.store.pendingSubdomainsActions.push({
-      domainName: domainName,
-      subdomain: subdomain,
-      action: 'add',
-    });
+    this.setStatusSubdomain(domainName, subdomain, 'add');
     return this.setSubdomainOwner(domainName, subdomain, ownerAddress, parentOwnerAddress);
   }
 
@@ -194,23 +194,8 @@ export default class RnsJsDelegate extends RnsDelegate {
    * @returns {Promise} containing the transaction listener id to track this operation.
    */
   deleteSubdomain (domainName, subdomain, address = this.address) {
-    this.store.pendingSubdomainsActions.push({
-      domainName: domainName,
-      subdomain: subdomain,
-      action: 'delete',
-    });
+    this.setStatusSubdomain(domainName, subdomain, 'delete');
     return this.setSubdomainOwner(domainName, subdomain, rns.zeroAddress, address);
-  }
-
-  deletePendingSubdomain (domainName, subdomain) {
-    return new Promise((resolve, reject) => {
-      domainName = this.addRskSuffix(domainName);
-      const index = this.store.pendingSubdomainsActions.findIndex((e) => e.domainName === domainName && e.subdomain === subdomain);
-      if (index >= 0) {
-        this.store.pendingSubdomainsActions.splice(index, 1);
-      }
-      resolve();
-    });
   }
 
   /**
@@ -222,30 +207,12 @@ export default class RnsJsDelegate extends RnsDelegate {
    */
   getSubdomains (domainName, address, network) {
     domainName = this.addRskSuffix(domainName);
-    const pendingSubdomainsActions = this.store.pendingSubdomainsActions;
     const subdomainsLst = [];
     const state = this.getStateForContainer(rns.storeContainers.register, address, network);
-    // Here we need to add the subdomains that still pending to add
-    pendingSubdomainsActions.map(subdomain => {
-      if (subdomain.action === 'add' && subdomain.domainName === domainName) {
-        subdomainsLst.push({
-          action: subdomain.action,
-          domainName: subdomain.domainName,
-          name: subdomain.subdomain,
-          ownerAddress: '',
-          parentOwnerAddress: '',
-        });
-      }
-    });
     if (!state || !state.domains || !state.domains[domainName] || !state.domains[domainName].subdomains) {
       return subdomainsLst;
     }
-    state.domains[domainName].subdomains.map(subdomain => {
-      const subdomainPending = pendingSubdomainsActions.find(subdomainPend => subdomainPend.domainName === domainName && subdomainPend.subdomain === subdomain.name);
-      subdomain.action = subdomainPending ? subdomainPending.action : '';
-      subdomainsLst.push(subdomain);
-    });
-    return subdomainsLst;
+    return state.domains[domainName].subdomains;
   }
 
   /**
@@ -348,6 +315,16 @@ export default class RnsJsDelegate extends RnsDelegate {
       },
       status: 'pending',
       details: null,
+    }
+  }
+
+  createNewSubdomainObject (domainName, subdomain, status) {
+    return {
+      domainName,
+      name: subdomain,
+      ownerAddress: '',
+      parentOwnerAddress: '',
+      status,
     }
   }
 
