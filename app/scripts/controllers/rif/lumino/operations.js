@@ -43,8 +43,12 @@ export class LuminoOperations {
     if (errors.length > 0) {
       return Promise.reject(errors);
     }
+    if (!isValidRNSDomain(partner)) {
+      partner = web3Utils.toChecksumAddress(partner);
+    }
     const params = {
-      ...checksumAddresses({partner, tokenAddress}),
+      ...checksumAddresses({tokenAddress}),
+      partner,
       settleTimeout: 500,
     };
     console.debug(`Request to open a channel with partner ${partner} on token ${tokenAddress}`);
@@ -62,8 +66,12 @@ export class LuminoOperations {
     if (errors.length > 0) {
       return Promise.reject(errors);
     }
+    if (!isValidRNSDomain(partner)) {
+      partner = web3Utils.toChecksumAddress(partner);
+    }
     const params = {
-      ...checksumAddresses({partner, tokenAddress, tokenNetworkAddress}),
+      ...checksumAddresses({tokenAddress, tokenNetworkAddress}),
+      partner,
       address: this.address,
       channelIdentifier,
     };
