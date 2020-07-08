@@ -157,13 +157,15 @@ class ChainAddresses extends Component {
         }
       });
     this.props.showTransactionConfirmPage({
-      action: () => {
-        this.props.showThis(
-          this.props.redirectPage,
+      afterApproval: {
+        action: () => {
+          this.props.showThis(
+            this.props.redirectPage,
             this.props.redirectParams);
-        if (toastMessage) {
-          this.props.showToast(toastMessage);
-        }
+          if (toastMessage) {
+            this.props.showToast(toastMessage);
+          }
+        },
       },
     });
   }
@@ -249,7 +251,7 @@ function mapDispatchToProps (dispatch) {
     deletePendingChainAddress: (chain, isSubdomain) => dispatch(rifActions.deletePendingChainAddress(chain, isSubdomain)),
     showThis: (pageName, props) => dispatch(rifActions.navigateTo(pageName, props)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
-    showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
+    showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     getResolverAddress: (domainName) => dispatch(rifActions.getResolverAddress(domainName)),

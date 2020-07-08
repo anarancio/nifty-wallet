@@ -43,7 +43,7 @@ function mapStateToProps (state) {
     tokensToSend: (screenParams && screenParams.tokensToSend),
     tokensTransferTo: (screenParams && screenParams.tokensTransferTo),
     isContractExecutionByUser: (screenParams && screenParams.isContractExecutionByUser),
-    afterApproval: screenParams.afterApproval,
+    callbacks: screenParams.callbacks,
   }
 }
 
@@ -161,7 +161,8 @@ ConfirmTxScreen.prototype.buyEth = function (address, isContractExecutionByUser,
 
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   this.stopPropagation(event)
-  this.props.dispatch(actions.updateAndApproveTx(txData, this.props.afterApproval))
+  const afterApproval = this.props.callbacks ? this.props.callbacks.afterApproval : null;
+  this.props.dispatch(actions.updateAndApproveTx(txData, afterApproval))
   this._checkIfContractExecutionAndUnlockContract(txData)
 }
 
@@ -170,6 +171,14 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   event.preventDefault()
   this.props.dispatch(actions.cancelTx(txData))
   this._checkIfContractExecutionAndUnlockContract(txData)
+  const callbacks = this.props.callbacks
+  if (callbacks && callbacks.afterCancel) {
+    if (callbacks.afterCancel.payload) {
+      callbacks.afterCancel.action(callbacks.afterCancel.payload)
+    } else {
+      callbacks.afterCancel.action()
+    }
+  }
 }
 
 ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event) {
@@ -177,6 +186,14 @@ ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event)
   event.preventDefault()
   this.props.dispatch(actions.cancelAllTx(unconfTxList))
   this._checkIfMultipleContractExecutionAndUnlockContract(unconfTxList)
+  const callbacks = this.props.callbacks
+  if (callbacks && callbacks.afterCancel) {
+    if (callbacks.afterCancel.payload) {
+      callbacks.afterCancel.action(callbacks.afterCancel.payload)
+    } else {
+      callbacks.afterCancel.action()
+    }
+  }
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
@@ -268,13 +285,19 @@ ConfirmTxScreen.prototype._unlockContract = function (to) {
 }
 
 function warningIfExists (warning) {
-  if (warning &&
-     // Do not display user rejections on this screen:
-     warning.indexOf('User denied transaction signature') === -1) {
+  if (warning && warning.indexOf &&
+    // Do not display user rejections on this screen:
+    warning.indexOf('User denied transaction signature') === -1) {
     return h('.error', {
       style: {
         margin: 'auto',
       },
     }, warning)
+  } else if (warning && warning.error && warning.error.message) {
+    return h('.error', {
+      style: {
+        margin: 'auto',
+      },
+    }, warning.error.message)
   }
 }

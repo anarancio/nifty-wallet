@@ -50,15 +50,17 @@ class AddNewSubdomain extends Component {
       hideCancel: true,
       confirmCallback: async () => {
         this.props.showTransactionConfirmPage({
-          action: (payload) => {
-            this.props.showThis(
-              this.props.pageName,
-              {
-                ...this.props.redirectParams,
-              });
-            this.props.showToast('Waiting Confirmation');
+          afterApproval: {
+            action: (payload) => {
+              this.props.showThis(
+                this.props.pageName,
+                {
+                  ...this.props.redirectParams,
+                });
+              this.props.showToast('Waiting Confirmation');
+            },
+            payload: null,
           },
-          payload: null,
         });
       },
     });
@@ -104,7 +106,7 @@ function mapDispatchToProps (dispatch) {
     getSubdomains: (domainName) => dispatch(rifActions.getSubdomains(domainName)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
-    showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
+    showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     deletePendingSubdomain: (domainName, subdomain) => dispatch(rifActions.deletePendingSubdomain(domainName, subdomain)),
   }
 }

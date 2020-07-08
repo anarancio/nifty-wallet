@@ -124,7 +124,9 @@ class DomainRegisterScreen extends Component {
         this.showWaitingForRegister();
       });
     this.props.showTransactionConfirmPage({
-      action: () => this.showWaitingForConfirmation(),
+      afterApproval: {
+        action: () => this.showWaitingForConfirmation(),
+      },
     });
   }
 
@@ -135,7 +137,9 @@ class DomainRegisterScreen extends Component {
         this.afterRegistration();
       });
     this.props.showTransactionConfirmPage({
-      action: () => this.afterRegistrationSubmit(),
+      afterApproval: {
+        action: () => this.afterRegistrationSubmit(),
+      },
     });
   }
 
@@ -317,7 +321,7 @@ const mapDispatchToProps = dispatch => {
     getCost: (domainName, yearsToRegister) => dispatch(rifActions.getRegistrationCost(domainName, yearsToRegister)),
     requestRegistration: (domainName, yearsToRegister) => dispatch(rifActions.requestDomainRegistration(domainName, yearsToRegister)),
     getUnapprovedTransactions: () => dispatch(rifActions.getUnapprovedTransactions()),
-    showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
+    showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     completeRegistration: (domainName) => dispatch(rifActions.finishRegistration(domainName)),
     canCompleteRegistration: (commitment) => dispatch(rifActions.canFinishRegistration(commitment)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),

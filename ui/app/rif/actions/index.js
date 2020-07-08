@@ -146,7 +146,7 @@ function checkDomainAvailable (domainName) {
       background.rif.rns.resolver.isDomainAvailable(domainName, (error, available) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(available);
@@ -163,7 +163,7 @@ function getDomainDetails (domainName) {
         console.debug('This are the details bringed', details);
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(details);
@@ -182,7 +182,7 @@ function getDomainByAddress (address) {
       background.rif.rns.resolver.getAddressDomain(address, (error, domain) => {
         console.debug('this is the domain bringed', domain);
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(domain);
@@ -198,7 +198,7 @@ function setResolverAddress (domainName, resolverAddress) {
       background.rif.rns.resolver.setResolver(domainName, resolverAddress, (error, transactionListenerId) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(transactionListenerId);
@@ -212,7 +212,7 @@ function getResolverAddress (domainName) {
     return new Promise((resolve, reject) => {
       background.rif.rns.resolver.getResolver(domainName, (error, resolverAddress) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(resolverAddress);
@@ -228,7 +228,7 @@ function setChainAddressForResolver (domainName, chain, chainAddress, subdomain 
       background.rif.rns.resolver.setChainAddressForResolver(domainName, chain, chainAddress, subdomain, action, (error, result) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -241,7 +241,7 @@ function deletePendingChainAddress (chain, isSubdomain) {
     return new Promise((resolve, reject) => {
       background.rif.rns.resolver.deletePendingChainAddress(chain, isSubdomain, (error, result) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -255,7 +255,7 @@ function deletePendingSubdomain (domainName, subdomain) {
     return new Promise((resolve, reject) => {
       background.rif.rns.register.deletePendingSubdomain(domainName, subdomain, (error, result) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -269,7 +269,7 @@ function getChainAddresses (domainName, subdomain = '') {
     return new Promise((resolve, reject) => {
       background.rif.rns.resolver.getChainAddressForResolvers(domainName, subdomain, (error, result) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -285,7 +285,7 @@ function requestDomainRegistration (domainName, yearsToRegister) {
       background.rif.rns.register.requestRegistration(domainName, yearsToRegister, (error, result) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -301,7 +301,7 @@ function canFinishRegistration (commitmentHash) {
       background.rif.rns.register.canFinishRegistration(commitmentHash, (error, result) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -317,7 +317,7 @@ function finishRegistration (domainName) {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.finishRegistration(domainName, (error, transactionListenerId) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
         }
         return resolve(transactionListenerId);
       });
@@ -332,7 +332,7 @@ function getRegistrationCost (domainName, yearsToRegister) {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.getDomainCost(domainName, yearsToRegister, (error, result) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -348,7 +348,7 @@ function getUnapprovedTransactions () {
       background.rif.rns.register.getUnapprovedTransactions((error, transactions) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(transactions);
@@ -364,7 +364,7 @@ function getSelectedAddress () {
       background.rif.rns.register.getSelectedAddress((error, selectedAddress) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(selectedAddress);
@@ -477,7 +477,7 @@ function getSubdomains (domainName) {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.getSubdomainsForDomain(domainName, (error, result) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(result);
@@ -491,7 +491,7 @@ function waitForTransactionListener (transactionListenerId) {
     return new Promise((resolve, reject) => {
       background.rif.rns.register.waitForTransactionListener(transactionListenerId, (error, transactionReceipt) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(transactionReceipt);
@@ -507,7 +507,7 @@ function createSubdomain (domainName, subdomain, ownerAddress, parentOwnerAddres
       background.rif.rns.register.createSubdomain(domainName, subdomain, ownerAddress, parentOwnerAddress, (error, transactionListenerId) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(transactionListenerId);
@@ -523,7 +523,7 @@ function isSubdomainAvailable (domainName, subdomain) {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.isSubdomainAvailable(domainName, subdomain, (error, available) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(available);
@@ -532,7 +532,7 @@ function isSubdomainAvailable (domainName, subdomain) {
   };
 }
 
-function goToConfirmPageForLastTransaction (afterApproval) {
+function goToConfirmPageForLastTransaction (callbacks) {
   return (dispatch) => {
     dispatch(waitUntil()).then(() => {
       dispatch(getUnapprovedTransactions())
@@ -540,7 +540,7 @@ function goToConfirmPageForLastTransaction (afterApproval) {
           dispatch(niftyActions.showConfTxPage({
             id: latestTransaction.id,
             unapprovedTransactions: latestTransaction,
-            afterApproval,
+            callbacks,
           }));
         });
     });
@@ -554,7 +554,7 @@ function deleteSubdomain (domainName, subdomain) {
       background.rif.rns.register.deleteSubdomain(domainName, subdomain, (error, transactionListenerId) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(transactionListenerId);
@@ -570,7 +570,7 @@ function getDomain (domainName) {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.getDomain(domainName, (error, domain) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(domain);
@@ -586,7 +586,7 @@ function getDomainAddress (domainName) {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.getDomainAddress(domainName, (error, domainAddress) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(domainAddress);
@@ -602,7 +602,7 @@ function getDomains () {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.getDomains((error, domains) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(domains);
@@ -618,7 +618,7 @@ function updateDomains (domain) {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.updateDomain(domain, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -640,7 +640,7 @@ function onboarding (callbackHandlers = new CallbackHandlers()) {
       }
       background.rif.lumino.onboarding((error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -706,7 +706,7 @@ function getAvailableCallbacks () {
     return new Promise((resolve, reject) => {
       background.rif.lumino.getAvailableCallbacks((error, callbackNames) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(callbackNames);
@@ -729,7 +729,7 @@ function openChannel (partner, tokenAddress, callbackHandlers = new CallbackHand
       }
       background.rif.lumino.openChannel(partner, tokenAddress, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -752,7 +752,7 @@ function closeChannel (partner, tokenAddress, tokenNetworkAddress, channelIdenti
       }
       background.rif.lumino.closeChannel(partner, tokenAddress, tokenNetworkAddress, channelIdentifier, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -766,7 +766,7 @@ function deleteChannelFromSdk (channelIdentifier, tokenAddress) {
     return new Promise((resolve, reject) => {
       background.rif.lumino.deleteChannelFromSDK(channelIdentifier, tokenAddress, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -790,7 +790,7 @@ function createDeposit (partner, tokenAddress, tokenNetworkAddress, channelIdent
       }
       background.rif.lumino.createDeposit(partner, tokenAddress, tokenNetworkAddress, channelIdentifier, netAmount, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -821,7 +821,7 @@ function createPayment (partner, tokenAddress, netAmount, callbackHandlers = new
       }
       background.rif.lumino.createPayment(partner, tokenAddress, netAmount, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -835,7 +835,7 @@ function getChannels () {
     return new Promise((resolve, reject) => {
       background.rif.lumino.getChannels((error, channels) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error)
         }
         return resolve(channels);
@@ -860,7 +860,7 @@ function getChannelsGroupedByNetwork () {
         const groupedBy = _.groupBy(arrayWithoutKeys, 'token_network_identifier');
         return resolve(groupedBy);
       }).catch(error => {
-        dispatch(niftyActions.displayWarning(error));
+        handleError(error, dispatch);
         reject(error)
       });
     });
@@ -872,7 +872,7 @@ function getTokens () {
     return new Promise((resolve, reject) => {
       background.rif.lumino.getTokens((error, tokens) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(tokens);
@@ -886,7 +886,7 @@ function isLuminoNode (address) {
     return new Promise((resolve, reject) => {
       background.rif.lumino.isLuminoNode(address, (error, isLuminoNode) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(isLuminoNode);
@@ -1011,7 +1011,7 @@ function getUserChannelsInNetwork (tokenAddress) {
   return (dispatch) => new Promise((resolve, reject) => {
     background.rif.lumino.getChannels((error, channels) => {
       if (error) {
-        dispatch(niftyActions.displayWarning(error));
+        handleError(error, dispatch);
         return reject(error);
       }
       if (channels) {
@@ -1029,7 +1029,7 @@ function cleanStore () {
     return new Promise((resolve, reject) => {
       background.rif.cleanStore((error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -1139,7 +1139,7 @@ function subscribeToCloseChannel (channelId, tokenNetworkAddress) {
     return new Promise((resolve, reject) => {
       background.rif.lumino.subscribeToCloseChannel(channelId, tokenNetworkAddress, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -1153,7 +1153,7 @@ function getConfiguration () {
     return new Promise((resolve, reject) => {
       background.rif.getConfiguration((error, configuration) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(configuration);
@@ -1167,7 +1167,7 @@ function setConfiguration (configuration) {
     return new Promise((resolve, reject) => {
       background.rif.setConfiguration(configuration, (error) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve();
@@ -1181,7 +1181,7 @@ function rifEnabled () {
     return new Promise((resolve, reject) => {
       background.rif.enabled((error, enabled) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(enabled);
@@ -1195,13 +1195,25 @@ function walletUnlocked () {
     return new Promise((resolve, reject) => {
       background.rif.walletUnlocked((error, enabled) => {
         if (error) {
-          dispatch(niftyActions.displayWarning(error));
+          handleError(error, dispatch);
           return reject(error);
         }
         return resolve(enabled);
       });
     });
   };
+}
+
+function handleError (error, dispatch) {
+  if (error && dispatch) {
+    if (typeof error === 'string') {
+      dispatch(niftyActions.displayToast(error, false));
+    } else if (error.error && error.error.message) {
+      dispatch(niftyActions.displayToast(error.error.message, false));
+    } else {
+      dispatch(niftyActions.displayToast(JSON.stringify(error), false));
+    }
+  }
 }
 
 

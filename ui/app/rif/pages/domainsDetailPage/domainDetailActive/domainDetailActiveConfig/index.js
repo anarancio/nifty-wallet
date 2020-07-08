@@ -66,13 +66,15 @@ class DomainsDetailConfigurationScreen extends Component {
             });
           });
         this.props.showTransactionConfirmPage({
-          action: () => {
-            this.props.showDomainConfigPage({
-              ...this.props,
-              disableSelect: true,
-              selectedResolverAddress: address,
-            });
-            this.props.showToast('Waiting Confirmation');
+          afterApproval: {
+            action: () => {
+              this.props.showDomainConfigPage({
+                ...this.props,
+                disableSelect: true,
+                selectedResolverAddress: address,
+              });
+              this.props.showToast('Waiting Confirmation');
+            },
           },
         });
         return;
@@ -135,7 +137,7 @@ const mapDispatchToProps = dispatch => {
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     setNewResolver: (domainName, resolverAddress) => dispatch(rifActions.setResolverAddress(domainName, resolverAddress)),
-    showTransactionConfirmPage: (afterApproval) => dispatch(rifActions.goToConfirmPageForLastTransaction(afterApproval)),
+    showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     showDomainConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, props)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
   }
