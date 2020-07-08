@@ -38,6 +38,7 @@ class LuminoChannels extends Component {
       isOpen: props.channel.sdk_status === 'CHANNEL_OPENED',
       channelStatus: this.getStatus(props.channel.sdk_status),
       loading: false,
+      currentSdkStatus: props.channel.sdk_status,
       loadingMessage: 'Please Wait...',
       balance: getBalanceInEth(props.channel.offChainBalance),
     };
@@ -57,9 +58,11 @@ class LuminoChannels extends Component {
       const balance = getBalanceInEth(channel.offChainBalance);
       const isOpen = channel.sdk_status === 'CHANNEL_OPENED';
       const channelStatus = this.getStatus(channel.sdk_status);
+      const currentSdkStatus = channel.sdk_status;
       this.setState({
         balance,
         isOpen,
+        currentSdkStatus,
         channelStatus,
       })
       ;
@@ -187,12 +190,12 @@ class LuminoChannels extends Component {
 
   closingMessage = () => {
     // eslint-disable-next-line camelcase
-    const {channel: {sdk_status}} = this.props;
+    const {currentSdkStatus} = this.state;
     const messages = {
       'CHANNEL_WAITING_FOR_CLOSE': 'Closing channel\nPlease wait, this operation could take around 4 minutes',
       'CHANNEL_CLOSED': 'Channel has been closed\nThe settlement will take around 2 hours',
     }
-    return messages[sdk_status]
+    return messages[currentSdkStatus] || 'Closing channel\nPlease wait, this operation could take around 4 minutes';
   }
 
   render () {
