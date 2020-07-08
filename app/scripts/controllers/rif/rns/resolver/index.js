@@ -249,6 +249,7 @@ export default class RnsResolver extends RnsJsDelegate {
           this.deletePendingChainAddress(domainName, chain, !!subdomain);
           console.debug('setChainAddressForResolver success', result);
         }).catch(result => {
+          this.deletePendingChainAddress(domainName, chain, !!subdomain);
           console.debug('Error when trying to set chain address for resolver', result);
         });
       resolve(transactionListener.id);
