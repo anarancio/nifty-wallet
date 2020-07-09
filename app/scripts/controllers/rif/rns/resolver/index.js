@@ -204,15 +204,15 @@ export default class RnsResolver extends RnsJsDelegate {
    * @param chain ChainId that you want to delete from the pending queue
    * @returns {Promise<unknown>}
    */
-  deletePendingChainAddress (domainName, chain, isSubdomain) {
+  deletePendingChainAddress (domainName, chain, isSubdomain, address, network) {
     return new Promise((resolve, reject) => {
-      const domain = this.getDomain(domainName);
+      const domain = this.getDomain(domainName, address, network);
       const pendingChainAddressesActions = domain.pendingChainAddresses;
       const index = pendingChainAddressesActions.findIndex((e) => e.chain === chain && e.isSubdomain === isSubdomain);
       if (index >= 0) {
         pendingChainAddressesActions.splice(index, 1);
       }
-      this.updateDomain(domain);
+      this.updateDomain(domain, address, network);
       resolve();
     });
   }
@@ -246,10 +246,10 @@ export default class RnsResolver extends RnsJsDelegate {
       const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
       transactionListener.transactionConfirmed()
         .then(result => {
-          this.deletePendingChainAddress(domainName, chain, !!subdomain);
+          this.deletePendingChainAddress(domainName, chain, !!subdomain, result.address, result.network);
           console.debug('setChainAddressForResolver success', result);
         }).catch(result => {
-          this.deletePendingChainAddress(domainName, chain, !!subdomain);
+          this.deletePendingChainAddress(domainName, chain, !!subdomain, result.address, result.network);
           console.debug('Error when trying to set chain address for resolver', result);
         });
       resolve(transactionListener.id);
