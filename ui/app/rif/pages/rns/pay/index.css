@@ -24,13 +24,13 @@
   margin-left: 30px;
 
   font-family: var(--primary-font);
-  color: #D8D8D8;
+  color: var(--gray-input);
   font-size: 12px;
   text-align: center;
 }
 
 .amount-input::placeholder {
-  color: #D8D8D8;
+  color: var(--gray-input);
 }
 
 .amount-input--open-channel,
@@ -49,13 +49,13 @@
   margin-right: 10px;
 
   font-family: var(--primary-font);
-  color: #D8D8D8;
+  color: var(--gray-input);
   font-size: 12px;
   text-align: center;
 }
 
 .domain-address-input::placeholder {
-  color: #D8D8D8;
+  color: var(--gray-input);
 }
 
 .domain-address-input--open-channel {
