@@ -101,7 +101,7 @@ class DepositOnChannel extends Component {
           }
           this.setState({
             loading: true,
-            loadingMessage: 'Making deposit\nPlease wait, this operation could take around 6 minutes.',
+            loadingMessage: 'Making deposit\nPlease wait, this operation could take around 4 minutes.',
           });
           await this.props.createDeposit(
             this.props.destination,
