@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 class NetworkDropdownOption extends Select.Option {
   render () {
-    const { option } = this.props;
+    const {option} = this.props;
     const icon = option.icon ? option.icon : DEFAULT_ICON;
     return (
       <div
@@ -33,13 +33,14 @@ class NetworkDropdownOptionSelected extends Component {
   static propTypes = {
     value: PropTypes.object,
   }
+
   render () {
     const {value} = this.props;
     const icon = value.icon ? value.icon : DEFAULT_ICON;
     return (
-      <div className="add-new-multicrypto-select-value d-flex">
-          <FontAwesomeIcon className="add-new-multicrypto-select-value-icon" icon={icon.icon} color={icon.color}/>
-          <span className="add-new-multicrypto-select-value-text">{value.name}</span>
+      <div className="networks-dropdown-item  d-flex">
+        <FontAwesomeIcon className="add-new-multicrypto-select-value-icon" icon={icon.icon} color={icon.color}/>
+        <span className="networks-dropdown-item-text">{value.name}</span>
       </div>
     )
   }
@@ -65,13 +66,13 @@ class NetworksDropdown extends Component {
   }
 
   onSelectedNetwork = (selectedNetwork) => {
-    this.setState({ selectedNetwork: selectedNetwork });
+    this.setState({selectedNetwork: selectedNetwork});
     this.props.onSelectedNetwork(selectedNetwork);
   }
 
   render () {
     return (
-      <div id="comboChainAddresses" className="add-new-multicrypto-select">
+      <div id="comboChainAddresses" className="networks-dropdown-container">
         <Select
           searchable={false}
           arrowRenderer={() => <div className="combo-selector-triangle"/>}

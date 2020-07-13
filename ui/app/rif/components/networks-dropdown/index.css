@@ -1,0 +1,20 @@
+.networks-dropdown-container .Select-control {
+  padding: 2px;
+  width: 8rem;
+}
+
+.networks-dropdown-container .Select-control .Select-input {
+  height: auto;
+  display: inherit !important;
+}
+
+
+.networks-dropdown-item {
+  width: 100%;
+  margin-left: 0.1rem;
+  justify-content: center;
+  height: auto;
+}
+
+.networks-dropdown-item-text {
+}
