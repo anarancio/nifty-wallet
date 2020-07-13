@@ -10,7 +10,7 @@ import rifActions from '../../../actions';
 import niftyActions from '../../../../../../ui/app/actions';
 import {connect} from 'react-redux';
 import ethUtils from 'ethereumjs-util';
-import {isValidRNSDomain, parseLuminoError} from '../../../utils/parse';
+import {getLuminoErrorCode, isValidRNSDomain, parseLuminoError} from '../../../utils/parse';
 import web3Utils from 'web3-utils';
 import {validateDecimalAmount} from '../../../utils/validations';
 import {getLoader} from '../../../utils/components';
@@ -121,7 +121,6 @@ class Pay extends Component {
 
   getAllowedNetworks () {
     return SLIP_ADDRESSES.filter(network => {
-      // return network.symbol === 'ETH' || network.symbol === 'RBTC';
       return network.symbol === 'RBTC';
     });
   }
@@ -223,8 +222,13 @@ class Pay extends Component {
         loading: false,
       });
       console.debug('PAYMENT ERROR', error);
-      const errorMessage = parseLuminoError(error);
-      this.props.showToast(errorMessage || 'Unknown Error trying to pay!', false);
+      const errorCode = getLuminoErrorCode(error);
+      if (errorCode && errorCode.toString() === 'KB003') {
+        this.props.showToast('There is no RNS resolver associated with this domain', false);
+      } else {
+        const errorMessage = parseLuminoError(error);
+        this.props.showToast(errorMessage || 'Unknown Error trying to pay!', false);
+      }
     };
     this.props.showPopup('Pay', {
       text: 'Are you sure you want to pay ' + this.state.amount + ' tokens to partner ' + this.state.destination + '?',

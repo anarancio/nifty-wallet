@@ -27,7 +27,12 @@ function isValidRNSDomain (value) {
 }
 
 function parseLuminoError (error) {
-  return error && error.response && error.response.data && error.response.data.errors && error.response.data.errors ? error.response.data.errors : error;
+  console.debug('ERROR', error);
+  return (error && error.response && error.response.data && error.response.data.errors && error.response.data.errors) ? error.response.data.errors : error;
+}
+
+function getLuminoErrorCode (error) {
+  return (error && error.id) ? error.id : null;
 }
 
 export {
@@ -35,4 +40,5 @@ export {
   cleanDomainName,
   getBalanceInEth,
   isValidRNSDomain,
+  getLuminoErrorCode,
 }

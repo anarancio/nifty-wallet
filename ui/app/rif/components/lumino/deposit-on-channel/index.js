@@ -22,6 +22,7 @@ class DepositOnChannel extends Component {
     showPopup: PropTypes.func,
     createDeposit: PropTypes.func,
     afterDepositCreated: PropTypes.func,
+    domainNotExists: PropTypes.func,
   }
 
   constructor (props) {
@@ -103,13 +104,32 @@ class DepositOnChannel extends Component {
             loading: true,
             loadingMessage: 'Making deposit\nPlease wait, this operation could take around 8 minutes.',
           });
-          await this.props.createDeposit(
-            this.props.destination,
-            this.props.tokenAddress,
-            this.props.tokenNetworkAddress,
-            this.props.channelIdentifier,
-            this.state.amount,
-            callbackHandlers);
+          if (isValidRNSDomain(this.props.destination)) {
+            // we check if the domain exists to avoid the no resolver problem
+            const domainNotExists = await this.props.domainNotExists(this.props.destination);
+            if (domainNotExists) {
+              this.props.showToast('There is no RNS resolver associated with this domain', false);
+              this.setState({
+                loading: false,
+              });
+            } else {
+              await this.props.createDeposit(
+                this.props.destination,
+                this.props.tokenAddress,
+                this.props.tokenNetworkAddress,
+                this.props.channelIdentifier,
+                this.state.amount,
+                callbackHandlers);
+            }
+          } else {
+            await this.props.createDeposit(
+              this.props.destination,
+              this.props.tokenAddress,
+              this.props.tokenNetworkAddress,
+              this.props.channelIdentifier,
+              this.state.amount,
+              callbackHandlers);
+          }
         },
       });
     } else {
@@ -133,6 +153,7 @@ function mapDispatchToProps (dispatch) {
     },
     createDeposit: (partner, tokenAddress, tokenNetworkAddress, channelIdentifier, amount, callbackHandlers) =>
       dispatch(rifActions.createDeposit(partner, tokenAddress, tokenNetworkAddress, channelIdentifier, amount, callbackHandlers)),
+    domainNotExists: (domainName) => dispatch(rifActions.checkDomainAvailable(domainName)),
   };
 }
 
