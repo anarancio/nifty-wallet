@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 class TokensDropdownOption extends Select.Option {
   render () {
-    const { option } = this.props;
+    const {option} = this.props;
     const icon = option.icon ? option.icon : DEFAULT_ICON;
     return (
       <div
@@ -25,7 +25,7 @@ class TokensDropdownOption extends Select.Option {
       >
         <div>
           <FontAwesomeIcon className="add-new-multicrypto-select-value-icon" icon={icon.icon} color={icon.color}/>
-          <span className="label-spacing-left">{option.name}</span>
+          <span className="tokens-dropdown-item-text">{option.name}</span>
         </div>
       </div>
     )
@@ -36,13 +36,14 @@ class TokensDropdownOptionSelected extends Component {
   static propTypes = {
     value: PropTypes.object,
   }
+
   render () {
     const {value} = this.props;
     const icon = value.icon ? value.icon : DEFAULT_ICON;
     return (
-      <div className="add-new-multicrypto-select-value d-flex">
-        <FontAwesomeIcon className="add-new-multicrypto-select-value-icon" icon={icon.icon} color={icon.color}/>
-        <span className="add-new-multicrypto-select-value-text">{value.name}</span>
+      <div className="tokens-dropdown-item">
+        <FontAwesomeIcon icon={icon.icon} color={icon.color}/>
+        <span className="tokens-dropdown-item-text">{value.name}</span>
       </div>
     )
   }
@@ -68,13 +69,13 @@ class TokensDropdown extends Component {
   }
 
   onSelectedNetwork = (selectedToken) => {
-    this.setState({ selectedToken: selectedToken });
+    this.setState({selectedToken: selectedToken});
     this.props.onSelectedToken(selectedToken);
   }
 
   render () {
     return (
-      <div id="comboChainAddresses" className="add-new-multicrypto-select">
+      <div id="tokenDropDown" className="tokens-dropdown-container">
         <Select
           searchable={false}
           arrowRenderer={() => <div className="combo-selector-triangle"/>}

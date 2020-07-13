@@ -1,17 +1,19 @@
-.tokens-dropdown-option {
-  display: flex;
-  justify-content: space-between;
+.tokens-dropdown-container .Select-control {
+  padding: 2px;
+  width: 8rem;
 }
 
-.tokens-dropdown-option>div {
+.tokens-dropdown-container .Select-control .Select-input {
+  height: auto;
+  display: inherit !important;
+}
+
+.tokens-dropdown-item {
   width: 100%;
-  margin: 1em;
+  margin-left: 0.1rem;
+  height: auto;
 }
 
-.tokens-dropdown-option>svg {
-  margin: 1em;
-}
-
-.tokens-dropdown-option:hover {
-  background: #d7d6d6;
+.tokens-dropdown-item-text {
+  margin-left: 0.5rem;
 }
