@@ -28,6 +28,7 @@ class OpenChannel extends Component {
     reloadChannels: PropTypes.func,
     getTokens: PropTypes.func,
     option: PropTypes.object,
+    domainNotExists: PropTypes.func,
   }
 
   constructor (props) {
@@ -131,8 +132,8 @@ class OpenChannel extends Component {
     // this is because the tokenOptions can be undefined or empty some times since the service takes time to retrieve the tokens
     // also the selected token on those cases can be undefined or null because of that, so we control those cases and we add a loader until the
     // data it's available
-    if (!this.state.selectedToken && (!tokensOptions || (tokensOptions && tokensOptions.length
-      <= 0))) {
+    if (!this.state.selectedToken && (!tokensOptions ||
+      (tokensOptions && tokensOptions.length <= 0))) {
       return getLoader(this.state.loadingMessage);
     }
 
@@ -271,7 +272,20 @@ class OpenChannel extends Component {
             loading: true,
             loadingMessage: 'Opening channel\nPlease wait, this operation could take around 4 minutes',
           });
-          await this.props.openChannel(this.state.destination, this.state.selectedToken.address, callbackHandlers);
+          if (isValidRNSDomain(this.state.destination)) {
+            // we check if the domain exists to avoid the no resolver problem
+            const domainNotExists = await this.props.domainNotExists(this.state.destination);
+            if (domainNotExists) {
+              this.props.showToast('There is no RNS resolver associated with this domain', false);
+              this.setState({
+                loading: false,
+              });
+            } else {
+              await this.props.openChannel(this.state.destination, this.state.selectedToken.address, callbackHandlers);
+            }
+          } else {
+            await this.props.openChannel(this.state.destination, this.state.selectedToken.address, callbackHandlers);
+          }
         } else {
           this.props.showToast('You need to select a token and put the partner and amount first.', false);
         }
@@ -311,6 +325,7 @@ function mapDispatchToProps (dispatch) {
     },
     createDeposit: (partner, tokenAddress, tokenNetworkAddress, channelIdentifier, amount, callbackHandlers) =>
       dispatch(rifActions.createDeposit(partner, tokenAddress, tokenNetworkAddress, channelIdentifier, amount, callbackHandlers)),
+    domainNotExists: (domainName) => dispatch(rifActions.checkDomainAvailable(domainName)),
   };
 }
 
