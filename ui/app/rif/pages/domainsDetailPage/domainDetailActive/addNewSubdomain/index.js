@@ -31,18 +31,6 @@ class AddNewSubdomain extends Component {
       this.state.newSubdomain.name.toLowerCase(),
       this.state.newSubdomain.owner,
       this.props.ownerAddress);
-    this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
-      this.props.getSubdomains(this.props.domainName)
-        .then(subdomains => {
-          this.props.showThis(
-            this.props.pageName,
-            {
-              ...this.props.redirectParams,
-              newSubdomains: subdomains,
-            });
-          this.props.showToast('Subdomain added');
-        });
-    });
     this.props.showPopup('Confirmation', {
       text: 'Please confirm the operation in the next screen to create the subdomain.',
       hideCancel: true,
@@ -56,6 +44,18 @@ class AddNewSubdomain extends Component {
                   ...this.props.redirectParams,
                 });
               this.props.showToast('Waiting Confirmation');
+              this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
+                this.props.getSubdomains(this.props.domainName)
+                  .then(subdomains => {
+                    this.props.showThis(
+                      this.props.pageName,
+                      {
+                        ...this.props.redirectParams,
+                        newSubdomains: subdomains,
+                      });
+                    this.props.showToast('Subdomain added');
+                  });
+              });
             },
             payload: null,
           },

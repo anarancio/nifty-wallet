@@ -57,14 +57,6 @@ class DomainsDetailConfigurationScreen extends Component {
       if (resolverItem.value === e.target.value) {
         const address = resolverItem.getAttribute('data-address');
         const transactionListenerId = await this.props.setNewResolver(this.props.domainName, address);
-        this.props.waitForListener(transactionListenerId)
-          .then(transactionReceipt => {
-            this.props.showDomainConfigPage({
-              ...this.props,
-              disableSelect: false,
-              selectedResolverAddress: address,
-            });
-          });
         this.props.showTransactionConfirmPage({
           afterApproval: {
             action: () => {
@@ -74,6 +66,14 @@ class DomainsDetailConfigurationScreen extends Component {
                 selectedResolverAddress: address,
               });
               this.props.showToast('Waiting Confirmation');
+              this.props.waitForListener(transactionListenerId)
+                .then(transactionReceipt => {
+                  this.props.showDomainConfigPage({
+                    ...this.props,
+                    disableSelect: false,
+                    selectedResolverAddress: address,
+                  });
+                });
             },
           },
         });

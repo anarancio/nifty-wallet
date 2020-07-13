@@ -127,27 +127,31 @@ class DomainRegisterScreen extends Component {
   }
 
   async requestDomain () {
-    const result = await this.props.requestRegistration(this.props.domainName, this.props.yearsToRegister);
-    this.props.waitForListener(result.transactionListenerId)
-      .then(transactionReceipt => {
-        this.showWaitingForRegister();
-      });
+    const {transactionListenerId} = await this.props.requestRegistration(this.props.domainName, this.props.yearsToRegister);
     this.props.showTransactionConfirmPage({
       afterApproval: {
-        action: () => this.showWaitingForConfirmation(),
+        action: () => {
+          this.showWaitingForConfirmation()
+          this.props.waitForListener(transactionListenerId)
+            .then(transactionReceipt => {
+              this.showWaitingForRegister();
+            });
+        },
       },
     });
   }
 
   async completeRegistration () {
     const transactionListenerId = await this.props.completeRegistration(this.props.domainName);
-    this.props.waitForListener(transactionListenerId)
-      .then(transactionReceipt => {
-        this.afterRegistration();
-      });
     this.props.showTransactionConfirmPage({
       afterApproval: {
-        action: () => this.afterRegistrationSubmit(),
+        action: () => {
+          this.afterRegistrationSubmit()
+          this.props.waitForListener(transactionListenerId)
+            .then(transactionReceipt => {
+              this.afterRegistration();
+            });
+        },
       },
     });
   }

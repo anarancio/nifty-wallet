@@ -108,17 +108,6 @@ class Subdomains extends Component {
       text: 'Are you sure you want to delete the subdomain ' + subdomain.name + '?',
       confirmCallback: async () => {
         const transactionListenerId = await this.props.deleteSubdomain(subdomain.domainName, subdomain.name);
-        this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
-          this.props.getSubdomains(this.props.domainName)
-            .then(subdomains => {
-              this.props.showThis(
-                this.props.pageName,
-                {
-                  ...this.props.redirectParams,
-                  newSubdomains: subdomains,
-                });
-            });
-        });
         this.props.showTransactionConfirmPage({
           afterApproval: {
             action: () => {
@@ -132,6 +121,17 @@ class Subdomains extends Component {
                     });
                 });
               this.props.showToast('Waiting for confirmation');
+              this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
+                this.props.getSubdomains(this.props.domainName)
+                  .then(subdomains => {
+                    this.props.showThis(
+                      this.props.pageName,
+                      {
+                        ...this.props.redirectParams,
+                        newSubdomains: subdomains,
+                      });
+                  });
+              });
             },
           },
         });
