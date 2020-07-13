@@ -208,7 +208,7 @@ class OpenChannel extends Component {
       if (this.state.amount) {
         this.setState({
           loading: true,
-          loadingMessage: 'Making deposit\nPlease wait, this operation could take around 6 minutes',
+          loadingMessage: 'Making deposit\nPlease wait, this operation could take around 8 minutes',
         });
         const depositCallbackHandlers = new CallbackHandlers();
         depositCallbackHandlers.requestHandler = (result) => {
