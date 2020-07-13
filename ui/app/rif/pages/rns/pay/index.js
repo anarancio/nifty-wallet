@@ -17,7 +17,7 @@ import {getLoader} from '../../../utils/components';
 
 class ModeOption extends Select.Option {
   render () {
-    const { option } = this.props;
+    const {option} = this.props;
     let fasterWithoutFees = null;
     if (option.value === payMode.LUMINO) {
       fasterWithoutFees = (<small className="payment-legend">Faster and without fees</small>);
@@ -45,6 +45,7 @@ class ModeOptionSelected extends Component {
   static propTypes = {
     value: PropTypes.object,
   }
+
   render () {
     const {value} = this.props;
     let fasterWithoutFees = null;
@@ -94,10 +95,12 @@ class Pay extends Component {
 
   constructor (props) {
     super(props);
+    const {domainInfo} = props;
+    const destination = domainInfo.isOwner ? '' : domainInfo.domainName;
     this.state = {
       tokens: null,
       amount: '',
-      destination: '',
+      destination: destination,
       selectedNetwork: null,
       loading: true,
       loadingMessage: 'Please Wait...',
@@ -277,10 +280,13 @@ class Pay extends Component {
   }
 
   getDestinationFragment () {
+    const {destination} = this.state;
     return (
       <div className="form-segment">
         <span>To:</span>
-        <input className="domain-address-input" type="text" placeholder="Enter address / domain" onChange={(event) => this.changeDestination(event)}/>
+        <input className="domain-address-input" type="text" placeholder="Enter address / domain"
+               value={destination}
+               onChange={(event) => this.changeDestination(event)}/>
         <span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="3.5" y="3.5" width="9" height="9" stroke="#979797"/>
@@ -301,11 +307,14 @@ class Pay extends Component {
           <NetworkDropdown onSelectedNetwork={(selectedNetwork => this.onNetworkChange(selectedNetwork))}
                            defaultSelectedNetwork={this.getAllowedNetworks()[0]}
                            networks={this.getAllowedNetworks()}/>
-          <input type="text" className="amount-input" placeholder="Amount" onKeyDown={event => this.validateAmount(event)} onChange={event => this.changeAmount(event)} />
+          <input type="text" className="amount-input" placeholder="Amount"
+                 onKeyDown={event => this.validateAmount(event)} onChange={event => this.changeAmount(event)}/>
         </div>
         {this.getDestinationFragment()}
         <div className="form-segment">
-          <button className="btn-primary btn-pay" disabled={!this.readyToPay()} onClick={() => this.sendNetworkPayment()}>Pay</button>
+          <button className="btn-primary btn-pay" disabled={!this.readyToPay()}
+                  onClick={() => this.sendNetworkPayment()}>Pay
+          </button>
         </div>
       </div>
     );
@@ -319,11 +328,14 @@ class Pay extends Component {
             <TokenDropdown onSelectedToken={(selectedToken) => this.onTokenChange(selectedToken)}
                            defaultSelectedToken={this.getAllowedTokens()[0]}
                            tokens={this.getAllowedTokens()}/>
-            <input className="amount-input" type="text" placeholder="Amount" onKeyDown={event => this.validateAmount(event)} onChange={event => this.changeAmount(event)} />
+            <input className="amount-input" type="text" placeholder="Amount"
+                   onKeyDown={event => this.validateAmount(event)} onChange={event => this.changeAmount(event)}/>
           </div>
           {this.getDestinationFragment()}
           <div className="form-segment">
-            <button className="btn-primary btn-pay" disabled={!this.readyToPay()} onClick={() => this.sendLuminoPayment()}>Pay</button>
+            <button className="btn-primary btn-pay" disabled={!this.readyToPay()}
+                    onClick={() => this.sendLuminoPayment()}>Pay
+            </button>
           </div>
         </div>
       );
@@ -378,6 +390,7 @@ class Pay extends Component {
     );
   }
 }
+
 function mapStateToProps (state) {
   const params = state.appState.currentView.params;
   return {
@@ -405,4 +418,5 @@ function mapDispatchToProps (dispatch) {
     getDomainAddress: (domainName) => dispatch(rifActions.getDomainAddress(domainName)),
   }
 }
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Pay)
