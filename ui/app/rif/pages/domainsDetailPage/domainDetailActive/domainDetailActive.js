@@ -124,7 +124,7 @@ class DomainsDetailActiveScreen extends Component {
     getConfiguration: PropTypes.func,
     isLuminoNode: PropTypes.func,
     showPay: PropTypes.func,
-    getResolverAddress: PropTypes.func
+    getResolverAddress: PropTypes.func,
   }
 
   constructor (props) {
@@ -253,7 +253,6 @@ function mapStateToProps (state) {
     ownerAddress: details.ownerAddress,
     isOwner: state.metamask.selectedAddress.toLowerCase() === details.ownerAddress.toLowerCase(),
     isRifStorage: details.isRifStorage,
-    selectedResolverAddress: params.selectedResolverAddress ? params.selectedResolverAddress : details.selectedResolverAddress,
     newChainAddresses: details.newChainAddresses || [],
     newSubdomains: params.newSubdomains || details.newSubdomains || [],
     disableResolvers: details.disableResolvers,
