@@ -157,19 +157,6 @@ class ChainAddresses extends Component {
     const insertedAddress = address || this.state.insertedAddress;
     const selectedChainAddress = chainAddress || this.state.selectedChainAddress;
     const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName, action);
-    this.props.waitForListener(transactionListenerId)
-      .then(async (transactionReceipt) => {
-        if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.state.selectedResolverAddress)) {
-          // This is a copy of the actual state, so we can compare with this
-          let chainAddressesState = [...this.state.chainAddresses];
-          chainAddressesState = chainAddressesState.map(chainAddress => {
-            chainAddress.action = ''
-            return chainAddress;
-          });
-          // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
-          this.timeouts.push(this.timeoutToRedirect(chainAddressesState, selectedChainAddress));
-        }
-      });
     this.props.showTransactionConfirmPage({
       afterApproval: {
         action: () => {
@@ -179,6 +166,19 @@ class ChainAddresses extends Component {
           if (toastMessage) {
             this.props.showToast(toastMessage);
           }
+          this.props.waitForListener(transactionListenerId)
+            .then(async (transactionReceipt) => {
+              if (this.state.resolvers.find(resolver => resolver.address.toLowerCase() === this.state.selectedResolverAddress)) {
+                // This is a copy of the actual state, so we can compare with this
+                let chainAddressesState = [...this.state.chainAddresses];
+                chainAddressesState = chainAddressesState.map(chainAddress => {
+                  chainAddress.action = ''
+                  return chainAddress;
+                });
+                // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
+                this.timeouts.push(this.timeoutToRedirect(chainAddressesState, selectedChainAddress));
+              }
+            });
         },
       },
     });

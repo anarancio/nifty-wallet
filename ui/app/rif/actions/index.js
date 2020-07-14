@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {lumino} from '../../../../app/scripts/controllers/rif/constants';
 import {CallbackHandlers} from './callback-handlers';
 import ethUtils from 'ethereumjs-util';
-import {sumValuesOfArray} from '../utils/utils';
+import {clearArray, sumValuesOfArray} from '../utils/utils';
 import {parseLuminoError} from '../utils/parse';
 import web3Utils from 'web3-utils';
 
@@ -79,6 +79,7 @@ const rifActions = {
 
 let background = null;
 const navigationStack = [];
+const listenersWaiting = [];
 let backNavigated = false;
 
 function setBackgroundConnection (backgroundConnection) {
@@ -400,9 +401,11 @@ function navigateBack () {
     }
     if (navigationStack.length > 0) {
       const navigation = navigationStack.pop();
+      clearArray(listenersWaiting);
       return navigateTo(navigation.params.tabOptions.screenName, navigation.params);
     }
   }
+  clearArray(listenersWaiting);
   // go to home since we don't have any other page to go to.
   return niftyActions.goHome();
 }
@@ -440,16 +443,16 @@ function navigateTo (screenName, params, resetNavigation = false) {
     navigationStack.push(currentNavigation);
   }
   backNavigated = false;
+  clearArray(listenersWaiting);
   return currentNavigation;
 }
 
 function resetNavigation () {
   return (dispatch) => {
     return new Promise((resolve) => {
-      for (let index = 0; index <= navigationStack.length; index++) {
-        dispatch(niftyActions.showLoadingIndication())
-        navigationStack.pop();
-      }
+      dispatch(niftyActions.showLoadingIndication());
+      clearArray(navigationStack);
+      clearArray(listenersWaiting);
       resolve();
     });
   };
@@ -474,12 +477,33 @@ function getSubdomains (domainName) {
 function waitForTransactionListener (transactionListenerId) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.rns.register.waitForTransactionListener(transactionListenerId, (error, transactionReceipt) => {
+      background.rif.rns.resolver.getSelectedAddress((error, selectedAddress) => {
         if (error) {
           handleError(error, dispatch);
           return reject(error);
         }
-        return resolve(transactionReceipt);
+        listenersWaiting.push({
+          address: selectedAddress,
+          transactionListenerId,
+        });
+        background.rif.rns.register.waitForTransactionListener(transactionListenerId, (error, transactionReceipt) => {
+          if (error) {
+            return reject(error);
+          }
+          background.rif.rns.resolver.getSelectedAddress((error, selectedAddress) => {
+            if (error) {
+              handleError(error, dispatch);
+              return reject(error);
+            }
+            if (listenersWaiting && listenersWaiting.find(listener => listener.address === selectedAddress)) {
+              return resolve(transactionReceipt);
+            }
+            return reject({
+              reason: 'canceledByNavigation',
+              result: transactionReceipt,
+            });
+          });
+        });
       });
     });
   };

@@ -42,10 +42,19 @@ const getStatus = (sdkStatus) => {
   return retVal;
 }
 
+const clearArray = (arrayObject) => {
+  if (arrayObject && Array.isArray(arrayObject)) {
+    for (let index = 0; index < arrayObject.length; index++) {
+      arrayObject.pop();
+    }
+  }
+}
+
 export {
   getChainAddressByChainAddress,
   getStatusForChannel,
   sumValuesOfArray,
   arraysMatch,
   getStatus,
+  clearArray,
 }
