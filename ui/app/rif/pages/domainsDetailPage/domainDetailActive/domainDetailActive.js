@@ -124,6 +124,7 @@ class DomainsDetailActiveScreen extends Component {
     getConfiguration: PropTypes.func,
     isLuminoNode: PropTypes.func,
     showPay: PropTypes.func,
+    getResolverAddress: PropTypes.func
   }
 
   constructor (props) {
@@ -140,15 +141,22 @@ class DomainsDetailActiveScreen extends Component {
         isLuminoNode: isLumino,
       });
     });
+    this.props.getResolverAddress(this.props.domainName)
+      .then(resolverAddress => {
+        this.setState({
+          selectedResolverAddress: resolverAddress.toLowerCase(),
+        });
+      });
     this.state = {
       resolvers: [],
       isLuminoNode: false,
+      selectedResolverAddress: '',
     };
   }
 
   render () {
-    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, selectedResolverAddress, newChainAddresses, newSubdomains, showPay } = this.props;
-    const {resolvers, isLuminoNode} = this.state;
+    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, newChainAddresses, newSubdomains, showPay } = this.props;
+    const {resolvers, isLuminoNode, selectedResolverAddress} = this.state;
     const domainInfo = {
       domainName,
       expirationDate,
@@ -277,6 +285,7 @@ const mapDispatchToProps = dispatch => {
     showPay: (domainInfo) => dispatch(rifActions.navigateTo(pageNames.rns.pay, {
       domainInfo: domainInfo,
     })),
+    getResolverAddress: (domainName) => dispatch(rifActions.getResolverAddress(domainName)),
   }
 }
 
