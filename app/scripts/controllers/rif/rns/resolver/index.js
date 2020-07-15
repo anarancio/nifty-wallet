@@ -158,7 +158,8 @@ export default class RnsResolver extends RnsJsDelegate {
       const chainAddrChangedEvent = await this.notifierManager.operations.getRnsEvents(this.notifierManager.apiKey, node, 'ChainAddrChanged');
       const arrChains = [];
       const domain = this.getDomain(domainName);
-      const pendingChainAddressesActions = domain.pendingChainAddresses;
+      // If we're not owners of the domain, the getdomain function will retrieve undefined
+      const pendingChainAddressesActions = (domain && domain.pendingChainAddresses) ? domain.pendingChainAddresses : [];
       if (addrChangedEvent) {
         addrChangedEvent.forEach(event => {
           if (event.address !== rns.zeroAddress) {
