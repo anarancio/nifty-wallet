@@ -190,7 +190,10 @@ export default class RnsResolver extends RnsJsDelegate {
       // Here we need to add the chainAddress that still pending to add
       pendingChainAddressesActions.map(chainAddr => {
         if (chainAddr.action === 'add' && chainAddr.nodeHash === node) {
-          arrChains.push(new ChainAddress(chainAddr.chain, chainAddr.chainAddress, 'add'));
+          const test = arrChains.find(chainAddrAdded => chainAddrAdded.chain === chainAddr.chain && chainAddrAdded.address === chainAddr.chainAddress);
+          if (!test) {
+            arrChains.push(new ChainAddress(chainAddr.chain, chainAddr.chainAddress, 'add'));
+          }
         }
       });
       console.debug('getChainAddressForResolvers success', arrChains);
