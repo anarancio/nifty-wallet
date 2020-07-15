@@ -14,14 +14,21 @@ export class LuminoExplorer {
           return response.json();
         })
         .then(async dashBoardInfo => {
-          let tokensWithSummary = [];
-          for (let i = 0; i < dashBoardInfo.tokens.length; i++) {
-            let token = dashBoardInfo.tokens[i];
-            const summary = await this.getTokenSummary(token.network_address);
-            token.summary = summary;
-            tokensWithSummary.push(token);
-          }
-          resolve(tokensWithSummary);
+          const promisesSummaries = [];
+          // Creating promises so then we resolve
+          dashBoardInfo.tokens.forEach(token => promisesSummaries.push(this.getTokenSummary(token.network_address)));
+          Promise.all(promisesSummaries).then(values => {
+            // Assing value returned by promises
+            const tokensWithSummary = [];
+            for (let i = 0; i < dashBoardInfo.tokens.length; i++) {
+              const token = dashBoardInfo.tokens[i];
+              token.summary = values[i];
+              tokensWithSummary.push(token);
+            }
+            resolve(tokensWithSummary);
+          }).catch(error => {
+            reject(error);
+          });
         }).catch(err => reject(err));
     });
   }
