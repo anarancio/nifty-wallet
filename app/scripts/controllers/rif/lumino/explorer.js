@@ -13,8 +13,35 @@ export class LuminoExplorer {
         .then(response => {
           return response.json();
         })
+        .then(async dashBoardInfo => {
+          const promisesSummaries = [];
+          // Creating promises so then we resolve
+          dashBoardInfo.tokens.forEach(token => promisesSummaries.push(this.getTokenSummary(token.network_address)));
+          Promise.all(promisesSummaries).then(values => {
+            // Assing value returned by promises
+            const tokensWithSummary = [];
+            for (let i = 0; i < dashBoardInfo.tokens.length; i++) {
+              const token = dashBoardInfo.tokens[i];
+              token.summary = values[i];
+              tokensWithSummary.push(token);
+            }
+            resolve(tokensWithSummary);
+          }).catch(error => {
+            reject(error);
+          });
+        }).catch(err => reject(err));
+    });
+  }
+
+  getTokenSummary (tokenNetworkAddress) {
+    const configuration = this.configurationProvider.getConfigurationObject();
+    return new Promise((resolve, reject) => {
+      fetch(configuration.lumino.explorer.endpoint + ENDPOINT_EXPLORER_DASHBOARD + '?token_network_address=' + tokenNetworkAddress)
+        .then(response => {
+          return response.json();
+        })
         .then(dashBoardInfo => {
-          resolve(dashBoardInfo.tokens);
+          resolve(dashBoardInfo.summary);
         }).catch(err => reject(err));
     });
   }

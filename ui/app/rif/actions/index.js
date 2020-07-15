@@ -946,16 +946,14 @@ function getLuminoNetworks (userAddress) {
             tokenAddress: token.address,
             name: token.name,
             tokenNetwork: token.network_address,
-            channels: token.channels.length,
-            nodes: 0,
+            channels: token.summary.token_channels,
+            nodes: token.summary.token_nodes,
             userChannels: 0,
           }
           if (network.channels) {
-            const nodesMap = {};
             // We check for the unique nodes in the channels
             token.channels.forEach(channel => {
               const {from_address: from, to_address: to} = channel;
-              nodesMap[from] = true
               // If the user is one of the participants, this is one of their channels
               const toLower = value => value.toLowerCase();
               const lowerUserAddress = toLower(userAddress);
@@ -963,7 +961,6 @@ function getLuminoNetworks (userAddress) {
                 network.userChannels += 1
               }
             })
-            network.nodes = Object.keys(nodesMap).length;
           }
           // Here we put it in the has channel or not key
           if (network.userChannels) return networks.withChannels.push(network);
@@ -992,19 +989,13 @@ function getLuminoNetworkData (tokenAddress) {
       dispatch(this.getTokens()).then(tokens => {
         const data = tokens.find(n => n.address.toLowerCase() === tokenAddress.toLowerCase());
         if (data) {
-          const nodesMap = {};
-          data.channels.forEach(c => {
-            const {from_address: from, to_address: to} = c;
-            nodesMap[from] = true;
-            nodesMap[to] = true;
-          })
           const network = {
             symbol: data.symbol,
             tokenAddress: data.address,
             name: data.name,
             tokenNetwork: data.network_address,
-            channels: data.channels.length,
-            nodes: Object.keys(nodesMap).length,
+            channels: data.summary.token_channels,
+            nodes: data.summary.token_nodes,
           }
           return resolve(network);
         }
