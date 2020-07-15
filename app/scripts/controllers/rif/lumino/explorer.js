@@ -13,8 +13,28 @@ export class LuminoExplorer {
         .then(response => {
           return response.json();
         })
+        .then(async dashBoardInfo => {
+          let tokensWithSummary = [];
+          for (let i = 0; i < dashBoardInfo.tokens.length; i++) {
+            let token = dashBoardInfo.tokens[i];
+            const summary = await this.getTokenSummary(token.network_address);
+            token.summary = summary;
+            tokensWithSummary.push(token);
+          }
+          resolve(tokensWithSummary);
+        }).catch(err => reject(err));
+    });
+  }
+
+  getTokenSummary (tokenNetworkAddress) {
+    const configuration = this.configurationProvider.getConfigurationObject();
+    return new Promise((resolve, reject) => {
+      fetch(configuration.lumino.explorer.endpoint + ENDPOINT_EXPLORER_DASHBOARD + '?token_network_address=' + tokenNetworkAddress)
+        .then(response => {
+          return response.json();
+        })
         .then(dashBoardInfo => {
-          resolve(dashBoardInfo.tokens);
+          resolve(dashBoardInfo.summary);
         }).catch(err => reject(err));
     });
   }
