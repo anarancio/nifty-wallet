@@ -21,16 +21,6 @@ class DomainsScreen extends Component {
 
   async componentDidMount () {
     if (!this.props.domains) {
-      this.loadDomains();
-    }
-  }
-  async componentDidUpdate (prevProps, prevState, snapshot) {
-    if (!this.props.domains) {
-      this.loadDomains();
-    }
-  }
-  async loadDomains() {
-    if (!this.props.domains) {
       const domains = await this.props.getDomains();
       this.props.showThis({
         ...this.props,
@@ -138,7 +128,7 @@ const mapDispatchToProps = dispatch => {
     showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
       ...params,
       tabOptions: {
-        title: 'My Domains',
+        screenTitle: 'My Domains',
         index: 0,
         defaultScreenTitle: 'My Domains',
         defaultScreenName: pageNames.rns.domains,
