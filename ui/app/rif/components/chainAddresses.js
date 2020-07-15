@@ -9,7 +9,7 @@ import ItemWithActions from './item-with-actions';
 import InputWithSubmit from './InputWithSubmit';
 import AddNewChainAddressToResolver
   from '../pages/domainsDetailPage/domainDetailActive/addNewTokenNetworkAddress/addNewChainAddressToResolver';
-import {SLIP_ADDRESSES} from '../constants/slipAddresses';
+import {SLIP_ADDRESSES, PRIORITY_SLIP_ADDRESSES} from '../constants/slipAddresses';
 import * as niftyActions from '../../actions';
 import * as lodash from 'lodash';
 import {WAIT_FOR_NOTIFIER} from '../../constants/common';
@@ -51,7 +51,8 @@ class ChainAddresses extends Component {
           selectedResolverAddress: resolverAddress.toLowerCase(),
         });
       });
-    const slipChainAddresses = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
+    const slipChainAddressesOrdered = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
+    const slipChainAddresses = [...PRIORITY_SLIP_ADDRESSES, ...slipChainAddressesOrdered]
     this.timeouts = [];
     this.state = {
       chainAddresses: [],

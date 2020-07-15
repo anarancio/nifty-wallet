@@ -2,7 +2,13 @@
  * Add the icon to the array with this structure
  *   icon: 'SVG Icon',
  */
-export const SLIP_ADDRESSES = [
+export const PRIORITY_SLIP_ADDRESSES = [
+  {
+    chain: '0x80000089',
+    symbol: 'RBTC',
+    name: 'RSK',
+    icon: 'rbtc.png',
+  },
   {
     chain: '0x80000000',
     symbol: 'BTC',
@@ -10,11 +16,97 @@ export const SLIP_ADDRESSES = [
     icon: 'bitcoin.svg',
   },
   {
+    chain: '0x80000091',
+    symbol: 'BCH',
+    name: 'Bitcoin Cash',
+    icon: 'bitcoincash.svg',
+  },
+  {
+    chain: '0x8000003c',
+    symbol: 'ETH',
+    name: 'Ether',
+    icon: 'ethereum.svg',
+  },
+  {
+    chain: '0x8000003d',
+    symbol: 'ETC',
+    name: 'Ether Classic',
+    icon: 'ethereumclassic.svg',
+  },
+  {
+    chain: '0x80000080',
+    symbol: 'XMR',
+    name: 'Monero',
+    icon: 'monero.svg',
+  },
+  {
     chain: '0x80000002',
     symbol: 'LTC',
     name: 'Litecoin',
     icon: 'litecoin.svg',
   },
+  {
+    chain: '0x80000005',
+    symbol: 'DASH',
+    name: 'Dash',
+    icon: 'dash.svg',
+  },
+  {
+    chain: '0x8000002a',
+    symbol: 'DCR',
+    name: 'Decred',
+    icon: 'decred.svg',
+  },
+  {
+    chain: '0x8000002b',
+    symbol: 'XEM',
+    name: 'NEM',
+    icon: 'nem.svg',
+  },
+  {
+    chain: '0x80000085',
+    symbol: 'ZEC',
+    name: 'Zcash',
+    icon: 'zcash.svg',
+  },
+  {
+    chain: '0x80000090',
+    symbol: 'XRP',
+    name: 'Ripple',
+    icon: 'ripple.svg',
+  },
+  {
+    chain: '0x800000c2',
+    symbol: 'EOS',
+    name: 'EOS',
+    icon: 'eos.svg',
+  },
+  {
+    chain: '0x800000c3',
+    symbol: 'TRX',
+    name: 'Tron',
+    icon: 'tron.svg',
+  },
+  {
+    chain: '0x80000378',
+    symbol: 'NEO',
+    name: 'NEO',
+    icon: 'neo.svg',
+  },
+  {
+    chain: '0x800006c1',
+    symbol: 'XTZ',
+    name: 'Tezos',
+    icon: 'tezos.svg',
+  },
+  {
+    chain: '0x80000016',
+    symbol: 'MONA',
+    name: 'Monacoin',
+    icon: 'monacoin.svg',
+  },
+]
+export const SLIP_ADDRESSES = [
   {
     chain: '0x80000003',
     symbol: 'DOGE',
@@ -24,12 +116,6 @@ export const SLIP_ADDRESSES = [
     chain: '0x80000004',
     symbol: 'RDD',
     name: 'Reddcoin',
-  },
-  {
-    chain: '0x80000005',
-    symbol: 'DASH',
-    name: 'Dash',
-    icon: 'dash.svg',
   },
   {
     chain: '0x80000006',
@@ -105,12 +191,6 @@ export const SLIP_ADDRESSES = [
     chain: '0x80000014',
     symbol: 'DGB',
     name: 'DigiByte',
-  },
-  {
-    chain: '0x80000016',
-    symbol: 'MONA',
-    name: 'Monacoin',
-    icon: 'monacoin.svg',
   },
   {
     chain: '0x80000017',
@@ -209,18 +289,6 @@ export const SLIP_ADDRESSES = [
     name: 'Einsteinium',
   },
   {
-    chain: '0x8000002a',
-    symbol: 'DCR',
-    name: 'Decred',
-    icon: 'decred.svg',
-  },
-  {
-    chain: '0x8000002b',
-    symbol: 'XEM',
-    name: 'NEM',
-    icon: 'nem.svg',
-  },
-  {
     chain: '0x8000002c',
     symbol: 'PART',
     name: 'Particl',
@@ -289,18 +357,6 @@ export const SLIP_ADDRESSES = [
     chain: '0x8000003b',
     symbol: 'SMLY',
     name: 'Smileycoin',
-  },
-  {
-    chain: '0x8000003c',
-    symbol: 'ETH',
-    name: 'Ether',
-    icon: 'ethereum.svg',
-  },
-  {
-    chain: '0x8000003d',
-    symbol: 'ETC',
-    name: 'Ether Classic',
-    icon: 'ethereumclassic.svg',
   },
   {
     chain: '0x8000003e',
@@ -628,12 +684,6 @@ export const SLIP_ADDRESSES = [
     name: 'Vcash',
   },
   {
-    chain: '0x80000080',
-    symbol: 'XMR',
-    name: 'Monero',
-    icon: 'monero.svg',
-  },
-  {
     chain: '0x80000081',
     symbol: 'VOX',
     name: 'Voxels',
@@ -654,12 +704,6 @@ export const SLIP_ADDRESSES = [
     name: 'Factom',
   },
   {
-    chain: '0x80000085',
-    symbol: 'ZEC',
-    name: 'Zcash',
-    icon: 'zcash.svg',
-  },
-  {
     chain: '0x80000086',
     symbol: 'LSK',
     name: 'Lisk',
@@ -673,12 +717,6 @@ export const SLIP_ADDRESSES = [
     chain: '0x80000088',
     symbol: 'XZC',
     name: 'ZCoin',
-  },
-  {
-    chain: '0x80000089',
-    symbol: 'RBTC',
-    name: 'RSK',
-    icon: 'rbtc.png',
   },
   {
     chain: '0x8000008b',
@@ -704,18 +742,6 @@ export const SLIP_ADDRESSES = [
     chain: '0x8000008f',
     symbol: 'RIC',
     name: 'Riecoin',
-  },
-  {
-    chain: '0x80000090',
-    symbol: 'XRP',
-    name: 'Ripple',
-    icon: 'ripple.svg',
-  },
-  {
-    chain: '0x80000091',
-    symbol: 'BCH',
-    name: 'Bitcoin Cash',
-    icon: 'bitcoincash.svg',
   },
   {
     chain: '0x80000092',
@@ -951,18 +977,6 @@ export const SLIP_ADDRESSES = [
     chain: '0x800000c1',
     symbol: 'XFE',
     name: 'Feirm',
-  },
-  {
-    chain: '0x800000c2',
-    symbol: 'EOS',
-    name: 'EOS',
-    icon: 'eos.svg',
-  },
-  {
-    chain: '0x800000c3',
-    symbol: 'TRX',
-    name: 'Tron',
-    icon: 'tron.svg',
   },
   {
     chain: '0x800000c4',
@@ -2727,12 +2741,6 @@ export const SLIP_ADDRESSES = [
     name: 'AD',
   },
   {
-    chain: '0x80000378',
-    symbol: 'NEO',
-    name: 'NEO',
-    icon: 'neo.svg',
-  },
-  {
     chain: '0x80000379',
     symbol: 'TOMO',
     name: 'TOMO',
@@ -2881,12 +2889,6 @@ export const SLIP_ADDRESSES = [
     chain: '0x80000698',
     symbol: 'BCX',
     name: 'BitcoinX',
-  },
-  {
-    chain: '0x800006c1',
-    symbol: 'XTZ',
-    name: 'Tezos',
-    icon: 'tezos.svg',
   },
   {
     chain: '0x800006f0',
