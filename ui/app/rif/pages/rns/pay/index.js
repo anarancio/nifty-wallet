@@ -3,7 +3,7 @@ import DomainHeader from '../../../components/domain-header';
 import PropTypes from 'prop-types';
 import NetworkDropdown from '../../../components/networks-dropdown';
 import TokenDropdown from '../../../components/tokens-dropdown';
-import {SLIP_ADDRESSES} from '../../../constants/slipAddresses';
+import {SLIP_ADDRESSES, PRIORITY_SLIP_ADDRESSES} from '../../../constants/slipAddresses';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import Select from 'react-select';
 import rifActions from '../../../actions';
@@ -123,7 +123,8 @@ class Pay extends Component {
   }
 
   getAllowedNetworks () {
-    return SLIP_ADDRESSES.filter(network => {
+    const slipChainAddresses = [...PRIORITY_SLIP_ADDRESSES, ...SLIP_ADDRESSES];
+    return slipChainAddresses.filter(network => {
       return network.symbol === 'RBTC';
     });
   }
