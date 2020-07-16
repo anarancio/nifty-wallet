@@ -21,11 +21,13 @@ class Tabs extends Component {
   }
 
   selectTab (tab) {
-    this.setState({
-      activeTabIndex: tab.index,
-    });
-    if (this.props.onChange) {
-      this.props.onChange(tab);
+    if (tab.index !== this.state.activeTabIndex) {
+      this.setState({
+        activeTabIndex: tab.index,
+      });
+      if (this.props.onChange) {
+        this.props.onChange(tab);
+      }
     }
   }
 

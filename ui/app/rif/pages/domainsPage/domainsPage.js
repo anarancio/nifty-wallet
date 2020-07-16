@@ -125,7 +125,17 @@ const mapDispatchToProps = dispatch => {
       ...data,
     })),
     setAutoRenew: (data) => {},
-    showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, params)),
+    showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
+      ...params,
+      tabOptions: {
+        screenTitle: 'My Domains',
+        index: 0,
+        defaultScreenTitle: 'My Domains',
+        defaultScreenName: pageNames.rns.domains,
+        showTitle: true,
+        showSearchbar: true,
+      },
+    })),
     getDomains: () => dispatch(rifActions.getDomains()),
   }
 }
