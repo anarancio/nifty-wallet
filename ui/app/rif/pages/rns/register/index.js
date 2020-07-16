@@ -56,7 +56,7 @@ class DomainRegisterScreen extends Component {
       if (domain.registration) {
         if (domain.registration.readyToRegister) {
           // domain not available, that means is pending or is already registered.
-          this.showReadyToRegister(true);
+          this.showReadyToRegister();
         } else {
           // domain not available, that means is pending or is already registered.
           this.showWaitingForRegister();
@@ -100,9 +100,6 @@ class DomainRegisterScreen extends Component {
   showWaitingForRegister () {
     this.props.showThis(extend(this.props, {
       currentStep: 'waitingForRegister',
-      tabOptions: {
-        showBack: false,
-      },
     }));
   }
 
@@ -110,19 +107,13 @@ class DomainRegisterScreen extends Component {
     this.props.showThis({
       ...this.props,
       currentStep: 'waitingForConfirmation',
-      tabOptions: {
-        showBack: false,
-      },
     });
   }
 
-  showReadyToRegister (showBack = false) {
+  showReadyToRegister () {
     this.props.showThis({
       ...this.props,
       currentStep: 'readyToRegister',
-      tabOptions: {
-        showBack,
-      },
     });
   }
 
@@ -328,10 +319,11 @@ const mapDispatchToProps = dispatch => {
   return {
     dispatch: dispatch,
     showThis: (data) => dispatch(rifActions.navigateTo(pageNames.rns.domainRegister, {
+      ...data,
       tabOptions: {
+        showBack: true,
         screenTitle: 'Domain Register',
       },
-      ...data,
     })),
     getCost: (domainName, yearsToRegister) => dispatch(rifActions.getRegistrationCost(domainName, yearsToRegister)),
     requestRegistration: (domainName, yearsToRegister) => dispatch(rifActions.requestDomainRegistration(domainName, yearsToRegister)),
@@ -346,10 +338,11 @@ const mapDispatchToProps = dispatch => {
     isDomainAvailable: (domainName) => dispatch(rifActions.checkDomainAvailable(domainName)),
     showDomainList: () => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
       tabOptions: {
-        showBack: false,
+        showBack: true,
         showTitle: true,
         screenTitle: 'My Domains',
       },
+      resetNavigation: true,
     })),
     showLoading: (loading = true, message) => loading ? dispatch(niftyActions.showLoadingIndication(message)) : dispatch(niftyActions.hideLoadingIndication()),
   }
