@@ -49,7 +49,7 @@ const styles = {
     tbodyTr: '',
     tbodyTd: 'n-table-td',
     noData: '',
-    content: '',
+    content: 'n-table-content-clickeable',
     contentActions: 'n-table-actions',
     customButton: {
       button: 'btn-add',

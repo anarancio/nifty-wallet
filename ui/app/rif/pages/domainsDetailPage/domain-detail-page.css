@@ -65,6 +65,10 @@
 .n-table-content {
 }
 
+.n-table-content-clickeable {
+  cursor: pointer;
+}
+
 .row-data-container svg + .n-table-content-address,
 .row-data-container svg + .n-table-content-channels {
   margin-left: 10px;

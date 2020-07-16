@@ -68,7 +68,7 @@ class Subdomains extends Component {
             actionClasses={classes.contentActions}
             text={subdomain.name}
             enableRightChevron={!subdomain.status}
-            onRightChevronClick={() => showSubdomainDetails({
+            onClick={() => showSubdomainDetails({
               domainName: domainInfo.domainName,
               selectedResolverAddress: domainInfo.selectedResolverAddress,
               subdomain: subdomain,

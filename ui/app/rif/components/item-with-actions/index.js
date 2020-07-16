@@ -26,6 +26,7 @@ class ItemWithActions extends Component {
     onRightChevronClick: PropTypes.func,
     hiddenValue: PropTypes.any,
     showPending: PropTypes.bool,
+    onClick: PropTypes.func,
   }
 
   constructor (props) {
@@ -57,6 +58,7 @@ class ItemWithActions extends Component {
         showPending,
         contentClasses = '',
         actionClasses = '',
+        onClick,
       } = this.props;
       const {showEditChildren} = this.state;
       return (
@@ -66,7 +68,7 @@ class ItemWithActions extends Component {
              <img className="row-data-left-icon" src={'/images/rif/' + leftIcon} />
            )}
            {leftContent && <div>{leftContent}</div>}
-           <div className={contentClasses}>
+           <div className={contentClasses} onClick={onClick}>
              <p>{text}</p>
            </div>
            {showPending &&
@@ -94,7 +96,7 @@ class ItemWithActions extends Component {
                  <FontAwesomeIcon
                    icon={faChevronRight}
                    className={''}
-                   onClick={onRightChevronClick}
+                   onClick={onRightChevronClick || onClick}
                  />
                </div>
              )
