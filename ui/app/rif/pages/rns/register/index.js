@@ -54,16 +54,15 @@ class DomainRegisterScreen extends Component {
     const {domain, domainName, currentStep} = this.props;
     if (domain && !currentStep) {
       if (domain.registration) {
-        if (domain.registration.readyToRegister) {
+        if (domain.registration.status === 'finishing') {
+          this.showWaitingForConfirmation();
+        } else if (domain.registration.status === 'ready') {
           // domain not available, that means is pending or is already registered.
           this.showReadyToRegister(true);
         } else {
           // domain not available, that means is pending or is already registered.
           this.showWaitingForRegister();
         }
-      } else {
-        this.props.showToast('Domain already registered!', false);
-        this.props.showDomainList();
       }
     } else if (!currentStep) {
       // otherwise is available and ready for register
@@ -262,10 +261,23 @@ class DomainRegisterScreen extends Component {
     if (currentStep === 'waitingForRegister') {
       const timeout = setTimeout(() => {
         this.getUpdatedDomain().then(domain => {
-          if (domain.registration && domain.registration.readyToRegister) {
+          if (domain.registration && domain.registration.status === 'ready') {
             this.showReadyToRegister();
           } else {
             this.showWaitingForRegister();
+          }
+          clearTimeout(timeout);
+          this.timeouts = this.timeouts.filter(timeoutRunning => timeoutRunning !== timeout);
+        });
+      }, registrationTimeouts.secondsToCheckForCommitment * 1000);
+      this.timeouts.push(timeout);
+    } else if (currentStep === 'waitingForConfirmation') {
+      const timeout = setTimeout(() => {
+        this.getUpdatedDomain().then(domain => {
+          if (domain.registration && domain.registration.status === 'finishing') {
+            this.showWaitingForConfirmation();
+          } else if (domain.registration && domain.registration.status === 'finished') {
+            this.afterRegistration();
           }
           clearTimeout(timeout);
           this.timeouts = this.timeouts.filter(timeoutRunning => timeoutRunning !== timeout);

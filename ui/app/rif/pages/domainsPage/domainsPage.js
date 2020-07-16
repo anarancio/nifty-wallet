@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import rifActions from '../../actions'
 import {pageNames} from '../index'
+import {domainsScreen} from '../../constants';
 
 function statusStyle (status) {
   switch (status) {
@@ -19,13 +20,30 @@ function statusStyle (status) {
 
 class DomainsScreen extends Component {
 
-  async componentDidMount () {
-    if (!this.props.domains) {
-      const domains = await this.props.getDomains();
-      this.props.showThis({
-        ...this.props,
-        domains,
-      })
+  constructor (props) {
+    super(props);
+    this.state = {
+      domains: this.props.domains,
+    };
+    this.initializeDomainsSync();
+  }
+
+  async initializeDomainsSync () {
+    this.interval = setInterval(async () => {
+      await this.refreshDomains();
+    }, domainsScreen.timeoutToRefresh * 1000);
+  }
+
+  async refreshDomains () {
+    const domains = await this.props.getDomains();
+    this.setState({
+      domains,
+    });
+  }
+
+  componentWillUnmount () {
+    if (this.interval) {
+      clearInterval(this.interval);
     }
   }
 
@@ -40,15 +58,6 @@ class DomainsScreen extends Component {
         }} id="chipletTitle" className={'chiplet-title'}>
           {data.name}
         </div>
-        {/* TODO fmelo, remove this if we are not going to use it in a future*/}
-        {/* <div id="chipletDescription" className={'chiplet-description'}>*/}
-        {/*  <div id="chipletExpiration">*/}
-        {/*    <span>Expires on: {data.details ? data.details.expiration : 'n/a'}</span>*/}
-        {/*  </div>*/}
-        {/*  <div id="chipletRenew">*/}
-        {/*    <span>Auto-renew: <a href={data.details ? this.props.setAutoRenew() : () => {}}>{data.details ? (data.details.autoRenew ? 'on' : 'off') : 'n/a'}</a></span>*/}
-        {/*  </div>*/}
-        {/* </div>*/}
       </div>
       <div className={'chiplet-status-wrapper ' + statusStyle(data.status)}>
         <div id="chipletStatus" className={'chiplet-status-text'}>
@@ -78,18 +87,18 @@ class DomainsScreen extends Component {
   }
 
   render () {
-    if (this.props.domains && this.props.domains.length > 0) {
+    if (this.state.domains && this.state.domains.length > 0) {
       return (
         <ul className="domains-list">
-          {this.props.domains.map((item, index) => {
+          {this.state.domains.map((item, index) => {
             return this.chiplet(item, index)
           })}
         </ul>
       )
-    } else if (this.props.domains && this.props.domains.length === 0) {
+    } else if (this.state.domains && this.state.domains.length === 0) {
       return (<div className={'domains-list'}>No domains registered</div>);
     } else {
-      return (<div>Loading domains...</div>);
+      return (<div><div className="app-loader"/></div>);
     }
   }
 }
@@ -97,10 +106,8 @@ class DomainsScreen extends Component {
 DomainsScreen.propTypes = {
   showDomainsDetailPage: PropTypes.func.isRequired,
   showDomainRegisterPage: PropTypes.func.isRequired,
-  setAutoRenew: PropTypes.func.isRequired,
   domains: PropTypes.array,
   getDomains: PropTypes.func,
-  showThis: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -123,18 +130,6 @@ const mapDispatchToProps = dispatch => {
     })),
     showDomainRegisterPage: (data) => dispatch(rifActions.navigateTo(pageNames.rns.domainRegister, {
       ...data,
-    })),
-    setAutoRenew: (data) => {},
-    showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
-      ...params,
-      tabOptions: {
-        screenTitle: 'My Domains',
-        index: 0,
-        defaultScreenTitle: 'My Domains',
-        defaultScreenName: pageNames.rns.domains,
-        showTitle: true,
-        showSearchbar: true,
-      },
     })),
     getDomains: () => dispatch(rifActions.getDomains()),
   }
