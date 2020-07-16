@@ -139,6 +139,10 @@ class RifConfiguration extends Component {
     });
   }
 
+  cancel () {
+    this.props.goToSettings();
+  }
+
   render () {
     if (this.state.loading) {
       return (<div>Loaing Configuration...</div>);
@@ -197,7 +201,12 @@ class RifConfiguration extends Component {
             <label>RSK Owner</label>
             <input value={this.state.configuration.rns.contracts.rskOwner} onChange={(event) => this.updateContractAddress('rskOwner', event)} placeholder="RSK Owner" />
           </li>
-          <li className="mt-2"><button className="btn-primary w-100" onClick={() => this.saveConfiguration()}>Save Configuration</button></li>
+          <li className="mt-2">
+            <button className="btn-primary w-100" onClick={() => this.saveConfiguration()}>Save Configuration</button>
+          </li>
+          <li className="mt-2">
+            <button className="btn w-100" onClick={() => this.cancel()}>Cancel</button>
+          </li>
         </ul>
       </div>
     );
