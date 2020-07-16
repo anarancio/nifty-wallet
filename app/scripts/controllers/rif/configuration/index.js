@@ -131,11 +131,7 @@ export class RifConfigurationProvider {
             },
           },
           notifier: {
-            availableNodes: [
-              '',
-              '',
-              '',
-            ],
+            availableNodes: [],
           },
           rns: {
             contracts: {
