@@ -7,6 +7,7 @@ import extend from 'xtend'
 import {RnsContainer} from './container';
 import {AbstractManager} from '../abstract-manager';
 import {isRskNetwork} from '../utils/general';
+import Web3 from 'web3';
 
 /**
  * This class encapsulates all the RNS operations, it initializes and call to all the delegates and exposes their operations.
@@ -91,8 +92,12 @@ export default class RnsManager extends AbstractManager {
   }
 
   reloadConfiguration (configuration) {
+    this.web3 = new Web3(this.networkController._provider);
     this.rnsContractInstance = this.web3.eth.contract(RNS).at(configuration.rns.contracts.rns);
     this.rifContractInstance = this.web3.eth.contract(RIF).at(configuration.rns.contracts.rif);
+    this.container.register.web3 = this.web3;
+    this.container.resolver.web3 = this.web3;
+    this.container.transfer.web3 = this.web3;
     this.container.register.rnsContractInstance = this.rnsContractInstance;
     this.container.register.rifContractInstance = this.rifContractInstance;
     this.container.resolver.rnsContractInstance = this.rnsContractInstance;

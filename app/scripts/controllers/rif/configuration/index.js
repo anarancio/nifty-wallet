@@ -7,6 +7,7 @@ export class RifConfigurationProvider {
 
   constructor (props) {
     this.networkController = props.networkController;
+    this.preferencesController = props.preferencesController;
     const initConfiguration = {};
     Object.keys(global.networks).forEach(key => {
       initConfiguration[global.networks[key]] = null;
@@ -130,7 +131,11 @@ export class RifConfigurationProvider {
             },
           },
           notifier: {
-            availableNodes: [],
+            availableNodes: [
+              '',
+              '',
+              '',
+            ],
           },
           rns: {
             contracts: {
@@ -165,6 +170,7 @@ export class RifConfigurationProvider {
     } catch (error) {
       return Promise.reject(error);
     }
+    this.preferencesController.setPreference('rnsConfiguration', configuration);
     return Promise.resolve();
   }
 

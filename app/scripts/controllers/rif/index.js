@@ -36,6 +36,7 @@ export default class RifController {
     this.configurationProvider = new RifConfigurationProvider({
       initState: initState.RifConfigurationProvider,
       networkController: this.metamaskController.networkController,
+      preferencesController: this.metamaskController.preferencesController,
     });
 
     this.configurationProvider.loadConfiguration(currentNetworkId);
