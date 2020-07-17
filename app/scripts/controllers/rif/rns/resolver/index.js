@@ -109,7 +109,15 @@ export default class RnsResolver extends RnsJsDelegate {
     return new Promise((resolve, reject) => {
       this.call(this.rnsContractInstance, 'resolver', [namehash.hash(domainName)]).then(result => {
         console.debug('getResolver resolved with', result);
-        resolve(web3Utils.toChecksumAddress(result));
+        const domain = this.getDomain(domainName);
+        let pending = false;
+        if (domain) {
+          pending = domain.pendingActions.pendingSetResolver;
+        }
+        resolve({
+          pending: pending,
+          address: web3Utils.toChecksumAddress(result),
+        });
       }).catch(error => {
         console.debug('Error when trying to get resolver addr', error);
         reject(error);
@@ -125,12 +133,18 @@ export default class RnsResolver extends RnsJsDelegate {
    */
   setResolver (domainName, resolverAddress) {
     return new Promise((resolve) => {
+      const domain = this.getDomain(domainName);
+      if (domain) {
+        domain.pendingActions.pendingSetResolver = true;
+        this.updateDomain(domain);
+      }
       const transactionListener = this.send(this.rnsContractInstance, 'setResolver', [namehash.hash(domainName), resolverAddress]);
       transactionListener.transactionConfirmed()
         .then(result => {
           this.getDomainDetails(domainName).then(domainDetails => {
             const domain = this.getDomain(domainName, result.address, result.network);
             domain.details = domainDetails;
+            domain.pendingActions.pendingSetResolver = false;
             this.updateDomain(domain, result.address, result.network);
           });
           console.debug('setResolver success', result);
@@ -159,7 +173,7 @@ export default class RnsResolver extends RnsJsDelegate {
       const arrChains = [];
       const domain = this.getDomain(domainName);
       // If we're not owners of the domain, the getdomain function will retrieve undefined
-      const pendingChainAddressesActions = (domain && domain.pendingChainAddresses) ? domain.pendingChainAddresses : [];
+      const pendingChainAddressesActions = (domain && domain.pendingActions && domain.pendingActions.chainAddresses) ? domain.pendingActions.pendingChainAddresses : [];
       if (addrChangedEvent) {
         addrChangedEvent.forEach(event => {
           if (event.address !== rns.zeroAddress) {
@@ -211,7 +225,7 @@ export default class RnsResolver extends RnsJsDelegate {
   deletePendingChainAddress (domainName, chain, nodeHash, address, network) {
     return new Promise((resolve, reject) => {
       const domain = this.getDomain(domainName, address, network);
-      const pendingChainAddressesActions = domain.pendingChainAddresses;
+      const pendingChainAddressesActions = domain.pendingActions.pendingChainAddresses;
       const index = pendingChainAddressesActions.findIndex((e) => e.chain === chain && e.nodeHash === nodeHash);
       if (index >= 0) {
         pendingChainAddressesActions.splice(index, 1);
@@ -239,7 +253,7 @@ export default class RnsResolver extends RnsJsDelegate {
       }
       const toBeSettedChainAddress = chainAddress || rns.zeroAddress;
       const domain = this.getDomain(domainName);
-      const pendingChainAddressesActions = domain.pendingChainAddresses;
+      const pendingChainAddressesActions = domain.pendingActions.pendingChainAddresses;
       pendingChainAddressesActions.push({
         chainAddress: toBeSettedChainAddress,
         chain: chain,
