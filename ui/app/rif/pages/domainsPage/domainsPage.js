@@ -33,10 +33,17 @@ class DomainsScreen extends Component {
     return <li id="chiplet" className={'chiplet'} key={id}>
       <div className={'chiplet-body'}>
         <div onClick={() => {
-          this.props.showDomainsDetailPage({
-            domain: data,
-            status: data.status,
-          })
+          if (data.status === 'active') {
+            this.props.showDomainsDetailPage({
+              domain: data,
+              status: data.status,
+            });
+          } else {
+            this.props.showDomainRegisterPage({
+              domain: data,
+              domainName: data.name,
+            });
+          }
         }} id="chipletTitle" className={'chiplet-title'}>
           {data.name}
         </div>
@@ -123,9 +130,23 @@ const mapDispatchToProps = dispatch => {
     })),
     showDomainRegisterPage: (data) => dispatch(rifActions.navigateTo(pageNames.rns.domainRegister, {
       ...data,
+      tabOptions: {
+        showBack: true,
+        screenTitle: 'Domain Register',
+      },
     })),
     setAutoRenew: (data) => {},
-    showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, params)),
+    showThis: (params) => dispatch(rifActions.navigateTo(pageNames.rns.domains, {
+      ...params,
+      tabOptions: {
+        screenTitle: 'My Domains',
+        index: 0,
+        defaultScreenTitle: 'My Domains',
+        defaultScreenName: pageNames.rns.domains,
+        showTitle: true,
+        showSearchbar: true,
+      },
+    })),
     getDomains: () => dispatch(rifActions.getDomains()),
   }
 }
