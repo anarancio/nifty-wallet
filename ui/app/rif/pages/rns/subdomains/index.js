@@ -87,6 +87,7 @@ class Subdomains extends Component {
     showToast: PropTypes.func,
     getSubdomains: PropTypes.func,
     getConfiguration: PropTypes.func,
+    isDomainOwner: PropTypes.bool,
   }
 
   constructor (props) {
@@ -141,7 +142,7 @@ class Subdomains extends Component {
   }
 
   render () {
-    const {subdomain, domainName, selectedResolverAddress, newChainAddresses, isOwner} = this.props;
+    const {subdomain, domainName, selectedResolverAddress, newChainAddresses, isOwner, isDomainOwner} = this.props;
     const updatedChainAddresses = newChainAddresses || [];
     const displayName = `${subdomain.name}.${domainName}`
     const {resolvers} = this.state;
@@ -151,7 +152,7 @@ class Subdomains extends Component {
           domainName={displayName}
           showOwnerIcon={isOwner}
         >
-          {isOwner &&
+          {(isOwner || isDomainOwner) &&
           <CustomButton
             text="Delete"
             onClick={() => this.openDeletePopup(subdomain)}

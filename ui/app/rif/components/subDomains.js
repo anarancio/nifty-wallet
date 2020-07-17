@@ -58,7 +58,7 @@ class Subdomains extends Component {
   setFilteredSubdomains = filteredSubdomains => this.setState(({filteredSubdomains}));
 
   getData () {
-    const {domainInfo, showSubdomainDetails, pageName, redirectParams, classes} = this.props;
+    const {domainInfo, showSubdomainDetails, pageName, redirectParams, isOwner, classes} = this.props;
     const {filteredSubdomains} = this.state;
     if (filteredSubdomains) {
       return filteredSubdomains.map((subdomain) => {
@@ -71,6 +71,7 @@ class Subdomains extends Component {
             onClick={() => showSubdomainDetails({
               domainName: domainInfo.domainName,
               selectedResolverAddress: domainInfo.selectedResolverAddress,
+              isDomainOwner: isOwner,
               subdomain: subdomain,
               pageName: pageName,
               redirectParams: redirectParams,
