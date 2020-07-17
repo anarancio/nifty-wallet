@@ -23,7 +23,6 @@ class ItemWithActions extends Component {
     contentClasses: PropTypes.string,
     actionClasses: PropTypes.string,
     enableRightChevron: PropTypes.bool,
-    onRightChevronClick: PropTypes.func,
     hiddenValue: PropTypes.any,
     showPending: PropTypes.bool,
     onClick: PropTypes.func,
@@ -54,7 +53,6 @@ class ItemWithActions extends Component {
         children,
         onDeleteClick,
         enableRightChevron,
-        onRightChevronClick,
         showPending,
         contentClasses = '',
         actionClasses = '',
@@ -96,7 +94,7 @@ class ItemWithActions extends Component {
                  <FontAwesomeIcon
                    icon={faChevronRight}
                    className={''}
-                   onClick={onRightChevronClick || onClick}
+                   onClick={onClick}
                  />
                </div>
              )
