@@ -157,7 +157,7 @@ class DomainsDetailActiveScreen extends Component {
   render () {
     const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, newChainAddresses, newSubdomains, showPay } = this.props;
     const {resolvers, isLuminoNode, resolver} = this.state;
-    const selectedResolverAddress = resolver.address.toLowerCase();
+    const selectedResolverAddress = resolver ? resolver.address.toLowerCase() : '';
     const domainInfo = {
       domainName,
       expirationDate,
@@ -185,7 +185,7 @@ class DomainsDetailActiveScreen extends Component {
                    domain: domain,
                    domainName: domainName,
                    selectedResolverAddress: selectedResolverAddress,
-                   isPending: resolver.pending,
+                   disableSelect: resolver.pending,
                  })}
             >
               <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>

@@ -34,7 +34,6 @@ class DomainsDetailConfigurationScreen extends Component {
       resolvers: [],
       configuration: null,
       disableSelect: props.disableSelect || false,
-      selectedAddress: '',
     };
   }
 
@@ -97,11 +96,12 @@ class DomainsDetailConfigurationScreen extends Component {
         <p className="resolver-setting__text">The Resolver is a Smart Contract responsible for the process of translating names into addresses. You can select a public resolver or a custom resolver.</p>
         <div id="selectResolver">
           <select id="comboResolvers"
-                  defaultValue={this.getDefaultSelectedValue(this.state.resolvers, selectedResolverAddress)}
                   onChange={this.onChangeComboResolvers.bind(this)}
                   disabled={disableSelect}
+                  value={disableSelect ? 'pending' : this.getDefaultSelectedValue(this.state.resolvers, selectedResolverAddress)}
           >
             <option disabled value={this.state.configuration.rns.contracts.publicResolver} hidden> Select Resolver </option>
+            <option disabled={!disableSelect} value={'pending'} hidden={!disableSelect}> Pending... </option>
             {
               this.state.resolvers.map((resolver, index) => {
                 return (<option
