@@ -36,7 +36,7 @@ class LuminoNetworkChannels extends Component {
           actionClasses={classes.contentActions}
           text={networkChannel.symbol}
           enableRightChevron={true}
-          onRightChevronClick={() => this.props.showNetworkDetails({
+          onClick={() => this.props.showNetworkDetails({
             networkSymbol: networkChannel.symbol,
             tokenAddress: networkChannel.address,
             tokenNetwork: networkChannel.tokenNetwork,
