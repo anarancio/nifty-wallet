@@ -77,7 +77,7 @@ const styles = {
     tbodyTr: '',
     tbodyTd: 'n-table-td',
     noData: '',
-    content: 'n-table-content-channels',
+    content: 'n-table-content-channels n-table-content-clickeable',
     contentActions: 'n-table-actions',
     customButton: {
       button: 'btn-add',
