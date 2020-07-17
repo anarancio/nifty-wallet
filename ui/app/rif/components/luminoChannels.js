@@ -55,7 +55,7 @@ class LuminoChannels extends Component {
     const data = this.getData();
     return (
       <GenericTable
-        title={'Lumino Channelss'}
+        title={'Lumino Channels'}
         columns={[
           {
             Header: 'Content',
