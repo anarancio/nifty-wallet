@@ -319,6 +319,7 @@ export default class RnsJsDelegate extends RnsDelegate {
         rifCost: null,
         readyToRegister: false,
         commitment: null,
+        status: 'pending',
       },
       status: 'pending',
       details: null,

@@ -5,6 +5,11 @@ export const registrationTimeouts = {
   secondsToCheckForCommitment: 4,
 }
 
+export const domainsScreen = {
+  // timout in seconds to refresh the domain list
+  timeoutToRefresh: 1,
+}
+
 export function GET_RESOLVERS (configuration) {
   return ([
     {

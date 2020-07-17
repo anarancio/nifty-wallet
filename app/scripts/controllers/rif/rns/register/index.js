@@ -52,19 +52,20 @@ export default class RnsRegister extends RnsJsDelegate {
         .then(rifCost => {
           this.call(this.fifsAddrRegistrarInstance, 'makeCommitment', [domainHash, this.address, secret])
             .then(commitment => {
+              const domain = this.createNewDomainObject(domainName);
+              domain.registration.rifCost = rifCost.toString();
+              domain.registration.yearsToRegister = yearsToRegister;
+              domain.registration.secret = secret;
+              domain.registration.commitment = commitment;
+              this.updateDomain(domain);
               console.debug('Commitment received', commitment);
               const transactionListener = this.send(this.fifsAddrRegistrarInstance, 'commit', [commitment]);
               transactionListener.transactionConfirmed()
                 .then(result => {
-                  const domain = this.createNewDomainObject(domainName);
-                  domain.registration.rifCost = rifCost.toString();
-                  domain.registration.yearsToRegister = yearsToRegister;
-                  domain.registration.secret = secret;
-                  domain.registration.commitment = commitment;
-                  this.updateDomain(domain, result.address, result.network);
                   this.startWatchingCommitment(domainName, commitment, result.address, result.network);
               }).catch(result => {
                 console.debug('Transaction Failed', result);
+                this.deleteDomain(domainName, result.address, result.network);
               });
               resolve({
                 commitment,
@@ -79,7 +80,7 @@ export default class RnsRegister extends RnsJsDelegate {
     const domains = this.getDomains();
     domains.forEach(domain => {
       // this means that we have pending commitments that are not being watched, this can be because the browser was closed.
-      if (domain.registration && !domain.registration.readyToRegister) {
+      if (domain.registration && domain.registration.status === 'pending') {
         this.startWatchingCommitment(domain.name, domain.registration.commitment);
       }
     })
@@ -99,7 +100,7 @@ export default class RnsRegister extends RnsJsDelegate {
       if (domain && domain.registration) {
         const readyToRegister = await this.canFinishRegistration(commitment);
         if (readyToRegister) {
-          domain.registration.readyToRegister = true;
+          domain.registration.status = 'ready';
           this.updateDomain(domain, address, network);
           clearInterval(interval);
         }
@@ -161,10 +162,11 @@ export default class RnsRegister extends RnsJsDelegate {
               const durationBN = this.web3.toBigNumber(registerInformation.yearsToRegister);
               const data = this.getAddrRegisterData(cleanDomainName, this.address, secret, durationBN, this.address);
               const transactionListener = this.send(this.rifContractInstance, 'transferAndCall', [this.fifsAddrRegistrarAddress, rifCost, data]);
+              pendingDomain.registration.status = 'finishing';
               transactionListener.transactionConfirmed()
                 .then(result => {
                   console.debug('Transaction success', result);
-                  pendingDomain.registration = null;
+                  pendingDomain.registration.status = 'finished';
                   this.container.resolver.getDomainDetails(domainName).then(domainDetails => {
                     pendingDomain.details = domainDetails;
                     pendingDomain.status = 'active';
@@ -172,6 +174,8 @@ export default class RnsRegister extends RnsJsDelegate {
                   });
                 }).catch(result => {
                 console.debug('Transaction failed', result);
+                pendingDomain.registration.status = 'pending';
+                this.updateDomain(pendingDomain, result.address, result.network);
               });
               return resolve(transactionListener.id);
             } else {
