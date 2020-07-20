@@ -36,7 +36,6 @@ class DomainsDetailConfigurationScreen extends Component {
       configuration: null,
       resolver: {},
       disableSelect: true,
-      reloadResolver: false,
     };
   }
 
@@ -77,10 +76,14 @@ class DomainsDetailConfigurationScreen extends Component {
   loadResolver () {
     this.props.getResolver(this.props.domainName)
       .then(resolver => {
-        this.setState({
-          resolver: resolver,
-          disableSelect: resolver.pending,
-        });
+        if (resolver.pending) {
+          this.timeouts.push(this.timeoutToLoadResolver());
+        } else {
+          this.setState({
+            resolver: resolver,
+            disableSelect: resolver.pending,
+          });
+        }
       });
   }
 
