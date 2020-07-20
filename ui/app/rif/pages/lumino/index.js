@@ -81,7 +81,7 @@ class LuminoHome extends Component {
         content: <LuminoNetworkItem key={network.symbol} userChannels={network.userChannels}
                                     symbol={network.symbol} nodes={network.nodes}
                                     channels={network.channels}
-                                    onRightChevronClick={() => this.navigateToNetworkDetail(network)}/>,
+                                    onClick={() => this.navigateToNetworkDetail(network)}/>,
       }
     });
   }

@@ -9,14 +9,14 @@ class LuminoNetworkItem extends Component {
     symbol: PropTypes.string.isRequired,
     nodes: PropTypes.number.isRequired,
     channels: PropTypes.number.isRequired,
-    onRightChevronClick: PropTypes.func,
+    onClick: PropTypes.func,
     className: PropTypes.object,
     userChannels: PropTypes.number,
   }
 
   render = () => {
-    const {icon, userChannels, symbol, nodes, channels, onRightChevronClick, className = {}} = this.props;
-    return (<div className="row-data-container">
+    const {icon, userChannels, symbol, nodes, channels, onClick, className = {}} = this.props;
+    return (<div className="row-data-container c-pointer" onClick={onClick}>
       {icon && <FontAwesomeIcon icon={icon} className={className.icon}/>}
       <span className="lumino-text-symbol">{symbol}</span>
       {!!userChannels && <div className="d-flex mx-auto align-items-center">
@@ -35,7 +35,7 @@ class LuminoNetworkItem extends Component {
         </div>
       </div>
       }
-      <div className="ml-auto c-pointer" onClick={onRightChevronClick}>
+      <div className="ml-auto">
         <img height={15} width={15} src="images/rif/chevronRight.svg" className="d-block"/>
       </div>
     </div>);
