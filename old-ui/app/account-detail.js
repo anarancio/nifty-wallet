@@ -1,10 +1,11 @@
+import {withTranslation} from 'react-i18next';
+import {getMetaMaskAccounts} from '../../ui/app/selectors'
 const inherits = require('util').inherits
 const extend = require('xtend')
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const rifActions = require('../../ui/app/rif/actions')
 const { getCurrentKeyring, ifContractAcc, valuesFor, toChecksumAddress } = require('./util')
 const Identicon = require('./components/identicon')
 const EthBalance = require('./components/eth-balance')
@@ -16,9 +17,8 @@ const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns/account-dropdowns.component').AccountDropdowns
 const CopyButton = require('./components/copy/copy-button')
 const ToastComponent = require('./components/toast')
-import { getMetaMaskAccounts } from '../../ui/app/selectors'
 
-module.exports = connect(mapStateToProps)(AccountDetailScreen)
+module.exports = connect(mapStateToProps)(withTranslation('translations')(AccountDetailScreen))
 
 function mapStateToProps (state) {
   const accounts = getMetaMaskAccounts(state)
@@ -114,7 +114,7 @@ AccountDetailScreen.prototype.render = function () {
             }, [
 
               // What is shown when not editing + edit text:
-              h('label.editing-label', [h('.edit-text', 'edit')]),
+              h('label.editing-label', [h('.edit-text', props.t('edit'))]),
               h(
                 'div',
                 {
@@ -226,7 +226,7 @@ AccountDetailScreen.prototype.render = function () {
           !ifContractAcc(currentKeyring) ? h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: { marginRight: '10px' },
-          }, 'Buy') : null,
+          }, this.props.t('Buy')) : null,
 
           h('button', {
             onClick: () => {
@@ -236,7 +236,7 @@ AccountDetailScreen.prototype.render = function () {
                 return props.dispatch(actions.showSendPage())
               }
             },
-          }, ifContractAcc(currentKeyring) ? 'Execute methods' : 'Send'),
+          }, ifContractAcc(currentKeyring) ? this.props.t('Execute methods') : this.props.t('Send')),
         ]),
       ]),
 
@@ -267,13 +267,13 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.tabSections = function () {
-  const { currentAccountTab } = this.props
+  const { currentAccountTab, t } = this.props
 
   return h('section.tabSection.full-flex-height.grow-tenx', [
 
     h(TabBar, {
       tabs: [
-        { content: 'Sent', key: 'history', id: 'wallet-view__tab-history' },
+        { content: t('Sent'), key: 'history', id: 'wallet-view__tab-history' },
         { content: 'Tokens', key: 'tokens', id: 'wallet-view__tab-tokens' },
       ],
       defaultTab: currentAccountTab || 'history',

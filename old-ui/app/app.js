@@ -39,6 +39,7 @@ import ConnectHardwareForm from './components/connect-hardware/index'
 const InfoScreen = require('./info')
 import { getPage, getLandingPage } from '../../ui/app/rif/pages'
 import { showModal } from '../../ui/app/rif/components/index'
+import {withTranslation} from 'react-i18next';
 const AppBar = require('./components/app-bar/app-bar.component')
 const Loading = require('./components/loading')
 const BuyView = require('./components/buy-button-subview')
@@ -55,7 +56,7 @@ const { getNetworkID } = require('./util')
 module.exports = compose(
   withRouter,
   connect(mapStateToProps),
-)(App)
+)(withTranslation('translations')(App))
 
 inherits(App, Component)
 function App () { Component.call(this) }

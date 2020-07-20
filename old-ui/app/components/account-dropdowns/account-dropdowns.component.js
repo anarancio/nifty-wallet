@@ -13,6 +13,7 @@ import log from 'loglevel'
 import Web3 from 'web3'
 import { AccountsDropdownItemView } from './accounts-dropdown-item-view'
 import {isRskNetwork} from '../../../../app/scripts/controllers/rif/utils/general';
+import {withTranslation} from 'react-i18next';
 
 class AccountsDropdownItemWrapper extends DropdownMenuItem {
   render () {
@@ -45,6 +46,7 @@ class AccountDropdowns extends Component {
     style: PropTypes.object,
     enableAccountOptions: PropTypes.bool,
     enableAccountsSelector: PropTypes.bool,
+    t: PropTypes.func,
   }
 
   constructor (props) {
@@ -110,17 +112,17 @@ class AccountDropdowns extends Component {
       <AccountsDropdownItemWrapper
         key="AccountsDropdownItemAdd"
         onClick={() => actions.addNewAccount()}
-        label="Create Account"
+        label={this.props.t('Create Account')}
       />,
       <AccountsDropdownItemWrapper
         key="AccountsDropdownItemImport"
         onClick={() => actions.showImportPage()}
-        label="Import Account"
+        label={this.props.t('Import Account')}
       />,
       <AccountsDropdownItemWrapper
         key="AccountsDropdownItemConnectHD"
         onClick={() => actions.showConnectHWWalletPage()}
-        label="Connect hardware wallet"
+        label={this.props.t('Connect hardware wallet')}
       />,
     ]
     menuItems = menuItems.concat(bottomMenuItems)
@@ -157,7 +159,7 @@ class AccountDropdowns extends Component {
     if (isRskNetwork(network)) {
       return (<DropdownMenuItem
         closeMenu={() => {}}
-        onClick={() => this.exploreRifServices()}>Explore RIF Services</DropdownMenuItem>);
+        onClick={() => this.exploreRifServices()}>{this.props.t('Explore RIF Services')}</DropdownMenuItem>);
     }
     return null;
   }
@@ -192,23 +194,23 @@ class AccountDropdowns extends Component {
         <DropdownMenuItem
           closeMenu={() => {}}
           onClick={() => this.viewOnBlockExplorer()}
-        >View on block explorer</DropdownMenuItem>
+        >{this.props.t('View on block explorer')}</DropdownMenuItem>
         <DropdownMenuItem
           closeMenu={() => {}}
           onClick={() => this.showQRCode()}
-        >Show QR Code</DropdownMenuItem>
+        >{this.props.t('Show QR Code')}</DropdownMenuItem>
         {ifContractAcc(keyring) ? <DropdownMenuItem
           closeMenu={() => {}}
           onClick={() => this.copyABI()}
-          >Copy ABI to clipboard</DropdownMenuItem> : null}
+          >{this.props.t('Copy ABI to clipboard')}</DropdownMenuItem> : null}
         {isProxy ? <DropdownMenuItem
           closeMenu={() => {}}
           onClick={() => this.updateABI()}
-          >Update implementation ABI</DropdownMenuItem> : null}
+          >{this.props.t('Update implementation ABI')}</DropdownMenuItem> : null}
         {(!ifHardwareAcc(keyring) && !(ifContractAcc(keyring))) ? <DropdownMenuItem
           closeMenu={() => {}}
           onClick={() => actions.requestAccountExport()}
-          >Export Private Key</DropdownMenuItem> : null}
+          >{this.props.t('Export Private Key')}</DropdownMenuItem> : null}
       </Dropdown>
     )
   }
@@ -366,5 +368,5 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 module.exports = {
-  AccountDropdowns: connect(null, mapDispatchToProps)(AccountDropdowns),
+  AccountDropdowns: connect(null, mapDispatchToProps)(withTranslation('translations')(AccountDropdowns)),
 }

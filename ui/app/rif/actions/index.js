@@ -7,6 +7,8 @@ import ethUtils from 'ethereumjs-util';
 import {clearArray, sumValuesOfArray} from '../utils/utils';
 import {parseLuminoError} from '../utils/parse';
 import web3Utils from 'web3-utils';
+import i18n from '../../../../i18n';
+import languages from '../../../../locales';
 
 const rifActions = {
   SHOW_MODAL: 'SHOW_MODAL',
@@ -75,6 +77,9 @@ const rifActions = {
   setConfiguration,
   rifEnabled,
   walletUnlocked,
+  changeLanguage,
+  getCurrentLanguage,
+  getAvailableLanguages,
 }
 
 let background = null;
@@ -1061,37 +1066,37 @@ function setupDefaultLuminoCallbacks () {
         if (errorMessage) {
           this.props.showToast(errorMessage, false);
         } else {
-          dispatch(niftyActions.displayToast('Error Signing!', false));
+          dispatch(niftyActions.displayToast(i18n.t('Error Signing!'), false));
         }
       });
       handleSdkDefaultCallback(lumino.callbacks.REQUEST_CLIENT_ONBOARDING, dispatch, (result) => {
         console.debug('Requesting onboarding', result);
-        dispatch(niftyActions.displayToast('Requesting onboard to Hub'));
+        dispatch(niftyActions.displayToast(i18n.t('Requesting onboard to Hub')));
       });
       handleSdkDefaultCallback(lumino.callbacks.CLIENT_ONBOARDING_SUCCESS, dispatch, (result) => {
         console.debug('Onboarding success', result);
-        dispatch(niftyActions.displayToast('Onboarding completed successfully'));
+        dispatch(niftyActions.displayToast(i18n.t('Onboarding completed successfully')));
       });
       handleSdkDefaultCallback(lumino.callbacks.CLIENT_ONBOARDING_FAILURE, dispatch, (result) => {
         console.debug('Onboarding failure', result);
-        dispatch(niftyActions.displayToast('Onboarding failure'));
+        dispatch(niftyActions.displayToast(i18n.t('Onboarding failure'), false));
       });
       handleSdkDefaultCallback(lumino.callbacks.RECEIVED_PAYMENT, dispatch, (result) => {
         console.debug('Receiving a payment', result);
-        dispatch(niftyActions.displayToast('Receiving a payment from ' + result.payments.partner));
+        dispatch(niftyActions.displayToast(i18n.t('Receiving a payment from') + ' ' + result.payments.partner));
       });
       handleSdkDefaultCallback(lumino.callbacks.COMPLETED_PAYMENT, dispatch, (result) => {
         if (result.isReceived) {
           console.debug('Payment received', result);
-          dispatch(niftyActions.displayToast('Payment received from ' + result.partner));
+          dispatch(niftyActions.displayToast(i18n.t('Payment received from') + ' ' + result.partner));
         } else {
           console.debug('Payment Completed', result);
-          dispatch(niftyActions.displayToast('Payment Completed'));
+          dispatch(niftyActions.displayToast(i18n.t('Payment Completed')));
         }
       });
       handleSdkDefaultCallback(lumino.callbacks.OPEN_CHANNEL, dispatch, (result) => {
         console.debug('A channel has been opened', result);
-        dispatch(niftyActions.displayToast('A channel has been opened!'));
+        dispatch(niftyActions.displayToast(i18n.t('A channel has been opened!')));
         if (result.channel_identifier && result.token_network_identifier) {
           dispatch(subscribeToCloseChannel(result.channel_identifier, result.token_network_identifier))
         } else {
@@ -1193,12 +1198,12 @@ function rifEnabled () {
 function walletUnlocked () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.walletUnlocked((error, enabled) => {
+      background.rif.walletUnlocked((error, unlocked) => {
         if (error) {
           handleError(error, dispatch);
           return reject(error);
         }
-        return resolve(enabled);
+        return resolve(unlocked);
       });
     });
   };
@@ -1216,5 +1221,46 @@ function handleError (error, dispatch) {
   }
 }
 
+function changeLanguage (localeCode) {
+  return (dispatch) => {
+    dispatch(niftyActions.showLoadingIndication());
+    return new Promise((resolve, reject) => {
+      i18n.changeLanguage(localeCode, (error, result) => {
+        dispatch(niftyActions.hideLoadingIndication());
+        if (error) {
+          reject(error);
+        }
+        resolve(result);
+      });
+    });
+  };
+}
+
+function getCurrentLanguage () {
+  return () => {
+    return new Promise((resolve) => {
+      const getLanguage = () => {
+        if (i18n.language) {
+          if (i18n.language.indexOf('-') === -1) {
+            return i18n.language;
+          }
+          return i18n.language.substring(0, i18n.language.indexOf('-'));
+        }
+        // if we don't have any language set we use en by default
+        return 'en';
+      }
+      resolve(getLanguage());
+    });
+  };
+}
+
+function getAvailableLanguages () {
+  return () => {
+    return new Promise((resolve) => {
+      const languages = Object.keys(languages).map(key => languages[key]);
+      resolve(languages);
+    });
+  };
+}
 
 module.exports = rifActions

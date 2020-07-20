@@ -1,10 +1,12 @@
+import {withTranslation} from 'react-i18next';
+
 const inherits = require('util').inherits
 const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../../ui/app/actions')
 
-module.exports = connect(mapStateToProps)(RestoreVaultScreen)
+module.exports = connect(mapStateToProps)(withTranslation('translations')(RestoreVaultScreen))
 
 inherits(RestoreVaultScreen, PersistentForm)
 function RestoreVaultScreen () {
@@ -49,7 +51,7 @@ RestoreVaultScreen.prototype.render = function () {
             padding: 30,
           },
         }, [
-          h('.page-subtitle', 'Restore Vault'),
+          h('.page-subtitle', this.props.t('Restore Vault')),
         ]),
 
         // wallet seed entry
@@ -61,14 +63,14 @@ RestoreVaultScreen.prototype.render = function () {
           },
         }, 'Wallet Seed'),
         h('textarea.twelve-word-phrase', {
-          placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
+          placeholder: this.props.t('Enter your secret twelve word phrase here to restore your vault.'),
         }),
 
         // password
         h('input.large-input', {
           type: 'password',
           id: 'password-box',
-          placeholder: 'New Password (min 8 chars)',
+          placeholder: this.props.t('New Password (min 8 chars)'),
           dataset: {
             persistentFormid: 'password',
           },
@@ -83,7 +85,7 @@ RestoreVaultScreen.prototype.render = function () {
         h('input.large-input', {
           type: 'password',
           id: 'password-box-confirm',
-          placeholder: 'Confirm Password',
+          placeholder: this.props.t('Confirm Password'),
           onKeyPress: this.createOnEnter.bind(this),
           dataset: {
             persistentFormid: 'password-confirmation',
@@ -118,12 +120,12 @@ RestoreVaultScreen.prototype.render = function () {
           // cancel
           h('button.btn-violet', {
             onClick: this.showInitializeMenu.bind(this),
-          }, 'Cancel'),
+          }, this.props.t('Cancel')),
 
           // submit
           h('button', {
             onClick: this.createNewVaultAndRestore.bind(this),
-          }, 'Ok'),
+          }, this.props.t('Ok')),
 
         ]),
       ]),

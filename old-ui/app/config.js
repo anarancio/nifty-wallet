@@ -5,6 +5,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 import PropTypes from 'prop-types'
 import {isRskNetwork} from '../../app/scripts/controllers/rif/utils/general';
+import {withTranslation} from 'react-i18next';
 const actions = require('../../ui/app/actions')
 const rifActions = require('../../ui/app/rif/actions');
 const LoadingIndicator = require('./components/loading')
@@ -46,6 +47,7 @@ class ConfigScreen extends Component {
     resetAccount: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     openRifConfiguration: PropTypes.func,
+    t: PropTypes.func,
   }
 
   constructor (props) {
@@ -70,8 +72,8 @@ class ConfigScreen extends Component {
     let rifConfiguration = null;
     if (isRskNetwork(this.props.metamask.network)) {
       rifConfiguration = h('div', [
-        h('p.config-title', `RIF Configuration`),
-        h('p.config-description', `This is for rif configuration only.`),
+        h('p.config-title', this.props.t('RIF Configuration')),
+        h('p.config-description', this.props.t('This is for rif configuration only.')),
         h('button.btn-spread', {
           style: {
             alignSelf: 'center',
@@ -79,7 +81,7 @@ class ConfigScreen extends Component {
           onClick (event) {
             props.openRifConfiguration();
           },
-        }, 'Manage Configuration'),
+        }, this.props.t('Manage Configuration')),
       ]);
     }
 
@@ -108,7 +110,7 @@ class ConfigScreen extends Component {
               left: '30px',
             },
           }),
-          h('h2', 'Settings'),
+          h('h2', this.props.t('Settings')),
         ]),
 
         h('div', {
@@ -136,7 +138,7 @@ class ConfigScreen extends Component {
 
             h('div', { style: {display: 'flex'} }, [
               h('input#new_rpc', {
-                placeholder: 'New RPC URL',
+                placeholder: this.props.t('New RPC URL'),
                 style: {
                   width: 'inherit',
                   flex: '1 0 auto',
@@ -163,7 +165,7 @@ class ConfigScreen extends Component {
                 const newRpc = element.value
                 this.rpcValidation(newRpc)
               },
-            }, 'Save'),
+            }, this.props.t('Save')),
 
             h('hr.horizontal-line'),
 
@@ -172,29 +174,29 @@ class ConfigScreen extends Component {
             h('hr.horizontal-line'),
 
             h('div', [
-              h('p.config-title', `State logs`),
-              h('p.config-description', `State logs contain your public account addresses and sent transactions.`),
+              h('p.config-title', this.props.t('State logs')),
+              h('p.config-description', this.props.t('State logs contain your public account addresses and sent transactions.')),
               h('button.btn-spread', {
                 style: {
                   alignSelf: 'center',
                 },
-                onClick (event) {
+                onClick: (event) => {
                   window.logStateString((err, result) => {
                     if (err) {
-                      props.displayWarning('Error in retrieving state logs.')
+                      props.displayWarning(this.props.t('Error in retrieving state logs.'))
                     } else {
-                      exportAsFile('Nifty Wallet State Logs.json', result)
+                      exportAsFile(this.props.t('Nifty Wallet State Logs.json'), result)
                     }
                   })
                 },
-              }, 'Download State Logs'),
+              }, this.props.t('Download State Logs')),
             ]),
 
             h('hr.horizontal-line'),
 
             h('div', [
-              h('p.config-title', `Seed words`),
-              h('p.config-description', `Reveal seed words.`),
+              h('p.config-title', this.props.t('Seed words')),
+              h('p.config-description', this.props.t('Reveal Seed Words')),
               h('button.btn-spread', {
                 style: {
                   alignSelf: 'center',
@@ -203,7 +205,7 @@ class ConfigScreen extends Component {
                   event.preventDefault()
                   props.revealSeedConfirmation()
                 },
-              }, 'Reveal Seed Words'),
+              }, this.props.t('Reveal Seed Words')),
             ]),
 
             h('hr.horizontal-line', {
@@ -212,7 +214,7 @@ class ConfigScreen extends Component {
               },
             }),
 
-            h('p.config-title', `Provider`),
+            h('p.config-title', this.props.t('Provider')),
 
             h('div', {
               style: {
@@ -224,7 +226,7 @@ class ConfigScreen extends Component {
                 style: {
                 display: 'table-cell',
               }}, [
-                h('p.config-description', 'Switch to Decentralized Provider (Pocket)'),
+                h('p.config-description', this.props.t('Switch to Decentralized Provider (Pocket)')),
               ]),
               h('div', { style: {
                 display: 'table-cell',
@@ -244,8 +246,8 @@ class ConfigScreen extends Component {
             h('hr.horizontal-line'),
 
             h('div', [
-              h('p.config-title', `Account`),
-              h('p.config-description', `Resetting is for developer use only.`),
+              h('p.config-title', this.props.t('Account')),
+              h('p.config-description', this.props.t('Resetting is for developer use only.')),
               h('button.btn-spread', {
                 style: {
                   alignSelf: 'center',
@@ -254,16 +256,16 @@ class ConfigScreen extends Component {
                   event.preventDefault()
                   props.resetAccount()
                 },
-              }, 'Reset Account'),
+              }, this.props.t('Reset Account')),
 
-              h('p.config-description', 'Changing of password'),
+              h('p.config-description', this.props.t('Change Password')),
 
               h('button.btn-spread', {
                 onClick (event) {
                   event.preventDefault()
                   props.confirmChangePassword()
                 },
-              }, 'Change password'),
+              }, this.props.t('Change Password')),
             ]),
             rifConfiguration,
           ]),
@@ -289,7 +291,7 @@ class ConfigScreen extends Component {
       }
       props.setProviderType(props.provider.type)
     } else {
-      alert('Pocket does not support this network, using centralized provider')
+      alert(this.props.t('Pocket does not support this network, using centralized provider'))
     }
   }
 
@@ -306,7 +308,7 @@ class ConfigScreen extends Component {
       const web3 = new Web3(new Web3.providers.HttpProvider(newRpc))
       web3.eth.getBlockNumber((err, res) => {
         if (err) {
-          props.displayWarning('Invalid RPC endpoint')
+          props.displayWarning(this.props.t('Invalid RPC endpoint'))
         } else {
           props.setRpcTarget(newRpc)
         }
@@ -316,9 +318,9 @@ class ConfigScreen extends Component {
       })
     } else {
       if (!newRpc.startsWith('http')) {
-        props.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.')
+        props.displayWarning(this.props.t('URIs require the appropriate HTTP/HTTPS prefix.'))
       } else {
-        props.displayWarning('Invalid RPC URI')
+        props.displayWarning(this.props.t('Invalid RPC URI'))
       }
     }
   }
@@ -328,8 +330,8 @@ class ConfigScreen extends Component {
     const currentCurrency = metamaskState.currentCurrency
     const conversionDate = metamaskState.conversionDate
     return h('div', [
-      h('div.config-title', 'Current Conversion'),
-      h('div.config-description', `Updated ${Date(conversionDate)}`),
+      h('div.config-title', this.props.t('Current Conversion')),
+      h('div.config-description', `${this.props.t('Updated')} ${Date(conversionDate)}`),
       h('select.config-select-currency#currentCurrency', {
         onChange (event) {
           event.preventDefault()
@@ -351,10 +353,10 @@ class ConfigScreen extends Component {
     let title, value
 
     if (networks[provider.type]) {
-      title = 'Current Network'
+      title = this.props.t('Current Network')
       value = ethNetProps.props.getNetworkDisplayName(networks[provider.type].networkID)
     } else {
-      title = 'Current RPC'
+      title = this.props.t('Current RPC')
       value = metamaskState.provider.rpcTarget
     }
 
@@ -366,7 +368,7 @@ class ConfigScreen extends Component {
           event.preventDefault()
           props.showDeleteRPC()
         },
-      }, 'Delete'),
+      }, this.props.t('Delete')),
     ])
   }
 }
@@ -396,4 +398,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfigScreen)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(withTranslation('translations')(ConfigScreen))

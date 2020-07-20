@@ -1,3 +1,5 @@
+import {withTranslation} from 'react-i18next';
+
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
@@ -34,7 +36,7 @@ for (const address in contractsPOA) {
   }
 }
 
-module.exports = connect(mapStateToProps)(TokenList)
+module.exports = connect(mapStateToProps)(withTranslation('translations')(TokenList))
 
 inherits(TokenList, Component)
 function TokenList () {
@@ -130,7 +132,7 @@ TokenList.prototype.render = function () {
 
 TokenList.prototype.renderTokenStatusBar = function () {
   const { tokens } = this.state
-  const { network } = this.props
+  const { network, t } = this.props
   const tokensFromCurrentNetwork = tokens.filter(token => (parseInt(token.network) === parseInt(network) || !token.network))
 
   let msg
@@ -143,6 +145,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
     msg = `No tokens found`
     noTokens = true
   }
+  msg = t(msg);
 
   return h('div', [
       h('div', {
@@ -167,7 +170,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
           alignItems: 'center',
         },
       }, [
-        'Add Token',
+        this.props.t('Add Token'),
       ]),
     ]),
     noTokens ? h('div', {

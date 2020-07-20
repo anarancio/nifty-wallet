@@ -1,14 +1,14 @@
+import {withTranslation} from 'react-i18next';
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const rifActions = require('../../ui/app/rif/actions')
 const log = require('loglevel')
 const EventEmitter = require('events').EventEmitter
 const { getDPath } = require('./util')
 
-module.exports = connect(mapStateToProps)(UnlockScreen)
+module.exports = connect(mapStateToProps)(withTranslation('translations')(UnlockScreen))
 
 inherits(UnlockScreen, Component)
 function UnlockScreen () {
@@ -49,7 +49,7 @@ UnlockScreen.prototype.render = function () {
           h('input.large-input', {
             type: 'password',
             id: 'password-box',
-            placeholder: 'Enter password',
+            placeholder: this.props.t('Enter password'),
             style: {
 
             },
@@ -61,7 +61,7 @@ UnlockScreen.prototype.render = function () {
             style: {
               margin: '10px 0 10px 10px',
             },
-          }, 'Log In'),
+          }, this.props.t('Log In')),
 
           h('.error', {
             style: {
@@ -79,7 +79,7 @@ UnlockScreen.prototype.render = function () {
             fontSize: '14px',
             color: '#60db97',
           },
-        }, 'Restore from seed phrase'),
+        }, this.props.t('Restore from seed phrase')),
       ]),
     ])
   )
