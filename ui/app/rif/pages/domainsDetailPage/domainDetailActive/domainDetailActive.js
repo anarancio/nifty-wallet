@@ -124,7 +124,7 @@ class DomainsDetailActiveScreen extends Component {
     getConfiguration: PropTypes.func,
     isLuminoNode: PropTypes.func,
     showPay: PropTypes.func,
-    getResolverAddress: PropTypes.func,
+    getResolver: PropTypes.func,
   }
 
   constructor (props) {
@@ -141,22 +141,23 @@ class DomainsDetailActiveScreen extends Component {
         isLuminoNode: isLumino,
       });
     });
-    this.props.getResolverAddress(this.props.domainName)
-      .then(resolverAddress => {
+    this.props.getResolver(this.props.domainName)
+      .then(resolver => {
         this.setState({
-          selectedResolverAddress: resolverAddress.toLowerCase(),
+          resolver: resolver,
         });
       });
     this.state = {
       resolvers: [],
       isLuminoNode: false,
-      selectedResolverAddress: '',
+      resolver: '',
     };
   }
 
   render () {
     const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, newChainAddresses, newSubdomains, showPay } = this.props;
-    const {resolvers, isLuminoNode, selectedResolverAddress} = this.state;
+    const {resolvers, isLuminoNode, resolver} = this.state;
+    const selectedResolverAddress = resolver ? resolver.address.toLowerCase() : '';
     const domainInfo = {
       domainName,
       expirationDate,
@@ -184,6 +185,7 @@ class DomainsDetailActiveScreen extends Component {
                    domain: domain,
                    domainName: domainName,
                    selectedResolverAddress: selectedResolverAddress,
+                   disableSelect: resolver.pending,
                  })}
             >
               <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>
@@ -284,7 +286,7 @@ const mapDispatchToProps = dispatch => {
     showPay: (domainInfo) => dispatch(rifActions.navigateTo(pageNames.rns.pay, {
       domainInfo: domainInfo,
     })),
-    getResolverAddress: (domainName) => dispatch(rifActions.getResolverAddress(domainName)),
+    getResolver: (domainName) => dispatch(rifActions.getResolver(domainName)),
   }
 }
 

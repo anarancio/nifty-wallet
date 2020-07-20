@@ -312,7 +312,10 @@ export default class RnsJsDelegate extends RnsDelegate {
     return {
       name: domainName,
       subdomains: [],
-      pendingChainAddresses: [],
+      pendingActions: {
+        chainAddresses: [],
+        pendingSetResolver: false,
+      },
       registration: {
         secret: null,
         yearsToRegister: null,

@@ -19,7 +19,7 @@ const rifActions = {
   checkDomainAvailable,
   getDomainDetails,
   setResolverAddress,
-  getResolverAddress,
+  getResolver,
   getChainAddresses,
   setChainAddressForResolver,
   deletePendingChainAddress,
@@ -207,15 +207,15 @@ function setResolverAddress (domainName, resolverAddress) {
   }
 }
 
-function getResolverAddress (domainName) {
+function getResolver (domainName) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.rns.resolver.getResolver(domainName, (error, resolverAddress) => {
+      background.rif.rns.resolver.getResolver(domainName, (error, resolver) => {
         if (error) {
           handleError(error, dispatch);
           return reject(error);
         }
-        return resolve(resolverAddress);
+        return resolve(resolver);
       });
     })
   }

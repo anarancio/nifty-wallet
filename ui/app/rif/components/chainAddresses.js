@@ -33,7 +33,7 @@ class ChainAddresses extends Component {
     classes: PropTypes.any,
     getConfiguration: PropTypes.func,
     showToast: PropTypes.func,
-    getResolverAddress: PropTypes.func,
+    getResolver: PropTypes.func,
   }
 
   constructor (props) {
@@ -45,10 +45,10 @@ class ChainAddresses extends Component {
           resolvers,
         });
       });
-    this.props.getResolverAddress(this.props.domainName)
-      .then(resolverAddress => {
+    this.props.getResolver(this.props.domainName)
+      .then(resolver => {
         this.setState({
-          selectedResolverAddress: resolverAddress.toLowerCase(),
+          selectedResolverAddress: resolver.address.toLowerCase(),
         });
       });
     const slipChainAddressesOrdered = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
@@ -268,7 +268,7 @@ function mapDispatchToProps (dispatch) {
     showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
-    getResolverAddress: (domainName) => dispatch(rifActions.getResolverAddress(domainName)),
+    getResolver: (domainName) => dispatch(rifActions.getResolver(domainName)),
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ChainAddresses);
