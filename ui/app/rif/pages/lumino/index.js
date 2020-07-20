@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import rifActions from '../../actions';
 import LuminoNetworkItem from '../../components/LuminoNetworkItem';
 import {pageNames} from '../names';
-import {GenericTable} from '../../components';
+import {GenericTable, OpenChannel} from '../../components';
 import SearchLuminoNetworks from '../../components/searchLuminoNetworks';
 
 const styles = {
@@ -46,7 +46,11 @@ class LuminoHome extends Component {
     }
   }
 
-  async componentDidMount () {
+  componentDidMount () {
+    this.getLuminoNetworks();
+  }
+
+  async getLuminoNetworks() {
     const {getLuminoNetworks, currentAddress} = this.props;
     const networks = await getLuminoNetworks(currentAddress);
     if (networks && networks.withChannels.length || networks.withoutChannels.length) {
@@ -129,7 +133,10 @@ class LuminoHome extends Component {
             paginationSize={3}/>
         </div>
         }
-
+        <OpenChannel
+          // reloadChannels={() => this.loadChannels()}
+          afterChannelCreated={() => this.getLuminoNetworks()}
+        />
       </div>
     );
   }
