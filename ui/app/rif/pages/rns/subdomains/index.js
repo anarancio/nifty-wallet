@@ -120,7 +120,6 @@ class Subdomains extends Component {
     } else {
       this.setState({
         resolver: resolver,
-        disableSelect: resolver.pending,
       });
     }
   }, WAIT_FOR_CONFIRMATION_DEFAULT);
