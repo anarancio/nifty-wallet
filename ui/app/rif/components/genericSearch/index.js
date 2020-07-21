@@ -47,9 +47,8 @@ class GenericSearch extends Component {
     const {onlyFilterOnEnter} = this.props;
     const enterPressed = e.key === 'Enter';
 
-    if (!onlyFilterOnEnter && !enterPressed) {    debugger;
-
-      this.filter(value)
+    if (!onlyFilterOnEnter && !enterPressed) {
+      this.filter(value);
     }
   }
 
