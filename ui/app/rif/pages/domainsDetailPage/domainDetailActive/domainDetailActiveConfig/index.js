@@ -110,7 +110,7 @@ class DomainsDetailConfigurationScreen extends Component {
                         address: address,
                       },
                     });
-                  }, 2000);
+                  }, WAIT_FOR_CONFIRMATION_DEFAULT);
                 });
             },
           },
