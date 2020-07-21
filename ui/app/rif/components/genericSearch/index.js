@@ -20,6 +20,15 @@ class GenericSearch extends Component {
     onlyFilterOnEnter: PropTypes.bool,
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: ''
+    }
+    this.handleOnChange = this.handleOnChange.bind(this)
+    this.handleOnKeyDown = this.handleOnKeyDown.bind(this)
+  }
+
   includesCriteria = (element, criteria) => {
     const lowerString = v => String(v).toLowerCase()
     const lowerElement = lowerString(element);
@@ -27,12 +36,34 @@ class GenericSearch extends Component {
     return lowerElement.includes(lowerCriteria);
   }
 
-  handleInput = async (e) => {
+  clear = () => {
+    this.setState({value: ''})
+    console.error('limpio');
+  }
+
+  handleOnChange = (e) => {
+    const {value} = e.target;
+    this.setState({value})
     const {onlyFilterOnEnter} = this.props;
     const enterPressed = e.key === 'Enter';
-    const shouldFilter = (!onlyFilterOnEnter && !enterPressed) || (onlyFilterOnEnter && enterPressed)
-    if (shouldFilter) {
-      const {value} = e.target;
+
+    if (!onlyFilterOnEnter && !enterPressed) {    debugger;
+
+      this.filter(value)
+    }
+  }
+
+  handleOnKeyDown = async (e) => {
+    const {value} = e.target;
+    const {onlyFilterOnEnter} = this.props;
+    const enterPressed = e.key === 'Enter';
+    if (onlyFilterOnEnter && enterPressed) {
+      await this.filter(value);
+      this.clear();
+    }
+  }
+
+  filter = async (value) => {
       const {customFilterFunction, resultSetFunction} = this.props;
 
       if (customFilterFunction) {
@@ -52,20 +83,19 @@ class GenericSearch extends Component {
       // Filter of 1st level, with the property to check
       const result = data.filter(element => this.includesCriteria(element[filterProperty], value));
       return resultSetFunction(result);
-    }
   }
 
   render () {
     const {placeholder, onlyFilterOnEnter} = this.props;
-    const handleKeydown = onlyFilterOnEnter ? this.handleInput : null;
-    const handleOnChange = onlyFilterOnEnter ? null : this.handleInput;
+    const { value } = this.state;
     return (
       <div className="search-bar-container">
         <input
           placeholder={placeholder || ''}
           className={'search-bar'}
-          onChange={handleOnChange}
-          onKeyDown={handleKeydown}
+          onChange={this.handleOnChange}
+          onKeyDown={this.handleOnKeyDown}
+          value={value}
         />
       </div>
     )
