@@ -89,8 +89,8 @@ class GenericSearch extends Component {
         <input
           placeholder={placeholder || ''}
           className={'search-bar'}
-          onChange={() => this.handleOnChange}
-          onKeyDown={() => this.handleOnKeyDown}
+          onChange={(e) => this.handleOnChange(e)}
+          onKeyDown={(e) => this.handleOnKeyDown(e)}
           value={value}
         />
       </div>
