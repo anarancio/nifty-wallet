@@ -63,16 +63,18 @@ class ChainAddresses extends Component {
     this.loadResolver();
   }
 
-  timeoutToLoadResolver = () => setTimeout(async () => {
-    let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
-    if (resolver.pending) {
-      this.timeouts.push(this.timeoutToLoadResolver());
-    } else {
-      this.setState({
-        selectedResolverAddress: resolver.address.toLowerCase(),
-      });
-    }
-  }, WAIT_FOR_CONFIRMATION_DEFAULT);
+  timeoutToLoadResolver () {
+    setTimeout(async () => {
+      let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
+      if (resolver.pending) {
+        this.timeouts.push(this.timeoutToLoadResolver());
+      } else {
+        this.setState({
+          selectedResolverAddress: resolver.address.toLowerCase(),
+        });
+      }
+    }, WAIT_FOR_CONFIRMATION_DEFAULT);
+  }
 
   loadResolver () {
     this.props.getResolver(this.props.domainName, this.props.subdomainName)
@@ -151,26 +153,28 @@ class ChainAddresses extends Component {
     this.setState({ insertedAddress: address });
   }
 
- timeoutToRedirect = (chainAddressesCopy, selectedChainAddress) => setTimeout(async () => {
-    let chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
-    // I need to compare the chainaddresses without the actions setted, cause the actions will be variant in time, but will send the chainaddresses to the component
-    const chainAddressesWithoutActions = chainAddresses.map(chainaddress => {
-      chainaddress.action = '';
-      return chainaddress;
-    });
-    console.debug('chainAddresses to compare', chainAddressesWithoutActions);
-    console.debug('This are the chainaddresses copied', chainAddressesCopy);
-    if (!arraysMatch(chainAddressesCopy, chainAddressesWithoutActions)) {
-      this.props.showThis(
-        this.props.redirectPage,
-        {
-          ...this.props.redirectParams,
-          newChainAddresses: chainAddresses,
-        });
-    } else {
-      this.timeouts.push(this.timeoutToRedirect(chainAddressesCopy, selectedChainAddress));
-    }
-  }, WAIT_FOR_NOTIFIER);
+ timeoutToRedirect(chainAddressesCopy, selectedChainAddress) {
+    setTimeout(async () => {
+     let chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
+     // I need to compare the chainaddresses without the actions setted, cause the actions will be variant in time, but will send the chainaddresses to the component
+     const chainAddressesWithoutActions = chainAddresses.map(chainaddress => {
+       chainaddress.action = '';
+       return chainaddress;
+     });
+     console.debug('chainAddresses to compare', chainAddressesWithoutActions);
+     console.debug('This are the chainaddresses copied', chainAddressesCopy);
+     if (!arraysMatch(chainAddressesCopy, chainAddressesWithoutActions)) {
+       this.props.showThis(
+         this.props.redirectPage,
+         {
+           ...this.props.redirectParams,
+           newChainAddresses: chainAddresses,
+         });
+     } else {
+       this.timeouts.push(this.timeoutToRedirect(chainAddressesCopy, selectedChainAddress));
+     }
+   }, WAIT_FOR_NOTIFIER);
+ }
 
   componentWillUnmount () {
     this.timeouts.forEach(timeout => clearTimeout(timeout));

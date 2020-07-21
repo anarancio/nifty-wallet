@@ -58,17 +58,19 @@ class DomainsDetailConfigurationScreen extends Component {
     }
   }
 
-  timeoutToLoadResolver = () => setTimeout(async () => {
-    let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
-    if (resolver.pending) {
-      this.timeouts.push(this.timeoutToLoadResolver());
-    } else {
-      this.setState({
-        resolver: resolver,
-        disableSelect: resolver.pending,
-      });
-    }
-  }, WAIT_FOR_CONFIRMATION_DEFAULT);
+  timeoutToLoadResolver() {
+    setTimeout(async () => {
+      let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
+      if (resolver.pending) {
+        this.timeouts.push(this.timeoutToLoadResolver());
+      } else {
+        this.setState({
+          resolver: resolver,
+          disableSelect: resolver.pending,
+        });
+      }
+    }, WAIT_FOR_CONFIRMATION_DEFAULT);
+  }
 
   componentWillUnmount () {
     this.timeouts.forEach(timeout => clearTimeout(timeout));
