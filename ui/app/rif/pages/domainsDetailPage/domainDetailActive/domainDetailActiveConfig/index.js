@@ -59,17 +59,17 @@ class DomainsDetailConfigurationScreen extends Component {
   }
 
   timeoutToLoadResolver() {
-    setTimeout(async () => {
+    this.timeouts.push(setTimeout(async () => {
       let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
       if (resolver.pending) {
-        this.timeouts.push(this.timeoutToLoadResolver());
+        this.timeoutToLoadResolver();
       } else {
         this.setState({
           resolver: resolver,
           disableSelect: resolver.pending,
         });
       }
-    }, WAIT_FOR_CONFIRMATION_DEFAULT);
+    }, WAIT_FOR_CONFIRMATION_DEFAULT));
   }
 
   componentWillUnmount () {
@@ -80,7 +80,7 @@ class DomainsDetailConfigurationScreen extends Component {
     this.props.getResolver(this.props.domainName, this.props.subdomainName)
       .then(resolver => {
         if (resolver.pending) {
-          this.timeouts.push(this.timeoutToLoadResolver());
+          this.timeoutToLoadResolver();
         } else {
           this.setState({
             resolver: resolver,
@@ -104,7 +104,7 @@ class DomainsDetailConfigurationScreen extends Component {
               this.props.showToast('Waiting Confirmation');
               this.props.waitForListener(transactionListenerId)
                 .then(transactionReceipt => {
-                  setTimeout(() => {
+                  this.timeouts.push(setTimeout(() => {
                     this.props.showDomainConfigPage({
                       ...this.props,
                       resolver: {
@@ -112,7 +112,7 @@ class DomainsDetailConfigurationScreen extends Component {
                         address: address,
                       },
                     });
-                  }, WAIT_FOR_CONFIRMATION_DEFAULT);
+                  }, WAIT_FOR_CONFIRMATION_DEFAULT));
                 });
             },
           },

@@ -114,16 +114,16 @@ class Subdomains extends Component {
   }
 
   timeoutToLoadResolver() {
-    setTimeout(async () => {
+    this.timeouts.push(setTimeout(async () => {
       let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomain.name);
       if (resolver.pending) {
-        this.timeouts.push(this.timeoutToLoadResolver());
+        this.timeoutToLoadResolver();
       } else {
         this.setState({
           resolver: resolver,
         });
       }
-    }, WAIT_FOR_CONFIRMATION_DEFAULT);
+    }, WAIT_FOR_CONFIRMATION_DEFAULT));
   }
 
   componentWillUnmount () {
@@ -134,7 +134,7 @@ class Subdomains extends Component {
     this.props.getResolver(this.props.domainName, this.props.subdomain.name)
       .then(resolver => {
         if (resolver.pending) {
-          this.timeouts.push(this.timeoutToLoadResolver());
+          this.timeoutToLoadResolver();
         } else {
           this.setState({
             resolver: resolver,

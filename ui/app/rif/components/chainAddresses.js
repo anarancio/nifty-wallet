@@ -64,23 +64,23 @@ class ChainAddresses extends Component {
   }
 
   timeoutToLoadResolver () {
-    setTimeout(async () => {
+    this.timeouts.push(setTimeout(async () => {
       let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
       if (resolver.pending) {
-        this.timeouts.push(this.timeoutToLoadResolver());
+        this.timeoutToLoadResolver();
       } else {
         this.setState({
           selectedResolverAddress: resolver.address.toLowerCase(),
         });
       }
-    }, WAIT_FOR_CONFIRMATION_DEFAULT);
+    }, WAIT_FOR_CONFIRMATION_DEFAULT));
   }
 
   loadResolver () {
     this.props.getResolver(this.props.domainName, this.props.subdomainName)
       .then(resolver => {
         if (resolver.pending) {
-          this.timeouts.push(this.timeoutToLoadResolver());
+          this.timeoutToLoadResolver();
         } else {
           this.setState({
             selectedResolverAddress: resolver.address.toLowerCase(),
@@ -154,7 +154,7 @@ class ChainAddresses extends Component {
   }
 
  timeoutToRedirect(chainAddressesCopy, selectedChainAddress) {
-    setTimeout(async () => {
+   this.timeouts.push(setTimeout(async () => {
      let chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
      // I need to compare the chainaddresses without the actions setted, cause the actions will be variant in time, but will send the chainaddresses to the component
      const chainAddressesWithoutActions = chainAddresses.map(chainaddress => {
@@ -171,9 +171,9 @@ class ChainAddresses extends Component {
            newChainAddresses: chainAddresses,
          });
      } else {
-       this.timeouts.push(this.timeoutToRedirect(chainAddressesCopy, selectedChainAddress));
+       this.timeoutToRedirect(chainAddressesCopy, selectedChainAddress);
      }
-   }, WAIT_FOR_NOTIFIER);
+   }, WAIT_FOR_NOTIFIER));
  }
 
   componentWillUnmount () {
@@ -203,7 +203,7 @@ class ChainAddresses extends Component {
                   return chainAddress;
                 });
                 // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
-                this.timeouts.push(this.timeoutToRedirect(chainAddressesState, selectedChainAddress));
+                this.timeoutToRedirect(chainAddressesState, selectedChainAddress);
               }
             });
         },
