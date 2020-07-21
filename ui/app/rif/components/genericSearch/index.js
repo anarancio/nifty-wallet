@@ -25,22 +25,20 @@ class GenericSearch extends Component {
     this.state = {
       value: ''
     }
-    this.handleOnChange = this.handleOnChange.bind(this)
-    this.handleOnKeyDown = this.handleOnKeyDown.bind(this)
   }
 
-  includesCriteria = (element, criteria) => {
+  includesCriteria(element, criteria) {
     const lowerString = v => String(v).toLowerCase()
     const lowerElement = lowerString(element);
     const lowerCriteria = lowerString(criteria);
     return lowerElement.includes(lowerCriteria);
   }
 
-  clear = () => {
+  clear() {
     this.setState({value: ''})
   }
 
-  handleOnChange = (e) => {
+  handleOnChange(e) {
     const {value} = e.target;
     this.setState({value})
     const {onlyFilterOnEnter} = this.props;
@@ -51,7 +49,7 @@ class GenericSearch extends Component {
     }
   }
 
-  handleOnKeyDown = async (e) => {
+  async handleOnKeyDown(e) {
     const {value} = e.target;
     const {onlyFilterOnEnter} = this.props;
     const enterPressed = e.key === 'Enter';
@@ -61,7 +59,7 @@ class GenericSearch extends Component {
     }
   }
 
-  filter = async (value) => {
+  async filter(value) {
       const {customFilterFunction, resultSetFunction} = this.props;
 
       if (customFilterFunction) {
@@ -91,8 +89,8 @@ class GenericSearch extends Component {
         <input
           placeholder={placeholder || ''}
           className={'search-bar'}
-          onChange={this.handleOnChange}
-          onKeyDown={this.handleOnKeyDown}
+          onChange={() => this.handleOnChange}
+          onKeyDown={() => this.handleOnKeyDown}
           value={value}
         />
       </div>
