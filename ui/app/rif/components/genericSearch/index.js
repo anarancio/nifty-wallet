@@ -38,7 +38,6 @@ class GenericSearch extends Component {
 
   clear = () => {
     this.setState({value: ''})
-    console.error('limpio');
   }
 
   handleOnChange = (e) => {
