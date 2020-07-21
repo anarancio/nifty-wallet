@@ -61,14 +61,6 @@ class ChainAddresses extends Component {
         });
       });
     this.loadResolver();
-    this.props.getResolver(this.props.domainName, this.props.subdomainName)
-      .then(resolver => {
-        if (!resolver.pending) {
-          this.setState({
-            selectedResolverAddress: resolver.address.toLowerCase(),
-          });
-        }
-      });
   }
 
   timeoutToLoadResolver = () => setTimeout(async () => {
