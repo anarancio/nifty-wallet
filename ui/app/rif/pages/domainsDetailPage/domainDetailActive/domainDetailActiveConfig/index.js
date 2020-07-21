@@ -10,6 +10,7 @@ import {WAIT_FOR_CONFIRMATION_DEFAULT} from '../../../../../constants/common';
 class DomainsDetailConfigurationScreen extends Component {
   static propTypes = {
     domainName: PropTypes.string.isRequired,
+    subdomainName: PropTypes.string,
     showToast: PropTypes.func,
     waitForListener: PropTypes.func,
     setNewResolver: PropTypes.func,
@@ -22,14 +23,6 @@ class DomainsDetailConfigurationScreen extends Component {
 
   constructor (props) {
     super(props);
-    this.props.getConfiguration()
-      .then(configuration => {
-        const resolvers = Object.assign([], GET_RESOLVERS(configuration));
-        this.setState({
-          resolvers,
-          configuration,
-        });
-      });
     this.timeouts = [];
     this.state = {
       resolvers: [],
@@ -48,6 +41,14 @@ class DomainsDetailConfigurationScreen extends Component {
   }
 
   componentDidMount () {
+    this.props.getConfiguration()
+      .then(configuration => {
+        const resolvers = Object.assign([], GET_RESOLVERS(configuration));
+        this.setState({
+          resolvers,
+          configuration,
+        });
+      });
     this.loadResolver();
   }
 
@@ -58,7 +59,7 @@ class DomainsDetailConfigurationScreen extends Component {
   }
 
   timeoutToLoadResolver = () => setTimeout(async () => {
-    let resolver = await this.props.getResolver(this.props.domainName);
+    let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
     if (resolver.pending) {
       this.timeouts.push(this.timeoutToLoadResolver());
     } else {
@@ -74,7 +75,7 @@ class DomainsDetailConfigurationScreen extends Component {
   }
 
   loadResolver () {
-    this.props.getResolver(this.props.domainName)
+    this.props.getResolver(this.props.domainName, this.props.subdomainName)
       .then(resolver => {
         if (resolver.pending) {
           this.timeouts.push(this.timeoutToLoadResolver());
@@ -91,7 +92,7 @@ class DomainsDetailConfigurationScreen extends Component {
     for (const resolverItem of e.target.children) {
       if (resolverItem.value === e.target.value) {
         const address = resolverItem.getAttribute('data-address');
-        const transactionListenerId = await this.props.setNewResolver(this.props.domainName, address);
+        const transactionListenerId = await this.props.setNewResolver(this.props.domainName, address, this.props.subdomainName);
         this.props.showTransactionConfirmPage({
           afterApproval: {
             action: () => {
@@ -156,13 +157,11 @@ class DomainsDetailConfigurationScreen extends Component {
 
 function mapStateToProps (state) {
   const params = state.appState.currentView.params;
-  const domain = params.domain;
-  const details = domain.details || params.details;
   return {
-    domain: domain,
+    domain: params.domain,
     dispatch: state.dispatch,
-    status: details.status,
-    domainName: details.name,
+    domainName: params.domainName,
+    subdomainName: params.subdomainName,
     resolver: params.resolver || {},
   }
 }
@@ -171,11 +170,11 @@ const mapDispatchToProps = dispatch => {
   return {
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
-    setNewResolver: (domainName, resolverAddress) => dispatch(rifActions.setResolverAddress(domainName, resolverAddress)),
+    setNewResolver: (domainName, resolverAddress, subdomainName) => dispatch(rifActions.setResolverAddress(domainName, resolverAddress, subdomainName)),
     showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     showDomainConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, props)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
-    getResolver: (domainName) => dispatch(rifActions.getResolver(domainName)),
+    getResolver: (domainName, subdomainName) => dispatch(rifActions.getResolver(domainName, subdomainName)),
   }
 }
 

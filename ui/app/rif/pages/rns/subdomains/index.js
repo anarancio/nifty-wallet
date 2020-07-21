@@ -7,6 +7,7 @@ import {pageNames} from '../../../pages/index';
 import {ChainAddresses, CustomButton, LuminoNetworkChannels} from '../../../components';
 import {GET_RESOLVERS, PAGINATION_DEFAULT_SIZE} from '../../../constants';
 import DomainHeader from '../../../components/domain-header';
+import {WAIT_FOR_CONFIRMATION_DEFAULT} from '../../../../constants/common';
 
 // TODO @fmelo
 // Here you can set the classnames for the entire page
@@ -89,10 +90,19 @@ class Subdomains extends Component {
     getConfiguration: PropTypes.func,
     isDomainOwner: PropTypes.bool,
     showConfigPage: PropTypes.func,
+    getResolver: PropTypes.func,
   }
 
   constructor (props) {
     super(props);
+    this.timeouts = [];
+    this.state = {
+      resolvers: [],
+      resolver: {},
+    };
+  }
+
+  componentDidMount () {
     this.props.getConfiguration()
       .then(configuration => {
         const resolvers = Object.assign([], GET_RESOLVERS(configuration));
@@ -100,9 +110,37 @@ class Subdomains extends Component {
           resolvers,
         });
       });
-    this.state = {
-      resolvers: [],
-    };
+    this.loadResolver();
+  }
+
+  timeoutToLoadResolver = () => setTimeout(async () => {
+    let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomain.name);
+    if (resolver.pending) {
+      this.timeouts.push(this.timeoutToLoadResolver());
+    } else {
+      this.setState({
+        resolver: resolver,
+        disableSelect: resolver.pending,
+      });
+    }
+  }, WAIT_FOR_CONFIRMATION_DEFAULT);
+
+  componentWillUnmount () {
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
+  }
+
+  loadResolver () {
+    this.props.getResolver(this.props.domainName, this.props.subdomain.name)
+      .then(resolver => {
+        if (resolver.pending) {
+          this.timeouts.push(this.timeoutToLoadResolver());
+        } else {
+          this.setState({
+            resolver: resolver,
+            disableSelect: resolver.pending,
+          });
+        }
+      });
   }
 
   openDeletePopup (subdomain) {
@@ -143,7 +181,7 @@ class Subdomains extends Component {
   }
 
   render () {
-    const {subdomain, domainName, selectedResolverAddress, newChainAddresses, isOwner, isDomainOwner} = this.props;
+    const {subdomain, domainName, newChainAddresses, isOwner, isDomainOwner} = this.props;
     const updatedChainAddresses = newChainAddresses || [];
     const displayName = `${subdomain.name}.${domainName}`
     const {resolvers} = this.state;
@@ -171,6 +209,7 @@ class Subdomains extends Component {
                  className="config-domain-btn"
                  onClick={() => this.props.showConfigPage({
                    domainName: domainName,
+                   subdomainName: subdomain.name,
                  })}
             >
               <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>
@@ -242,6 +281,7 @@ function mapDispatchToProps (dispatch) {
         showBack: true,
       },
     })),
+    getResolver: (domainName, subdomain) => dispatch(rifActions.getResolver(domainName, subdomain)),
   }
 }
 

@@ -336,6 +336,7 @@ export default class RnsJsDelegate extends RnsDelegate {
       ownerAddress: '',
       parentOwnerAddress: '',
       status,
+      pendingSetResolver: false,
     }
   }
 

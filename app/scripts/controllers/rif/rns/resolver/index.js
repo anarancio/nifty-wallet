@@ -105,14 +105,25 @@ export default class RnsResolver extends RnsJsDelegate {
    * @param domainName with the .rsk extension
    * @returns {Promise<unknown>}
    */
-  getResolver (domainName) {
+  getResolver (domainName, subdomain = '') {
     return new Promise((resolve, reject) => {
-      this.call(this.rnsContractInstance, 'resolver', [namehash.hash(domainName)]).then(result => {
+      let node = namehash.hash(domainName);
+      if (subdomain) {
+        node = rskNameHash(domainName);
+        const label = web3Utils.sha3(subdomain);
+        node = web3Utils.soliditySha3(node, label);
+      }
+      this.call(this.rnsContractInstance, 'resolver', [node]).then(result => {
         console.debug('getResolver resolved with', result);
-        const domain = this.getDomain(domainName);
+        const domain = this.getDomain(domainName, result.address, result.network);
         let pending = false;
         if (domain) {
-          pending = domain.pendingActions.pendingSetResolver;
+          if (subdomain) {
+            const domainSubdomain = domain.subdomains.find(subdomainItem => subdomainItem.name === subdomain );
+            pending = domainSubdomain.pendingSetResolver;
+          } else {
+            pending = domain.pendingActions.pendingSetResolver;
+          }
         }
         resolve({
           pending: pending,
@@ -131,27 +142,60 @@ export default class RnsResolver extends RnsJsDelegate {
    * @param resolverAddress Address of the new resolver to be setted
    * @returns {Promise<unknown>}
    */
-  setResolver (domainName, resolverAddress) {
+  setResolver (domainName, resolverAddress, subdomain = '') {
     return new Promise((resolve) => {
       const domain = this.getDomain(domainName);
       if (domain) {
-        domain.pendingActions.pendingSetResolver = true;
+        if (subdomain) {
+          domain.subdomains.forEach(subdomainItem => {
+            if (subdomainItem.name === subdomain) {
+              subdomainItem.pendingSetResolver = true
+            }
+          });
+        } else {
+          domain.pendingActions.pendingSetResolver = true;
+        }
         this.updateDomain(domain);
       }
-      const transactionListener = this.send(this.rnsContractInstance, 'setResolver', [namehash.hash(domainName), resolverAddress]);
+      let node = namehash.hash(domainName);
+      if (subdomain) {
+        node = rskNameHash(domainName);
+        const label = web3Utils.sha3(subdomain);
+        node = web3Utils.soliditySha3(node, label);
+      }
+      const transactionListener = this.send(this.rnsContractInstance, 'setResolver', [node, resolverAddress]);
       transactionListener.transactionConfirmed()
         .then(result => {
           this.getDomainDetails(domainName).then(domainDetails => {
             const domain = this.getDomain(domainName, result.address, result.network);
             domain.details = domainDetails;
-            domain.pendingActions.pendingSetResolver = false;
+            if (subdomain) {
+              domain.subdomains.forEach(subdomainItem => {
+                if (subdomainItem.name === subdomain) {
+                  subdomainItem.pendingSetResolver = false
+                }
+              });
+            } else {
+              domain.pendingActions.pendingSetResolver = false;
+            }
             this.updateDomain(domain, result.address, result.network);
           });
           console.debug('setResolver success', result);
         }).catch(result => {
-          const domain = this.getDomain(domainName, result.address, result.network);
-          domain.pendingActions.pendingSetResolver = false;
-          this.updateDomain(domain, result.address, result.network);
+          this.getDomainDetails(domainName).then(domainDetails => {
+            const domain = this.getDomain(domainName, result.address, result.network);
+            domain.details = domainDetails;
+            if (subdomain) {
+              domain.subdomains.forEach(subdomainItem => {
+                if (subdomainItem.name === subdomain) {
+                  subdomainItem.pendingSetResolver = false
+                }
+              });
+            } else {
+              domain.pendingActions.pendingSetResolver = false;
+            }
+            this.updateDomain(domain, result.address, result.network);
+          });
           console.debug('Error when trying to set resolver', result);
         });
       resolve(transactionListener.id);

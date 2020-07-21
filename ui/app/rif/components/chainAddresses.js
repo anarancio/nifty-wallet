@@ -45,11 +45,13 @@ class ChainAddresses extends Component {
           resolvers,
         });
       });
-    this.props.getResolver(this.props.domainName)
+    this.props.getResolver(this.props.domainName, this.props.subdomainName)
       .then(resolver => {
-        this.setState({
-          selectedResolverAddress: resolver.address.toLowerCase(),
-        });
+        if (!resolver.pending) {
+          this.setState({
+            selectedResolverAddress: resolver.address.toLowerCase(),
+          });
+        }
       });
     const slipChainAddressesOrdered = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
     const slipChainAddresses = [...PRIORITY_SLIP_ADDRESSES, ...slipChainAddressesOrdered]
@@ -268,7 +270,7 @@ function mapDispatchToProps (dispatch) {
     showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
-    getResolver: (domainName) => dispatch(rifActions.getResolver(domainName)),
+    getResolver: (domainName, subdomainName) => dispatch(rifActions.getResolver(domainName, subdomainName)),
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ChainAddresses);
