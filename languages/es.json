@@ -63,6 +63,8 @@
     "Update implementation ABI": "Actualizar ABI",
     "Export Private Key": "Exportar Clave Privada",
     "Explore RIF Services": "Explorar Servicios de RIF",
-    "edit": "editar"
+    "edit": "editar",
+    "Language Configuration": "Configuración de Lenguaje",
+    "Choose your language": "Elije tu lenguaje"
   }
 }

@@ -1257,8 +1257,8 @@ function getCurrentLanguage () {
 function getAvailableLanguages () {
   return () => {
     return new Promise((resolve) => {
-      const languages = Object.keys(languages).map(key => languages[key]);
-      resolve(languages);
+      const availableLanguages = Object.keys(languages).map(key => languages[key]);
+      resolve(availableLanguages);
     });
   };
 }

@@ -48,6 +48,9 @@ class ConfigScreen extends Component {
     setCurrentCurrency: PropTypes.func,
     openRifConfiguration: PropTypes.func,
     t: PropTypes.func,
+    getCurrentLanguageKey: PropTypes.func,
+    getAvailableLanguages: PropTypes.func,
+    changeLanguage: PropTypes.func,
   }
 
   constructor (props) {
@@ -55,7 +58,10 @@ class ConfigScreen extends Component {
     this.state = {
       loading: false,
       dProvider: props.dProviderStore.dProvider,
+      availableLanguages: null,
+      currentLanguageKey: null,
     }
+    this.refreshLanguageInformation();
   }
 
   render () {
@@ -268,6 +274,7 @@ class ConfigScreen extends Component {
               }, this.props.t('Change Password')),
             ]),
             rifConfiguration,
+            this.currentLanguageInformation(),
           ]),
         ]),
       ])
@@ -371,6 +378,40 @@ class ConfigScreen extends Component {
       }, this.props.t('Delete')),
     ])
   }
+
+  currentLanguageInformation () {
+    const {currentLanguageKey, availableLanguages} = this.state;
+    if (currentLanguageKey && availableLanguages && availableLanguages.length > 0) {
+      return h('div', [
+        h('div.config-title', this.props.t('Language Configuration')),
+        h('div.config-description', this.props.t('Choose your language')),
+        h('select.config-select-language#currentLanguage', {
+            onChange: async (event) => {
+              event.preventDefault()
+              const element = document.getElementById('currentLanguage')
+              const newLanguageKey = element.value
+              const selectedLanguage = availableLanguages.find(language => language.key === newLanguageKey);
+              this.props.changeLanguage(selectedLanguage.key);
+              await this.refreshLanguageInformation();
+            },
+            defaultValue: currentLanguageKey,
+          }, availableLanguages.map((language) => {
+            return h('option', {key: language.key, value: language.key}, `${language.name} - ${language.key}`)
+          }),
+        ),
+      ])
+    }
+    return null;
+  }
+
+  async refreshLanguageInformation () {
+    const availableLanguages = await this.props.getAvailableLanguages();
+    const currentLanguageKey = await this.props.getCurrentLanguageKey();
+    this.setState({
+      currentLanguageKey,
+      availableLanguages,
+    });
+  }
 }
 
 function mapStateToProps (state) {
@@ -390,11 +431,14 @@ const mapDispatchToProps = dispatch => {
     goHome: () => dispatch(actions.goHome()),
     setDProvider: (set) => dispatch(actions.setDProvider(set)),
     setRpcTarget: (rpcTarget) => dispatch(actions.setRpcTarget(rpcTarget)),
-    setCurrentCurrency: (newCurrency) => dispatch(actions.setRpcTarget(newCurrency)),
+    setCurrentCurrency: (newCurrency) => dispatch(actions.setCurrentCurrency(newCurrency)),
     confirmChangePassword: () => dispatch(actions.confirmChangePassword()),
     resetAccount: () => dispatch(actions.resetAccount()),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     openRifConfiguration: () => dispatch(rifActions.navigateTo(pageNames.configuration)),
+    getCurrentLanguageKey: () => dispatch(rifActions.getCurrentLanguage()),
+    getAvailableLanguages: () => dispatch(rifActions.getAvailableLanguages()),
+    changeLanguage: (localCode) => dispatch(rifActions.changeLanguage(localCode)),
   }
 }
 
