@@ -7,6 +7,7 @@ import {pageNames} from '../../../pages/index';
 import {ChainAddresses, CustomButton, LuminoNetworkChannels} from '../../../components';
 import {GET_RESOLVERS, PAGINATION_DEFAULT_SIZE} from '../../../constants';
 import DomainHeader from '../../../components/domain-header';
+import {WAIT_FOR_CONFIRMATION_DEFAULT} from '../../../../constants/common';
 
 // TODO @fmelo
 // Here you can set the classnames for the entire page
@@ -88,10 +89,20 @@ class Subdomains extends Component {
     getSubdomains: PropTypes.func,
     getConfiguration: PropTypes.func,
     isDomainOwner: PropTypes.bool,
+    showConfigPage: PropTypes.func,
+    getResolver: PropTypes.func,
   }
 
   constructor (props) {
     super(props);
+    this.timeouts = [];
+    this.state = {
+      resolvers: [],
+      resolver: {},
+    };
+  }
+
+  componentDidMount () {
     this.props.getConfiguration()
       .then(configuration => {
         const resolvers = Object.assign([], GET_RESOLVERS(configuration));
@@ -99,9 +110,38 @@ class Subdomains extends Component {
           resolvers,
         });
       });
-    this.state = {
-      resolvers: [],
-    };
+    this.loadResolver();
+  }
+
+  timeoutToLoadResolver() {
+    this.timeouts.push(setTimeout(async () => {
+      let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomain.name);
+      if (resolver.pending) {
+        this.timeoutToLoadResolver();
+      } else {
+        this.setState({
+          resolver: resolver,
+        });
+      }
+    }, WAIT_FOR_CONFIRMATION_DEFAULT));
+  }
+
+  componentWillUnmount () {
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
+  }
+
+  loadResolver () {
+    this.props.getResolver(this.props.domainName, this.props.subdomain.name)
+      .then(resolver => {
+        if (resolver.pending) {
+          this.timeoutToLoadResolver();
+        } else {
+          this.setState({
+            resolver: resolver,
+            disableSelect: resolver.pending,
+          });
+        }
+      });
   }
 
   openDeletePopup (subdomain) {
@@ -142,7 +182,7 @@ class Subdomains extends Component {
   }
 
   render () {
-    const {subdomain, domainName, selectedResolverAddress, newChainAddresses, isOwner, isDomainOwner} = this.props;
+    const {subdomain, domainName, newChainAddresses, isOwner, isDomainOwner} = this.props;
     const updatedChainAddresses = newChainAddresses || [];
     const displayName = `${subdomain.name}.${domainName}`
     const {resolvers} = this.state;
@@ -165,13 +205,28 @@ class Subdomains extends Component {
             }
           />
           }
+          {isOwner &&
+            <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg"
+                 className="config-domain-btn"
+                 onClick={() => this.props.showConfigPage({
+                   domainName: domainName,
+                   subdomainName: subdomain.name,
+                 })}
+            >
+              <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>
+              <line x1="9" y1="4.37114e-08" x2="9" y2="23" stroke="#602A95" strokeWidth="2"/>
+              <line x1="3" y1="4.37114e-08" x2="3" y2="23" stroke="#602A95" strokeWidth="2"/>
+              <ellipse cx="9" cy="17" rx="3" ry="3" transform="rotate(90 9 17)" fill="#602A95"/>
+              <ellipse cx="16" cy="5" rx="3" ry="3" transform="rotate(90 16 5)" fill="#602A95"/>
+              <ellipse cx="3" cy="8" rx="3" ry="3" transform="rotate(90 3 8)" fill="#602A95"/>
+            </svg>
+          }
         </DomainHeader>
         {resolvers &&
         <div id="chainAddressesBody">
           <ChainAddresses
             domainName={domainName}
             subdomainName={subdomain.name}
-            selectedResolverAddress={selectedResolverAddress}
             paginationSize={PAGINATION_DEFAULT_SIZE}
             classes={styles.chainAddresses}
             isOwner={isOwner}
@@ -220,6 +275,14 @@ function mapDispatchToProps (dispatch) {
     isSubdomainAvailable: (domainName, subdomain) => dispatch(rifActions.isSubdomainAvailable(domainName, subdomain)),
     deleteSubdomain: (domainName, subdomain) => dispatch(rifActions.deleteSubdomain(domainName, subdomain)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
+    showConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, {
+      ...props,
+      tabOptions: {
+        showSearchbar: false,
+        showBack: true,
+      },
+    })),
+    getResolver: (domainName, subdomain) => dispatch(rifActions.getResolver(domainName, subdomain)),
   }
 }
 

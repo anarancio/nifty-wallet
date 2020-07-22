@@ -68,14 +68,14 @@ class Subdomains extends Component {
             actionClasses={classes.contentActions}
             text={subdomain.name}
             enableRightChevron={!subdomain.status}
-            onClick={() => showSubdomainDetails({
+            onClick={() => !subdomain.status ? showSubdomainDetails({
               domainName: domainInfo.domainName,
               selectedResolverAddress: domainInfo.selectedResolverAddress,
               isDomainOwner: isOwner,
               subdomain: subdomain,
               pageName: pageName,
               redirectParams: redirectParams,
-            })}
+            }) : {}}
             showPending={subdomain.status}
           />
         )

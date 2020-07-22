@@ -191,11 +191,11 @@ function getDomainByAddress (address) {
   }
 }
 
-function setResolverAddress (domainName, resolverAddress) {
+function setResolverAddress (domainName, resolverAddress, subdomain = '') {
   return (dispatch) => {
     dispatch(niftyActions.showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.rif.rns.resolver.setResolver(domainName, resolverAddress, (error, transactionListenerId) => {
+      background.rif.rns.resolver.setResolver(domainName, resolverAddress, subdomain, (error, transactionListenerId) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
           handleError(error, dispatch);
@@ -207,10 +207,10 @@ function setResolverAddress (domainName, resolverAddress) {
   }
 }
 
-function getResolver (domainName) {
+function getResolver (domainName, subdomain = '') {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.rns.resolver.getResolver(domainName, (error, resolver) => {
+      background.rif.rns.resolver.getResolver(domainName, subdomain, (error, resolver) => {
         if (error) {
           handleError(error, dispatch);
           return reject(error);
