@@ -1,5 +1,4 @@
 import * as namehash from 'eth-ens-namehash';
-import {namehash as rskNameHash} from '@rsksmart/rns/lib/utils'
 import RnsJsDelegate from '../rnsjs-delegate';
 import web3Utils from 'web3-utils';
 import { DomainDetails, ChainAddress } from '../classes';
