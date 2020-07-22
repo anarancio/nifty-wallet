@@ -18,6 +18,7 @@ i18n.use(LanguageDetector).init({
   react: {
     wait: true,
   },
+  nsSeparator: '##NAMESPACE##',
 });
 
 function loadResources (languages) {

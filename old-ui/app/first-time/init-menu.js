@@ -1,3 +1,5 @@
+import {withTranslation} from 'react-i18next';
+
 const inherits = require('util').inherits
 const EventEmitter = require('events').EventEmitter
 const Component = require('react').Component
@@ -6,7 +8,7 @@ const h = require('react-hyperscript')
 const actions = require('../../../ui/app/actions')
 const Tooltip = require('../components/tooltip')
 
-module.exports = connect(mapStateToProps)(InitializeMenuScreen)
+module.exports = connect(mapStateToProps)(withTranslation('translations')(InitializeMenuScreen))
 
 inherits(InitializeMenuScreen, Component)
 function InitializeMenuScreen () {
@@ -38,6 +40,7 @@ InitializeMenuScreen.prototype.render = function () {
 // }
 
 InitializeMenuScreen.prototype.renderMenu = function (state) {
+  const {t} = this.props;
   return (
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
@@ -66,10 +69,10 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             color: '#ffffff',
             display: 'inline',
           },
-        }, 'Encrypt your new DEN'),
+        }, t('Encrypt your new DEN')),
 
         h(Tooltip, {
-          title: 'Your DEN is your password-encrypted storage within Nifty Wallet.',
+          title: t('Your DEN is your password-encrypted storage within Nifty Wallet.'),
           id: 'initMenu',
         },
 
@@ -99,7 +102,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       h('input.large-input', {
         type: 'password',
         id: 'password-box',
-        placeholder: 'New Password (min 8 chars)',
+        placeholder: t('New Password (min 8 chars)'),
         style: {
           width: 260,
           marginTop: 12,
@@ -111,7 +114,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       h('input.large-input', {
         type: 'password',
         id: 'password-box-confirm',
-        placeholder: 'Confirm Password',
+        placeholder: t('Confirm Password'),
         onKeyPress: this.createVaultOnEnter.bind(this),
         style: {
           width: 260,
@@ -126,7 +129,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         style: {
           margin: 12,
         },
-      }, 'Create'),
+      }, t('Create')),
 
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
@@ -135,7 +138,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             fontSize: '0.8em',
             color: '#60db97',
           },
-        }, 'Import Existing DEN'),
+        }, t('Import Existing DEN')),
       ]),
 
     ])

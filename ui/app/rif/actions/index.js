@@ -8,7 +8,7 @@ import {clearArray, sumValuesOfArray} from '../utils/utils';
 import {parseLuminoError} from '../utils/parse';
 import web3Utils from 'web3-utils';
 import i18n from '../../../../i18n';
-import languages from '../../../../locales';
+import languages from '../../../../languages';
 
 const rifActions = {
   SHOW_MODAL: 'SHOW_MODAL',

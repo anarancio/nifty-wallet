@@ -65,6 +65,19 @@
     "Explore RIF Services": "Explorar Servicios de RIF",
     "edit": "editar",
     "Language Configuration": "Configuración de Lenguaje",
-    "Choose your language": "Elije tu lenguaje"
+    "Choose your language": "Elije tu lenguaje",
+    "Terms of Use": "Términos y Condiciones",
+    "Dear Nifty Wallet Users,": "Queridos usuarios de Nifty Wallet,",
+    "Nifty Wallet is beta software.": "Nifty Wallet es un software beta.",
+    "When you log in to Nifty Wallet, your current account's address is visible to every new site you visit. This can be used to look up your account balances of Ether and other tokens.": "Cuando ingresas a Nifty Wallet, la direccion de tu cuenta queda visible para cada sitio al que ingreses. Esto puede ser usado para obtener tus balances en Ether y otros tokens.",
+    "For your privacy, for now, please sign out of Nifty Wallet when you're done using a site.": "Para proteger tu privacidad, por ahora, porfavor cierra Nifty Wallet cuando termines de utilizar un sitio web.",
+    "## Related Links ##": "## Links Relacionados ##",
+    "**[Terms of Service](https:\/\/github.com/poanetwork/metamask-extension/wiki/Terms-of-Service)**": "**[Términos y Condiciones](https://github.com/poanetwork/metamask-extension/wiki/Terms-of-Service)**",
+    "Accept": "Aceptar",
+    "Encrypt your new DEN": "Encriptar tu DEN",
+    "Create": "Crear",
+    "Your DEN is your password-encrypted storage within Nifty Wallet.": "Tu DEN es tu storage en Nifty Wallet encriptado con tu password.",
+    "Import Existing DEN": "Importar DEN existente",
+    "No domains registered": "No hay dominios registrados"
   }
 }
