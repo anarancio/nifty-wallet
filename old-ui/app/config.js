@@ -175,6 +175,10 @@ class ConfigScreen extends Component {
 
             h('hr.horizontal-line'),
 
+            this.currentLanguageInformation(),
+
+            h('hr.horizontal-line'),
+
             this.currentConversionInformation(metamaskState),
 
             h('hr.horizontal-line'),
@@ -274,7 +278,6 @@ class ConfigScreen extends Component {
               }, this.props.t('Change Password')),
             ]),
             rifConfiguration,
-            this.currentLanguageInformation(),
           ]),
         ]),
       ])
