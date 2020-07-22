@@ -254,4 +254,14 @@ export default class RnsDelegate {
    * This event is to track when the user changes the rif configuration
    */
   onConfigurationUpdated (configuration) {}
+
+  getRIFBalanceForAddress (accountAddress = this.address) {
+    return new Promise((resolve, reject) => {
+      this.call(this.rifContractInstance, 'balanceOf', [accountAddress])
+        .then(balance => {
+          resolve(balance.toNumber());
+        }).catch(error => reject(error));
+    });
+  }
+
 }
