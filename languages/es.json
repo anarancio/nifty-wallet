@@ -78,6 +78,7 @@
     "Create": "Crear",
     "Your DEN is your password-encrypted storage within Nifty Wallet.": "Tu DEN es tu storage en Nifty Wallet encriptado con tu password.",
     "Import Existing DEN": "Importar DEN existente",
-    "No domains registered": "No hay dominios registrados"
+    "No domains registered": "No hay dominios registrados",
+    "No transaction history.": "Sin transacciones realizadas"
   }
 }
