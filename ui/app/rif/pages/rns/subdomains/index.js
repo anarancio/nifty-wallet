@@ -198,7 +198,7 @@ class Subdomains extends Component {
             onClick={() => this.openDeletePopup(subdomain)}
             className={
               {
-                button: 'ml-auto',
+                button: 'ml-auto c-pointer',
                 icon: '',
                 text: 'btn-primary btn-primary-outlined',
               }
