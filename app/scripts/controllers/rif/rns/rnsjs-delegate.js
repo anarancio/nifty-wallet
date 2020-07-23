@@ -3,6 +3,7 @@ import RNS from '@rsksmart/rns'
 import {rns} from '../constants'
 import {namehash} from '@rsksmart/rns/lib/utils'
 import web3Utils from 'web3-utils'
+import {isValidAddress} from 'rskjs-util';
 
 /**
  * This class encapsulates all the RNSJS logic, it initializes rnsjs library and uses it as a wrapper.
@@ -188,7 +189,7 @@ export default class RnsJsDelegate extends RnsDelegate {
    * @returns {Promise<>} TransactionReceipt of the latest transaction
    */
   createSubdomain (domainName, subdomain, ownerAddress, parentOwnerAddress) {
-    if (ownerAddress && !web3Utils.isAddress(ownerAddress)) {
+    if (ownerAddress && !isValidAddress(ownerAddress)) {
       return Promise.reject('You need to specify a correct address');
     }
     this.setStatusSubdomain(domainName, subdomain, 'add');
