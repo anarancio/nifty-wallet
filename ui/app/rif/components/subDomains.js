@@ -98,7 +98,6 @@ class Subdomains extends Component {
     return (
       <div className="subdomain-section">
         <GenericSearch
-          placeholder={'Subdomains'}
           data={subdomains}
           resultSetFunction={this.setFilteredSubdomains}
           filterProperty={'name'}/>

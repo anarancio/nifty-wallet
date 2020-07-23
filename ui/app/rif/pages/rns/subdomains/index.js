@@ -187,7 +187,7 @@ class Subdomains extends Component {
     const displayName = `${subdomain.name}.${domainName}`
     const {resolvers} = this.state;
     return (
-      <div className="subdomain-page">
+      <div className="body subdomain-page">
         <DomainHeader
           domainName={displayName}
           showOwnerIcon={isOwner}
@@ -198,7 +198,7 @@ class Subdomains extends Component {
             onClick={() => this.openDeletePopup(subdomain)}
             className={
               {
-                button: 'ml-auto',
+                button: 'ml-auto c-pointer',
                 icon: '',
                 text: 'btn-primary btn-primary-outlined',
               }

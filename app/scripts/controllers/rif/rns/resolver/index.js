@@ -1,11 +1,10 @@
 import * as namehash from 'eth-ens-namehash';
-import {namehash as rskNameHash} from '@rsksmart/rns/lib/utils'
 import RnsJsDelegate from '../rnsjs-delegate';
 import web3Utils from 'web3-utils';
 import { DomainDetails, ChainAddress } from '../classes';
 import RSKOwner from '../abis/RSKOwner.json';
 import MultiChainresolver from '../abis/MultiChainResolver.json';
-import {DOMAIN_STATUSES, EXPIRING_REMAINING_DAYS, rns} from '../../constants';
+import {DOMAIN_STATUSES, EXPIRING_REMAINING_DAYS, rns, RSK_CHAINID} from '../../constants';
 import { getDateFormatted } from '../../utils/dateUtils';
 import {ChainId} from '@rsksmart/rns/lib/types';
 import {getNodeHash} from '../../utils/rns';
@@ -279,27 +278,31 @@ export default class RnsResolver extends RnsJsDelegate {
    */
   setChainAddressForResolver (domainName, chain, chainAddress, subdomain = '', action = 'add') {
     return new Promise((resolve, reject) => {
-      const node = getNodeHash(domainName, subdomain);
-      const toBeSettedChainAddress = chainAddress || rns.zeroAddress;
-      const domain = this.getDomain(domainName);
-      const pendingChainAddressesActions = domain.pendingActions.chainAddresses;
-      pendingChainAddressesActions.push({
-        chainAddress: toBeSettedChainAddress,
-        chain: chain,
-        nodeHash: node,
-        action: action,
-      });
-      this.updateDomain(domain);
-      const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
-      transactionListener.transactionConfirmed()
-        .then(result => {
-          this.deletePendingChainAddress(domainName, chain, node, result.address, result.network);
-          console.debug('setChainAddressForResolver success', result);
-        }).catch(result => {
+      if (chain === RSK_CHAINID && chainAddress && !web3Utils.isAddress(chainAddress)) {
+        reject('Chain address needs to be a valid address');
+      } else {
+        const node = getNodeHash(domainName, subdomain);
+        const toBeSettedChainAddress = chainAddress || rns.zeroAddress;
+        const domain = this.getDomain(domainName);
+        const pendingChainAddressesActions = domain.pendingActions.chainAddresses;
+        pendingChainAddressesActions.push({
+          chainAddress: toBeSettedChainAddress,
+          chain: chain,
+          nodeHash: node,
+          action: action,
+        });
+        this.updateDomain(domain);
+        const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
+        transactionListener.transactionConfirmed()
+          .then(result => {
+            this.deletePendingChainAddress(domainName, chain, node, result.address, result.network);
+            console.debug('setChainAddressForResolver success', result);
+          }).catch(result => {
           this.deletePendingChainAddress(domainName, chain, node, result.address, result.network);
           console.debug('Error when trying to set chain address for resolver', result);
         });
-      resolve(transactionListener.id);
+        resolve(transactionListener.id);
+      }
     });
   }
 
