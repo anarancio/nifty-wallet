@@ -304,7 +304,7 @@ class OpenChannel extends Component {
     return (
       <div>
         <div className="form-segment">
-          <span className="ml-0" onClick={() => this.open()}>+ Add channel</span>
+          <span className="ml-0 form-segment-button" onClick={() => this.open()}>+ Add channel</span>
         </div>
         {body}
       </div>
