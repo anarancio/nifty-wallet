@@ -368,9 +368,9 @@ const mapDispatchToProps = dispatch => {
         showBack: true,
         showTitle: true,
         screenTitle: 'My Domains',
+        },
       },
-      resetNavigation: true,
-    })),
+      true)),
     showLoading: (loading = true, message) => loading ? dispatch(niftyActions.showLoadingIndication(message)) : dispatch(niftyActions.hideLoadingIndication()),
   }
 }
