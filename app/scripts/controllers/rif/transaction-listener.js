@@ -99,11 +99,21 @@ export class TransactionListener extends EventEmitter {
       this.on('submitError', (error) => {
         this.currentListeners--;
         this.shouldClean();
-        reject({
-          address: this.address,
-          network: this.network,
-          error,
-        });
+        if (error && error.message && error.message.indexOf('User denied transaction signature') !== -1) {
+          // the user rejected the operation
+          reject({
+            address: this.address,
+            network: this.network,
+            error,
+            rejectedOperation: true,
+          });
+        } else {
+          reject({
+            address: this.address,
+            network: this.network,
+            error,
+          });
+        }
       });
     });
   }

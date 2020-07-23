@@ -159,7 +159,7 @@ export default class RnsRegister extends RnsJsDelegate {
             if (registerInformation) {
               const rifCost = registerInformation.rifCost;
               this.getRIFBalanceForAddress().then(balance => {
-                if (balance > parseFloat(rifCost)) {
+                if (balance >= parseFloat(rifCost)) {
                   const secret = registerInformation.secret;
                   const durationBN = this.web3.toBigNumber(registerInformation.yearsToRegister);
                   const data = this.getAddrRegisterData(cleanDomainName, this.address, secret, durationBN, this.address);
@@ -175,9 +175,14 @@ export default class RnsRegister extends RnsJsDelegate {
                         this.updateDomain(pendingDomain, result.address, result.network);
                       });
                     }).catch(result => {
-                    console.debug('Transaction failed', result);
-                    pendingDomain.registration.status = 'pending';
-                    this.updateDomain(pendingDomain, result.address, result.network);
+                      if (result.rejectedOperation) {
+                        console.debug('Transaction Rejected by User Deleting Domain', result);
+                        this.deleteDomain(pendingDomain.name, result.address, result.network);
+                      } else {
+                        console.debug('Transaction failed', result);
+                        pendingDomain.registration.status = 'ready';
+                        this.updateDomain(pendingDomain, result.address, result.network);
+                      }
                   });
                   resolve(transactionListener.id);
                 } else {
