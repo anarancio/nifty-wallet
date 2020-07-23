@@ -188,6 +188,9 @@ export default class RnsJsDelegate extends RnsDelegate {
    * @returns {Promise<>} TransactionReceipt of the latest transaction
    */
   createSubdomain (domainName, subdomain, ownerAddress, parentOwnerAddress) {
+    if (ownerAddress && !web3Utils.isAddress(ownerAddress)) {
+      return Promise.reject('You need to specify a correct address');
+    }
     this.setStatusSubdomain(domainName, subdomain, 'add');
     return this.setSubdomainOwner(domainName, subdomain, ownerAddress, parentOwnerAddress);
   }
