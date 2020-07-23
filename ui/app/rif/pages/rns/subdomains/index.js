@@ -187,7 +187,7 @@ class Subdomains extends Component {
     const displayName = `${subdomain.name}.${domainName}`
     const {resolvers} = this.state;
     return (
-      <div className="subdomain-page">
+      <div className="body subdomain-page">
         <DomainHeader
           domainName={displayName}
           showOwnerIcon={isOwner}
