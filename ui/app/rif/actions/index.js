@@ -299,11 +299,12 @@ function canFinishRegistration (commitmentHash) {
 function finishRegistration (domainName) {
   return (dispatch) => {
     dispatch(niftyActions.showLoadingIndication())
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.finishRegistration(domainName, (error, transactionListenerId) => {
         if (error) {
           handleError(error, dispatch);
+          return reject(error);
         }
         return resolve(transactionListenerId);
       });

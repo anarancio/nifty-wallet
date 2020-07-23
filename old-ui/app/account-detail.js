@@ -4,7 +4,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const rifActions = require('../../ui/app/rif/actions')
 const { getCurrentKeyring, ifContractAcc, valuesFor, toChecksumAddress } = require('./util')
 const Identicon = require('./components/identicon')
 const EthBalance = require('./components/eth-balance')
