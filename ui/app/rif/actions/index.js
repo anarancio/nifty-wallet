@@ -410,6 +410,18 @@ function navigateBack () {
   return niftyActions.goHome();
 }
 
+function pushScreenToNavigationStack(screenName, params) {
+  const currentNavigation = {
+    type: rifActions.NAVIGATE_TO,
+    params,
+  }
+  const alreadyNavigatedTo = navigationStack.find(navigation => navigation.params.tabOptions.screenName === screenName);
+  if (!alreadyNavigatedTo) {
+    navigationStack.push(currentNavigation);
+  }
+  return currentNavigation;
+}
+
 function navigateTo (screenName, params, resetNavigation = false) {
   const defaultTabOptions = {
     screenTitle: screenName,
@@ -434,14 +446,7 @@ function navigateTo (screenName, params, resetNavigation = false) {
     }
   }
 
-  const currentNavigation = {
-    type: rifActions.NAVIGATE_TO,
-    params,
-  }
-  const alreadyNavigatedTo = navigationStack.find(navigation => navigation.params.tabOptions.screenName === screenName);
-  if (!alreadyNavigatedTo) {
-    navigationStack.push(currentNavigation);
-  }
+  const currentNavigation = pushScreenToNavigationStack(screenName, params);
   backNavigated = false;
   clearArray(listenersWaiting);
   return currentNavigation;
@@ -1039,16 +1044,18 @@ function cleanStore () {
 }
 
 function showRifLandingPage () {
+  const params = {
+    tabOptions: {
+      showBack: true,
+      screenTitle: 'My Domains',
+      showTitle: true,
+      tabIndex: 0,
+    }
+  };
+  pushScreenToNavigationStack('rif.landingPage', params);
   return {
     type: rifActions.RIF_LANDING_PAGE,
-    params: {
-      tabOptions: {
-        showBack: true,
-        screenTitle: 'My Domains',
-        showTitle: true,
-        tabIndex: 0,
-      },
-    },
+    params,
   }
 }
 
