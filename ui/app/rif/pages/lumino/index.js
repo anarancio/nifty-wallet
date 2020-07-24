@@ -133,10 +133,12 @@ class LuminoHome extends Component {
             paginationSize={3}/>
         </div>
         }
-        <OpenChannel
-          reloadChannels={() => this.getLuminoNetworks()}
-          afterChannelCreated={() => this.getLuminoNetworks()}
-        />
+        <div  className="lumino-list-container">
+          <OpenChannel
+            reloadChannels={() => this.getLuminoNetworks()}
+            afterChannelCreated={() => this.getLuminoNetworks()}
+          />
+        </div>
       </div>
     );
   }
