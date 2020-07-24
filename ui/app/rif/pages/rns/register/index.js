@@ -47,6 +47,15 @@ class DomainRegisterScreen extends AbstractPage {
     });
   }
 
+  componentDidUpdate (prevProps, prevState, snapshot) {
+    if (prevProps.domainName !== this.props.domainName) {
+      this.props.showLoading();
+      this.initialize().then(() => {
+        this.props.showLoading(false);
+      });
+    }
+  }
+
   componentWillUnmount () {
     this.timeouts.forEach(timeout => clearTimeout(timeout));
   }
