@@ -183,6 +183,14 @@ class ChainAddresses extends Component {
   async addAddress (address = null, chainAddress = null, toastMessage = 'Adding chain address', action = 'add') {
     const insertedAddress = address || this.state.insertedAddress;
     const selectedChainAddress = chainAddress || this.state.selectedChainAddress;
+    // Before sending the new chainaddress to be added/updated, we need to check if the user is not trying to set something that already has
+    if (action === 'add' && this.state.chainAddresses.find(chAddress => chAddress.chain === selectedChainAddress)) {
+      this.props.showToast('Can\'t add an address that\'s already setted. Try updating it from the list', false);
+      return;
+    } else if (action === 'update' && this.state.chainAddresses.find(chAddress => chAddress.chain === selectedChainAddress && chAddress.address === insertedAddress)) {
+      this.props.showToast('Can\'t try to update an address that\'s already setted', false);
+      return;
+    }
     const transactionListenerId = await this.props.setChainAddressForResolver(this.props.domainName, selectedChainAddress, insertedAddress, this.props.subdomainName, action);
     this.props.showTransactionConfirmPage({
       afterApproval: {
