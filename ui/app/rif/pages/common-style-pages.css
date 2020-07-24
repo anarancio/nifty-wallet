@@ -49,11 +49,6 @@
   margin-right: 10px;
 }
 
-.form-segment-button {
-  color: var(--gray-button) !important;
-  cursor: pointer;
-}
-
 .app-loader-message {
   text-align: center;
   font-family: var(--primary-font);

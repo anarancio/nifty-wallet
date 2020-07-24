@@ -5,7 +5,6 @@
 
   --gray-soft: #DFDFDF;
   --gray-text: #979797;
-  --gray-button: #545454;
   --gray-border: #919191;
   --gray-modal: #D8D8D8;
   --gray-modal-title: #515052;
@@ -174,7 +173,7 @@
 
 .btn-add {
   font-family: var(--primary-font);
-  color: var(--primary-color);
+  color: var(--primary-color) !important;
   font-size: 12px;
   text-align: center;
   margin: 10px auto 30px;
