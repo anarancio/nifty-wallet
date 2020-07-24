@@ -8,6 +8,7 @@ import {DOMAIN_STATUSES, EXPIRING_REMAINING_DAYS, rns, RSK_CHAINID} from '../../
 import { getDateFormatted } from '../../utils/dateUtils';
 import {ChainId} from '@rsksmart/rns/lib/types';
 import {getNodeHash} from '../../utils/rns';
+import {isValidAddress} from 'rskjs-util';
 
 /**
  * This is a delegate to manage all the RNS resolver operations.
@@ -278,7 +279,7 @@ export default class RnsResolver extends RnsJsDelegate {
    */
   setChainAddressForResolver (domainName, chain, chainAddress, subdomain = '', action = 'add') {
     return new Promise((resolve, reject) => {
-      if (chain === RSK_CHAINID && chainAddress && !web3Utils.isAddress(chainAddress)) {
+      if (chain === RSK_CHAINID && chainAddress && !isValidAddress(chainAddress)) {
         reject('Chain address needs to be a valid address');
       } else {
         const node = getNodeHash(domainName, subdomain);

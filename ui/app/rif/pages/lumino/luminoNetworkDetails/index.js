@@ -52,7 +52,7 @@ class LuminoNetworkDetails extends Component {
   }
 
   startListeningToEvents () {
-    this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT], (result) => {
+    this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT, lumino.callbacks.DEPOSIT_CHANNEL, lumino.callbacks.OPEN_CHANNEL], (result) => {
       this.reloadChannelsData();
       this.startListeningToEvents();
     });
