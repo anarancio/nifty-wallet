@@ -134,6 +134,7 @@ class LuminoHome extends Component {
         </div>
         }
         <OpenChannel
+          reloadChannels={() => this.getLuminoNetworks()}
           afterChannelCreated={() => this.getLuminoNetworks()}
         />
       </div>

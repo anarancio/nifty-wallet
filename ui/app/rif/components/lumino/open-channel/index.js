@@ -203,6 +203,7 @@ class OpenChannel extends Component {
     callbackHandlers.successHandler = async (response) => {
       console.debug('CHANNEL OPENED', response);
       this.props.showToast('Channel Opened Successfully!');
+      this.props.reloadChannels();
       if (this.props.afterChannelCreated) {
         this.props.afterChannelCreated(response);
       }
@@ -221,6 +222,7 @@ class OpenChannel extends Component {
             loading: false,
           });
           console.debug('DEPOSIT DONE', result);
+          this.props.reloadChannels();
           if (this.props.afterDepositCreated) {
             this.props.afterDepositCreated(result);
           }
@@ -231,6 +233,7 @@ class OpenChannel extends Component {
             loading: false,
           });
           console.debug('DEPOSIT ERROR', error);
+          this.props.reloadChannels();
           const errorMessage = parseLuminoError(error);
           this.props.showToast(errorMessage || 'Unknown Error trying to deposit on channel!', false);
         };
@@ -257,6 +260,7 @@ class OpenChannel extends Component {
         loading: false,
       });
       console.debug('OPEN CHANNEL ERROR', error);
+      this.props.reloadChannels();
       const errorMessage = parseLuminoError(error);
       this.props.showToast(errorMessage || 'Unknown Error trying to open channel!', false);
     };
