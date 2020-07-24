@@ -46,7 +46,7 @@ class LuminoChannels extends Component {
   }
 
   startListeningToEvents () {
-    this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT], (result) => {
+    this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT, lumino.callbacks.DEPOSIT_CHANNEL], (result) => {
       this.updateChannelState();
       this.startListeningToEvents();
     });
@@ -54,7 +54,11 @@ class LuminoChannels extends Component {
 
   updateChannelState () {
     this.props.getChannels(this.props.channel.token_address).then(channels => {
-      const channel = channels.find(ch => ch.channel_identifier === this.props.channel.channel_identifier);
+      const channel = channels
+        // we make sure that channel_identifier is there and it's valid, for some reason the sdk gets the channel_identifier as
+        // strings or sometimes it's undefined
+        .filter(ch => !isNaN(ch.channel_identifier))
+        .find(ch => parseInt(ch.channel_identifier.toString()) === parseInt(this.props.channel.channel_identifier.toString()));
       const balance = getBalanceInEth(channel.offChainBalance);
       const isOpen = channel.sdk_status === 'CHANNEL_OPENED';
       const channelStatus = this.getStatus(channel.sdk_status);

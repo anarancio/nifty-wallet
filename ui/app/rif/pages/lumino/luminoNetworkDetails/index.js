@@ -52,7 +52,7 @@ class LuminoNetworkDetails extends Component {
   }
 
   startListeningToEvents () {
-    this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT], (result) => {
+    this.props.startListening([lumino.callbacks.COMPLETED_PAYMENT, lumino.callbacks.DEPOSIT_CHANNEL, lumino.callbacks.OPEN_CHANNEL], (result) => {
       this.reloadChannelsData();
       this.startListeningToEvents();
     });
@@ -80,7 +80,7 @@ class LuminoNetworkDetails extends Component {
         content: <LuminoChannelItem key={c.channel_identifier} partnerAddress={c.partner_address}
                                     balance={c.offChainBalance} isOpening={c.isOpening}
                                     state={getStatus(c.sdk_status)} tokenSymbol={networkSymbol}
-                                    onRightChevronClick={() => this.props.showChannelDetails({
+                                    onClick={() => this.props.showChannelDetails({
                                       channel: c,
                                     })}/>,
       };

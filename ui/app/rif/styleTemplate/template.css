@@ -173,7 +173,7 @@
 
 .btn-add {
   font-family: var(--primary-font);
-  color: var(--primary-color);
+  color: var(--primary-color) !important;
   font-size: 12px;
   text-align: center;
   margin: 10px auto 30px;

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {GenericTable, OpenChannel} from './index';
 import rifActions from '../actions';
 import ItemWithActions from './item-with-actions';
-import {faCoins} from '@fortawesome/free-solid-svg-icons';
 import {pageNames} from '../pages';
 
 class LuminoNetworkChannels extends Component {

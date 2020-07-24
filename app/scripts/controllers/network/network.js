@@ -49,9 +49,9 @@ let defaultProviderConfigType
 if (process.env.IN_TEST === 'true') {
   defaultProviderConfigType = LOCALHOST
 } else if (testMode) {
-  defaultProviderConfigType = POA_SOKOL
+  defaultProviderConfigType = RSK_TESTNET
 } else {
-  defaultProviderConfigType = POA
+  defaultProviderConfigType = RSK
 }
 
 const defaultProviderConfig = {
@@ -59,7 +59,7 @@ const defaultProviderConfig = {
 }
 
 const defaultNetworkConfig = {
-  ticker: 'POA',
+  ticker: 'RSK',
 }
 
 module.exports = class NetworkController extends EventEmitter {
