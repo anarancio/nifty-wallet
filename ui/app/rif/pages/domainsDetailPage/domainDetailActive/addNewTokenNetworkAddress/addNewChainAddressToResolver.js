@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import Select from 'react-select'
 import {DEFAULT_ICON_SVG} from '../../../../constants';
+import {withTranslation} from "react-i18next";
 
 class AddNewChainAddressToResolver extends Component {
   static propTypes = {
@@ -11,6 +12,7 @@ class AddNewChainAddressToResolver extends Component {
     updateChainAddress: PropTypes.func.isRequired,
     updateAddress: PropTypes.func.isRequired,
     option: PropTypes.object,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -33,6 +35,7 @@ class AddNewChainAddressToResolver extends Component {
   }
 
   render () {
+    const {t} = this.props;
     const selectValue = ({value}) => {
       const icon = value.icon ? value.icon : DEFAULT_ICON_SVG;
       return (
@@ -85,7 +88,7 @@ class AddNewChainAddressToResolver extends Component {
         </div>
         <div className="add-address__inputs">
           <div id="inputAddress">
-            <input type="text" placeholder="Type address" onChange={this.updateAddress}/>
+            <input type="text" placeholder={t("Type address")} onChange={this.updateAddress}/>
           </div>
           <button className="btn-primary" onClick={() => this.props.confirmCallback()}>Add</button>
         </div>
@@ -100,4 +103,4 @@ function mapStateToProps (state) {
   }
 }
 
-module.exports = connect(mapStateToProps)(AddNewChainAddressToResolver)
+module.exports = withTranslation('translations')(connect(mapStateToProps)(AddNewChainAddressToResolver))

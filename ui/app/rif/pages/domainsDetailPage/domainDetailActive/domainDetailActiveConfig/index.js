@@ -5,6 +5,7 @@ import { GET_RESOLVERS } from '../../../../constants';
 import niftyActions from '../../../../../actions';
 import rifActions from '../../../../actions';
 import {pageNames} from '../../../names';
+import {withTranslation} from "react-i18next";
 
 class DomainsDetailConfigurationScreen extends Component {
   static propTypes = {
@@ -18,6 +19,7 @@ class DomainsDetailConfigurationScreen extends Component {
     showDomainConfigPage: PropTypes.func,
     disableSelect: PropTypes.bool,
     getConfiguration: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -64,7 +66,7 @@ class DomainsDetailConfigurationScreen extends Component {
                 disableSelect: true,
                 selectedResolverAddress: address,
               });
-              this.props.showToast('Waiting Confirmation');
+              this.props.showToast(t('Waiting Confirmation'));
               this.props.waitForListener(transactionListenerId)
                 .then(transactionReceipt => {
                   this.props.showDomainConfigPage({
@@ -82,9 +84,8 @@ class DomainsDetailConfigurationScreen extends Component {
   }
 
   render () {
-    const { selectedResolverAddress } = this.props;
-    const { disableSelect } = this.state;
-    const { configuration } = this.state;
+    const { selectedResolverAddress, t } = this.props;
+    const { disableSelect, configuration } = this.state;
 
     if (!configuration) {
       return (<div>Loading...</div>);
@@ -93,15 +94,15 @@ class DomainsDetailConfigurationScreen extends Component {
     return (
       <div className="resolver-setting-container">
         <h3 className="resolver-setting__title">Resolver</h3>
-        <p className="resolver-setting__text">The Resolver is a Smart Contract responsible for the process of translating names into addresses. You can select a public resolver or a custom resolver.</p>
+        <p className="resolver-setting__text">{t('The Resolver is a Smart Contract responsible for the process of translating names into addresses. You can select a public resolver or a custom resolver.')}</p>
         <div id="selectResolver">
           <select id="comboResolvers"
                   onChange={this.onChangeComboResolvers.bind(this)}
                   disabled={disableSelect}
-                  value={disableSelect ? 'pending' : this.getDefaultSelectedValue(this.state.resolvers, selectedResolverAddress)}
+                  value={disableSelect ? t('pending') : this.getDefaultSelectedValue(this.state.resolvers, selectedResolverAddress)}
           >
             <option disabled value={this.state.configuration.rns.contracts.publicResolver} hidden> Select Resolver </option>
-            <option disabled={!disableSelect} value={'pending'} hidden={!disableSelect}> Pending... </option>
+            <option disabled={!disableSelect} value={'pending'} hidden={!disableSelect}> {t('Pending...')} </option>
             {
               this.state.resolvers.map((resolver, index) => {
                 return (<option
@@ -143,4 +144,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(DomainsDetailConfigurationScreen)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(DomainsDetailConfigurationScreen))

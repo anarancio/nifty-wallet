@@ -5,14 +5,16 @@ import DomainsDetailActiveScreen from './domainDetailActive/domainDetailActive';
 import DomainExpiring from './domainExpiring/domainExpiring';
 import DomainExpired from './domainExpired/domainExpired';
 import DomainRegisterScreen from './../rns/register';
+import {withTranslation} from "react-i18next";
 
 class DomainsDetailScreen extends Component {
 	static propTypes = {
 		status: PropTypes.string.isRequired,
     domain: PropTypes.object,
+    t: PropTypes.func
 	}
 	render () {
-		const { status } = this.props
+		const { status, t } = this.props
 		return (
 		<div className={'body'}>
 			{status === 'active' &&
@@ -29,7 +31,7 @@ class DomainsDetailScreen extends Component {
       }
 			{['active', 'expiring', 'expired', 'pending'].indexOf(status) === -1 &&
 				<div>
-					Domain detail page still in progress for this status:  {status}
+          {t('Domain detail page still in progress for this status')}:  {t(status)}
 				</div>
 			}
 		</div>
@@ -49,4 +51,4 @@ const mapDispatchToProps = dispatch => {
 	return {}
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(DomainsDetailScreen)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(DomainsDetailScreen))

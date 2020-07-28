@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {withTranslation} from "react-i18next";
 
 /**
  *
@@ -26,6 +27,7 @@ class ItemWithActions extends Component {
     hiddenValue: PropTypes.any,
     showPending: PropTypes.bool,
     onClick: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -73,7 +75,7 @@ class ItemWithActions extends Component {
              <div className={'chiplet-status-wrapper chiplet-status-pending'}>
                <div id="chipletStatus" className={'chiplet-status-text'}>
                  <div className="chiplet-status-circle"/>
-                 <span className="chiplet-status">pending</span>
+                 <span className="chiplet-status">{t('pending')}</span>
                </div>
              </div>
            }
@@ -108,4 +110,4 @@ class ItemWithActions extends Component {
 
 }
 
-export default ItemWithActions;
+export default withTranslation('translations')(ItemWithActions);
