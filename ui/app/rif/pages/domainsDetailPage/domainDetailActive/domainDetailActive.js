@@ -111,7 +111,6 @@ class DomainsDetailActiveScreen extends Component {
     expirationDate: PropTypes.string.isRequired,
     autoRenew: PropTypes.bool.isRequired,
     ownerAddress: PropTypes.string.isRequired,
-    selectedResolverAddress: PropTypes.string,
     isOwner: PropTypes.bool,
     isRifStorage: PropTypes.bool,
     displayToast: PropTypes.func.isRequired,
@@ -150,14 +149,14 @@ class DomainsDetailActiveScreen extends Component {
     this.state = {
       resolvers: [],
       isLuminoNode: false,
-      resolver: '',
+      resolver: {},
     };
   }
 
   render () {
-    const {domain, domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, newChainAddresses, newSubdomains, showPay } = this.props;
+    const { domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, newChainAddresses, newSubdomains, showPay } = this.props;
     const {resolvers, isLuminoNode, resolver} = this.state;
-    const selectedResolverAddress = resolver ? resolver.address.toLowerCase() : '';
+    const selectedResolverAddress = (resolver && resolver.address) ? resolver.address.toLowerCase() : '';
     const domainInfo = {
       domainName,
       expirationDate,
@@ -182,10 +181,7 @@ class DomainsDetailActiveScreen extends Component {
             <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg"
                  className="config-domain-btn"
                  onClick={() => this.props.showConfigPage({
-                   domain: domain,
                    domainName: domainName,
-                   selectedResolverAddress: selectedResolverAddress,
-                   disableSelect: resolver.pending,
                  })}
             >
               <line x1="16" y1="4.37114e-08" x2="16" y2="23" stroke="#602A95" strokeWidth="2"/>

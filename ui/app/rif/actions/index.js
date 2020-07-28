@@ -196,11 +196,11 @@ function getDomainByAddress (address) {
   }
 }
 
-function setResolverAddress (domainName, resolverAddress) {
+function setResolverAddress (domainName, resolverAddress, subdomain = '') {
   return (dispatch) => {
     dispatch(niftyActions.showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.rif.rns.resolver.setResolver(domainName, resolverAddress, (error, transactionListenerId) => {
+      background.rif.rns.resolver.setResolver(domainName, resolverAddress, subdomain, (error, transactionListenerId) => {
         dispatch(niftyActions.hideLoadingIndication());
         if (error) {
           handleError(error, dispatch);
@@ -212,10 +212,10 @@ function setResolverAddress (domainName, resolverAddress) {
   }
 }
 
-function getResolver (domainName) {
+function getResolver (domainName, subdomain = '') {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.rif.rns.resolver.getResolver(domainName, (error, resolver) => {
+      background.rif.rns.resolver.getResolver(domainName, subdomain, (error, resolver) => {
         if (error) {
           handleError(error, dispatch);
           return reject(error);
@@ -304,11 +304,12 @@ function canFinishRegistration (commitmentHash) {
 function finishRegistration (domainName) {
   return (dispatch) => {
     dispatch(niftyActions.showLoadingIndication())
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       dispatch(niftyActions.hideLoadingIndication());
       background.rif.rns.register.finishRegistration(domainName, (error, transactionListenerId) => {
         if (error) {
           handleError(error, dispatch);
+          return reject(error);
         }
         return resolve(transactionListenerId);
       });
@@ -415,6 +416,18 @@ function navigateBack () {
   return niftyActions.goHome();
 }
 
+function pushScreenToNavigationStack(screenName, params) {
+  const currentNavigation = {
+    type: rifActions.NAVIGATE_TO,
+    params,
+  }
+  const alreadyNavigatedTo = navigationStack.find(navigation => navigation.params.tabOptions.screenName === screenName);
+  if (!alreadyNavigatedTo) {
+    navigationStack.push(currentNavigation);
+  }
+  return currentNavigation;
+}
+
 function navigateTo (screenName, params, resetNavigation = false) {
   const defaultTabOptions = {
     screenTitle: screenName,
@@ -439,14 +452,7 @@ function navigateTo (screenName, params, resetNavigation = false) {
     }
   }
 
-  const currentNavigation = {
-    type: rifActions.NAVIGATE_TO,
-    params,
-  }
-  const alreadyNavigatedTo = navigationStack.find(navigation => navigation.params.tabOptions.screenName === screenName);
-  if (!alreadyNavigatedTo) {
-    navigationStack.push(currentNavigation);
-  }
+  const currentNavigation = pushScreenToNavigationStack(screenName, params);
   backNavigated = false;
   clearArray(listenersWaiting);
   return currentNavigation;
@@ -1044,16 +1050,18 @@ function cleanStore () {
 }
 
 function showRifLandingPage () {
+  const params = {
+    tabOptions: {
+      showBack: true,
+      screenTitle: 'My Domains',
+      showTitle: true,
+      tabIndex: 0,
+    }
+  };
+  pushScreenToNavigationStack('rif.landingPage', params);
   return {
     type: rifActions.RIF_LANDING_PAGE,
-    params: {
-      tabOptions: {
-        showBack: true,
-        screenTitle: 'My Domains',
-        showTitle: true,
-        tabIndex: 0,
-      },
-    },
+    params,
   }
 }
 

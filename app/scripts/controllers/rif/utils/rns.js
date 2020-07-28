@@ -1,4 +1,6 @@
 import web3Utils from 'web3-utils';
+import * as namehash from 'eth-ens-namehash';
+import {namehash as rskNameHash} from '@rsksmart/rns/lib/utils';
 
 export function generateRandomSecret () {
   const randomBytes = window.crypto.getRandomValues(new Uint8Array(32));
@@ -36,4 +38,14 @@ export function numberToUint32 (number) {
 
 export function utf8ToHexString (string) {
   return string ? web3Utils.asciiToHex(string).slice(2) : '';
+}
+
+export function getNodeHash(domainName, subdomainName = '') {
+  let node = namehash.hash(domainName);
+  if (subdomainName) {
+    node = rskNameHash(domainName);
+    const label = web3Utils.sha3(subdomainName);
+    node = web3Utils.soliditySha3(node, label);
+  }
+  return node;
 }

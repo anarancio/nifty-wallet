@@ -158,26 +158,37 @@ export default class RnsRegister extends RnsJsDelegate {
             const registerInformation = pendingDomain.registration;
             if (registerInformation) {
               const rifCost = registerInformation.rifCost;
-              const secret = registerInformation.secret;
-              const durationBN = this.web3.toBigNumber(registerInformation.yearsToRegister);
-              const data = this.getAddrRegisterData(cleanDomainName, this.address, secret, durationBN, this.address);
-              const transactionListener = this.send(this.rifContractInstance, 'transferAndCall', [this.fifsAddrRegistrarAddress, rifCost, data]);
-              pendingDomain.registration.status = 'finishing';
-              transactionListener.transactionConfirmed()
-                .then(result => {
-                  console.debug('Transaction success', result);
-                  pendingDomain.registration.status = 'finished';
-                  this.container.resolver.getDomainDetails(domainName).then(domainDetails => {
-                    pendingDomain.details = domainDetails;
-                    pendingDomain.status = 'active';
-                    this.updateDomain(pendingDomain, result.address, result.network);
+              this.getRIFBalanceForAddress().then(balance => {
+                if (balance >= parseFloat(rifCost)) {
+                  const secret = registerInformation.secret;
+                  const durationBN = this.web3.toBigNumber(registerInformation.yearsToRegister);
+                  const data = this.getAddrRegisterData(cleanDomainName, this.address, secret, durationBN, this.address);
+                  const transactionListener = this.send(this.rifContractInstance, 'transferAndCall', [this.fifsAddrRegistrarAddress, rifCost, data]);
+                  pendingDomain.registration.status = 'finishing';
+                  transactionListener.transactionConfirmed()
+                    .then(result => {
+                      console.debug('Transaction success', result);
+                      pendingDomain.registration.status = 'finished';
+                      this.container.resolver.getDomainDetails(domainName).then(domainDetails => {
+                        pendingDomain.details = domainDetails;
+                        pendingDomain.status = 'active';
+                        this.updateDomain(pendingDomain, result.address, result.network);
+                      });
+                    }).catch(result => {
+                      if (result.rejectedOperation) {
+                        console.debug('Transaction Rejected by User Deleting Domain', result);
+                        this.deleteDomain(pendingDomain.name, result.address, result.network);
+                      } else {
+                        console.debug('Transaction failed', result);
+                        pendingDomain.registration.status = 'ready';
+                        this.updateDomain(pendingDomain, result.address, result.network);
+                      }
                   });
-                }).catch(result => {
-                console.debug('Transaction failed', result);
-                pendingDomain.registration.status = 'pending';
-                this.updateDomain(pendingDomain, result.address, result.network);
+                  resolve(transactionListener.id);
+                } else {
+                  reject('Insufficient RIF tokens to finish this registration, you need to buy RIF tokens first.');
+                }
               });
-              return resolve(transactionListener.id);
             } else {
               return reject('Invalid domainName, you need to use the same as the first request');
             }

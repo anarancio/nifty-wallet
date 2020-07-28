@@ -85,7 +85,7 @@ class LuminoHome extends Component {
         content: <LuminoNetworkItem key={network.symbol} userChannels={network.userChannels}
                                     symbol={network.symbol} nodes={network.nodes}
                                     channels={network.channels}
-                                    onRightChevronClick={() => this.navigateToNetworkDetail(network)}/>,
+                                    onClick={() => this.navigateToNetworkDetail(network)}/>,
       }
     });
   }
@@ -133,9 +133,12 @@ class LuminoHome extends Component {
             paginationSize={3}/>
         </div>
         }
-        <OpenChannel
-          afterChannelCreated={() => this.getLuminoNetworks()}
-        />
+        <div  className="lumino-list-container">
+          <OpenChannel
+            reloadChannels={() => this.getLuminoNetworks()}
+            afterChannelCreated={() => this.getLuminoNetworks()}
+          />
+        </div>
       </div>
     );
   }

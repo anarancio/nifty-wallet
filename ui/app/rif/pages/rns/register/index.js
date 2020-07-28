@@ -6,8 +6,9 @@ import niftyActions from '../../../../actions';
 import {registrationTimeouts} from '../../../constants';
 import {pageNames} from '../../index';
 import extend from 'xtend';
+import {AbstractPage} from '../../abstract-page';
 
-class DomainRegisterScreen extends Component {
+class DomainRegisterScreen extends AbstractPage {
 
   static propTypes = {
     domainName: PropTypes.string,
@@ -44,6 +45,15 @@ class DomainRegisterScreen extends Component {
     this.initialize().then(() => {
       this.props.showLoading(false);
     });
+  }
+
+  componentDidUpdate (prevProps, prevState, snapshot) {
+    if (prevProps.domainName !== this.props.domainName) {
+      this.props.showLoading();
+      this.initialize().then(() => {
+        this.props.showLoading(false);
+      });
+    }
   }
 
   componentWillUnmount () {
@@ -116,34 +126,48 @@ class DomainRegisterScreen extends Component {
     });
   }
 
-  async requestDomain () {
-    const {transactionListenerId} = await this.props.requestRegistration(this.props.domainName, this.props.yearsToRegister);
-    this.props.showTransactionConfirmPage({
-      afterApproval: {
-        action: () => {
-          this.showWaitingForConfirmation()
-          this.props.waitForListener(transactionListenerId)
-            .then(transactionReceipt => {
-              this.showWaitingForRegister();
-            });
-        },
-      },
+  requestDomain () {
+    super.setLoading(true);
+    this.props.requestRegistration(this.props.domainName, this.props.yearsToRegister)
+      .then(result => {
+        const transactionListenerId = result.transactionListenerId;
+        this.props.showTransactionConfirmPage({
+          afterApproval: {
+            action: () => {
+              this.showWaitingForConfirmation()
+              this.props.waitForListener(transactionListenerId)
+                .then(transactionReceipt => {
+                  this.showWaitingForRegister();
+                });
+            },
+          },
+        });
+      }).catch(error => {
+        console.error(error);
+        this.setLoading(false);
     });
   }
 
-  async completeRegistration () {
-    const transactionListenerId = await this.props.completeRegistration(this.props.domainName);
-    this.props.showTransactionConfirmPage({
-      afterApproval: {
-        action: () => {
-          this.afterRegistrationSubmit()
-          this.props.waitForListener(transactionListenerId)
-            .then(transactionReceipt => {
-              this.afterRegistration();
-            });
-        },
-      },
+  completeRegistration () {
+    super.setLoading(true);
+    this.props.completeRegistration(this.props.domainName)
+      .then(transactionListenerId => {
+        this.props.showTransactionConfirmPage({
+          afterApproval: {
+            action: () => {
+              this.afterRegistrationSubmit()
+              this.props.waitForListener(transactionListenerId)
+                .then(transactionReceipt => {
+                  this.afterRegistration();
+                });
+            },
+          },
+        });
+      }).catch(error => {
+        console.error(error);
+        super.setLoading(false);
     });
+
   }
 
   async afterRegistration () {
@@ -305,7 +329,7 @@ class DomainRegisterScreen extends Component {
     return partials[currentStep];
   }
 
-  render () {
+  renderPage () {
     const currentStep = this.props.currentStep ? this.props.currentStep : 'setupRegister';
     const title = this.getTitle(currentStep);
     const body = this.getBody(currentStep);
@@ -353,9 +377,9 @@ const mapDispatchToProps = dispatch => {
         showBack: true,
         showTitle: true,
         screenTitle: 'My Domains',
+        },
       },
-      resetNavigation: true,
-    })),
+      true)),
     showLoading: (loading = true, message) => loading ? dispatch(niftyActions.showLoadingIndication(message)) : dispatch(niftyActions.hideLoadingIndication()),
   }
 }

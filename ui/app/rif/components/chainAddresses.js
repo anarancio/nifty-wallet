@@ -12,7 +12,7 @@ import AddNewChainAddressToResolver
 import {SLIP_ADDRESSES, PRIORITY_SLIP_ADDRESSES} from '../constants/slipAddresses';
 import * as niftyActions from '../../actions';
 import * as lodash from 'lodash';
-import {WAIT_FOR_NOTIFIER} from '../../constants/common';
+import {WAIT_FOR_CONFIRMATION_DEFAULT, WAIT_FOR_NOTIFIER} from '../../constants/common';
 
 class ChainAddresses extends Component {
 
@@ -38,19 +38,6 @@ class ChainAddresses extends Component {
 
   constructor (props) {
     super(props);
-    this.props.getConfiguration()
-      .then(configuration => {
-        const resolvers = Object.assign([], GET_RESOLVERS(configuration));
-        this.setState({
-          resolvers,
-        });
-      });
-    this.props.getResolver(this.props.domainName)
-      .then(resolver => {
-        this.setState({
-          selectedResolverAddress: resolver.address.toLowerCase(),
-        });
-      });
     const slipChainAddressesOrdered = Object.assign([], lodash.orderBy(SLIP_ADDRESSES, ['name'], ['asc']));
     const slipChainAddresses = [...PRIORITY_SLIP_ADDRESSES, ...slipChainAddressesOrdered]
     this.timeouts = [];
@@ -63,6 +50,43 @@ class ChainAddresses extends Component {
       addChainAddress: false,
       selectedResolverAddress: '',
     };
+  }
+
+  componentDidMount () {
+    this.props.getConfiguration()
+      .then(configuration => {
+        const resolvers = Object.assign([], GET_RESOLVERS(configuration));
+        this.setState({
+          resolvers,
+        });
+      });
+    this.loadResolver();
+  }
+
+  timeoutToLoadResolver () {
+    this.timeouts.push(setTimeout(async () => {
+      let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
+      if (resolver.pending) {
+        this.timeoutToLoadResolver();
+      } else {
+        this.setState({
+          selectedResolverAddress: resolver.address.toLowerCase(),
+        });
+      }
+    }, WAIT_FOR_CONFIRMATION_DEFAULT));
+  }
+
+  loadResolver () {
+    this.props.getResolver(this.props.domainName, this.props.subdomainName)
+      .then(resolver => {
+        if (resolver.pending) {
+          this.timeoutToLoadResolver();
+        } else {
+          this.setState({
+            selectedResolverAddress: resolver.address.toLowerCase(),
+          });
+        }
+      });
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -129,26 +153,28 @@ class ChainAddresses extends Component {
     this.setState({ insertedAddress: address });
   }
 
- timeoutToRedirect = (chainAddressesCopy, selectedChainAddress) => setTimeout(async () => {
-    let chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
-    // I need to compare the chainaddresses without the actions setted, cause the actions will be variant in time, but will send the chainaddresses to the component
-    const chainAddressesWithoutActions = chainAddresses.map(chainaddress => {
-      chainaddress.action = '';
-      return chainaddress;
-    });
-    console.debug('chainAddresses to compare', chainAddressesWithoutActions);
-    console.debug('This are the chainaddresses copied', chainAddressesCopy);
-    if (!arraysMatch(chainAddressesCopy, chainAddressesWithoutActions)) {
-      this.props.showThis(
-        this.props.redirectPage,
-        {
-          ...this.props.redirectParams,
-          newChainAddresses: chainAddresses,
-        });
-    } else {
-      this.timeouts.push(this.timeoutToRedirect(chainAddressesCopy, selectedChainAddress));
-    }
-  }, WAIT_FOR_NOTIFIER);
+ timeoutToRedirect(chainAddressesCopy, selectedChainAddress) {
+   this.timeouts.push(setTimeout(async () => {
+     let chainAddresses = await this.props.getChainAddresses(this.props.domainName, this.props.subdomainName);
+     // I need to compare the chainaddresses without the actions setted, cause the actions will be variant in time, but will send the chainaddresses to the component
+     const chainAddressesWithoutActions = chainAddresses.map(chainaddress => {
+       chainaddress.action = '';
+       return chainaddress;
+     });
+     console.debug('chainAddresses to compare', chainAddressesWithoutActions);
+     console.debug('This are the chainaddresses copied', chainAddressesCopy);
+     if (!arraysMatch(chainAddressesCopy, chainAddressesWithoutActions)) {
+       this.props.showThis(
+         this.props.redirectPage,
+         {
+           ...this.props.redirectParams,
+           newChainAddresses: chainAddresses,
+         });
+     } else {
+       this.timeoutToRedirect(chainAddressesCopy, selectedChainAddress);
+     }
+   }, WAIT_FOR_NOTIFIER));
+ }
 
   componentWillUnmount () {
     this.timeouts.forEach(timeout => clearTimeout(timeout));
@@ -177,7 +203,7 @@ class ChainAddresses extends Component {
                   return chainAddress;
                 });
                 // This timeout is here because as we are using the notifier service, when we recieve the success, the notifier still doesnt have the last notification
-                this.timeouts.push(this.timeoutToRedirect(chainAddressesState, selectedChainAddress));
+                this.timeoutToRedirect(chainAddressesState, selectedChainAddress);
               }
             });
         },
@@ -268,7 +294,7 @@ function mapDispatchToProps (dispatch) {
     showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
-    getResolver: (domainName) => dispatch(rifActions.getResolver(domainName)),
+    getResolver: (domainName, subdomainName) => dispatch(rifActions.getResolver(domainName, subdomainName)),
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ChainAddresses);

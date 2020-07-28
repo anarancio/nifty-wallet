@@ -1,0 +1,19 @@
+.n-table {
+  table-layout: fixed;
+}
+
+.n-table-content {
+  max-width: 100%;
+}
+
+.n-table-content-clickeable {
+  cursor: pointer;
+  max-width: 85%;
+}
+
+
+.n-table-content-clickeable p, .n-table-content p {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

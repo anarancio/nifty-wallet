@@ -26,7 +26,7 @@ function mapStateToProps (state) {
     accounts: getMetaMaskAccounts(state),
     keyrings: metamask.keyrings,
     selectedAddress: metamask.selectedAddress,
-    unapprovedTxs: screenParams.unapprovedTransactions ? screenParams.unapprovedTransactions : metamask.unapprovedTxs,
+    unapprovedTxs: (screenParams && screenParams.unapprovedTransactions) ? screenParams.unapprovedTransactions : metamask.unapprovedTxs,
     unapprovedMsgs: metamask.unapprovedMsgs,
     unapprovedPersonalMsgs: metamask.unapprovedPersonalMsgs,
     unapprovedTypedMessages: metamask.unapprovedTypedMessages,
@@ -43,7 +43,7 @@ function mapStateToProps (state) {
     tokensToSend: (screenParams && screenParams.tokensToSend),
     tokensTransferTo: (screenParams && screenParams.tokensTransferTo),
     isContractExecutionByUser: (screenParams && screenParams.isContractExecutionByUser),
-    callbacks: screenParams.callbacks,
+    callbacks: (screenParams && screenParams.callbacks),
   }
 }
 

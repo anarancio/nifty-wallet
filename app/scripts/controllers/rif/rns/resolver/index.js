@@ -1,13 +1,14 @@
 import * as namehash from 'eth-ens-namehash';
-import {namehash as rskNameHash} from '@rsksmart/rns/lib/utils'
 import RnsJsDelegate from '../rnsjs-delegate';
 import web3Utils from 'web3-utils';
 import { DomainDetails, ChainAddress } from '../classes';
 import RSKOwner from '../abis/RSKOwner.json';
 import MultiChainresolver from '../abis/MultiChainResolver.json';
-import {DOMAIN_STATUSES, EXPIRING_REMAINING_DAYS, rns} from '../../constants';
+import {DOMAIN_STATUSES, EXPIRING_REMAINING_DAYS, rns, RSK_CHAINID} from '../../constants';
 import { getDateFormatted } from '../../utils/dateUtils';
 import {ChainId} from '@rsksmart/rns/lib/types';
+import {getNodeHash} from '../../utils/rns';
+import {isValidAddress} from 'rskjs-util';
 
 /**
  * This is a delegate to manage all the RNS resolver operations.
@@ -105,14 +106,20 @@ export default class RnsResolver extends RnsJsDelegate {
    * @param domainName with the .rsk extension
    * @returns {Promise<unknown>}
    */
-  getResolver (domainName) {
+  getResolver (domainName, subdomain = '') {
     return new Promise((resolve, reject) => {
-      this.call(this.rnsContractInstance, 'resolver', [namehash.hash(domainName)]).then(result => {
+      const node = getNodeHash(domainName, subdomain);
+      this.call(this.rnsContractInstance, 'resolver', [node]).then(result => {
         console.debug('getResolver resolved with', result);
-        const domain = this.getDomain(domainName);
+        const domain = this.getDomain(domainName, result.address, result.network);
         let pending = false;
         if (domain) {
-          pending = domain.pendingActions.pendingSetResolver;
+          if (subdomain) {
+            const domainSubdomain = domain.subdomains.find(subdomainItem => subdomainItem.name === subdomain );
+            pending = domainSubdomain.pendingSetResolver;
+          } else {
+            pending = domain.pendingActions.pendingSetResolver;
+          }
         }
         resolve({
           pending: pending,
@@ -131,27 +138,56 @@ export default class RnsResolver extends RnsJsDelegate {
    * @param resolverAddress Address of the new resolver to be setted
    * @returns {Promise<unknown>}
    */
-  setResolver (domainName, resolverAddress) {
+  setResolver (domainName, resolverAddress, subdomain = '') {
     return new Promise((resolve) => {
       const domain = this.getDomain(domainName);
       if (domain) {
-        domain.pendingActions.pendingSetResolver = true;
+        if (subdomain) {
+          domain.subdomains.forEach(subdomainItem => {
+            if (subdomainItem.name === subdomain) {
+              subdomainItem.pendingSetResolver = true
+            }
+          });
+        } else {
+          domain.pendingActions.pendingSetResolver = true;
+        }
         this.updateDomain(domain);
       }
-      const transactionListener = this.send(this.rnsContractInstance, 'setResolver', [namehash.hash(domainName), resolverAddress]);
+      const node = getNodeHash(domainName, subdomain);
+
+      const transactionListener = this.send(this.rnsContractInstance, 'setResolver', [node, resolverAddress]);
       transactionListener.transactionConfirmed()
         .then(result => {
           this.getDomainDetails(domainName).then(domainDetails => {
             const domain = this.getDomain(domainName, result.address, result.network);
             domain.details = domainDetails;
-            domain.pendingActions.pendingSetResolver = false;
+            if (subdomain) {
+              domain.subdomains.forEach(subdomainItem => {
+                if (subdomainItem.name === subdomain) {
+                  subdomainItem.pendingSetResolver = false
+                }
+              });
+            } else {
+              domain.pendingActions.pendingSetResolver = false;
+            }
             this.updateDomain(domain, result.address, result.network);
           });
           console.debug('setResolver success', result);
         }).catch(result => {
-          const domain = this.getDomain(domainName, result.address, result.network);
-          domain.pendingActions.pendingSetResolver = false;
-          this.updateDomain(domain, result.address, result.network);
+          this.getDomainDetails(domainName).then(domainDetails => {
+            const domain = this.getDomain(domainName, result.address, result.network);
+            domain.details = domainDetails;
+            if (subdomain) {
+              domain.subdomains.forEach(subdomainItem => {
+                if (subdomainItem.name === subdomain) {
+                  subdomainItem.pendingSetResolver = false
+                }
+              });
+            } else {
+              domain.pendingActions.pendingSetResolver = false;
+            }
+            this.updateDomain(domain, result.address, result.network);
+          });
           console.debug('Error when trying to set resolver', result);
         });
       resolve(transactionListener.id);
@@ -165,12 +201,7 @@ export default class RnsResolver extends RnsJsDelegate {
    */
   getChainAddressForResolvers (domainName, subdomain = '') {
     return new Promise(async (resolve, reject) => {
-      let node = namehash.hash(domainName);
-      if (subdomain) {
-        node = rskNameHash(domainName);
-        const label = web3Utils.sha3(subdomain);
-        node = web3Utils.soliditySha3(node, label);
-      }
+      const node = getNodeHash(domainName, subdomain);
       const addrChangedEvent = await this.notifierManager.operations.getRnsEvents(this.notifierManager.apiKey, node, 'AddrChanged');
       const chainAddrChangedEvent = await this.notifierManager.operations.getRnsEvents(this.notifierManager.apiKey, node, 'ChainAddrChanged');
       const arrChains = [];
@@ -248,32 +279,31 @@ export default class RnsResolver extends RnsJsDelegate {
    */
   setChainAddressForResolver (domainName, chain, chainAddress, subdomain = '', action = 'add') {
     return new Promise((resolve, reject) => {
-      let node = namehash.hash(domainName);
-      if (subdomain) {
-        node = rskNameHash(domainName);
-        const label = web3Utils.sha3(subdomain);
-        node = web3Utils.soliditySha3(node, label);
-      }
-      const toBeSettedChainAddress = chainAddress || rns.zeroAddress;
-      const domain = this.getDomain(domainName);
-      const pendingChainAddressesActions = domain.pendingActions.chainAddresses;
-      pendingChainAddressesActions.push({
-        chainAddress: toBeSettedChainAddress,
-        chain: chain,
-        nodeHash: node,
-        action: action,
-      });
-      this.updateDomain(domain);
-      const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
-      transactionListener.transactionConfirmed()
-        .then(result => {
-          this.deletePendingChainAddress(domainName, chain, node, result.address, result.network);
-          console.debug('setChainAddressForResolver success', result);
-        }).catch(result => {
+      if (chain === RSK_CHAINID && chainAddress && !isValidAddress(chainAddress)) {
+        reject('Chain address needs to be a valid address');
+      } else {
+        const node = getNodeHash(domainName, subdomain);
+        const toBeSettedChainAddress = chainAddress || rns.zeroAddress;
+        const domain = this.getDomain(domainName);
+        const pendingChainAddressesActions = domain.pendingActions.chainAddresses;
+        pendingChainAddressesActions.push({
+          chainAddress: toBeSettedChainAddress,
+          chain: chain,
+          nodeHash: node,
+          action: action,
+        });
+        this.updateDomain(domain);
+        const transactionListener = this.send(this.multiChainresolverContractInstance, 'setChainAddr', [node, chain, toBeSettedChainAddress])
+        transactionListener.transactionConfirmed()
+          .then(result => {
+            this.deletePendingChainAddress(domainName, chain, node, result.address, result.network);
+            console.debug('setChainAddressForResolver success', result);
+          }).catch(result => {
           this.deletePendingChainAddress(domainName, chain, node, result.address, result.network);
           console.debug('Error when trying to set chain address for resolver', result);
         });
-      resolve(transactionListener.id);
+        resolve(transactionListener.id);
+      }
     });
   }
 

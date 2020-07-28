@@ -6,36 +6,31 @@ import niftyActions from '../../../../../actions';
 import rifActions from '../../../../actions';
 import {pageNames} from '../../../names';
 import {withTranslation} from "react-i18next";
+import {WAIT_FOR_CONFIRMATION_DEFAULT} from '../../../../../constants/common';
 
 class DomainsDetailConfigurationScreen extends Component {
   static propTypes = {
-    domain: PropTypes.object.isRequired,
     domainName: PropTypes.string.isRequired,
-    selectedResolverAddress: PropTypes.string.isRequired,
+    subdomainName: PropTypes.string,
     showToast: PropTypes.func,
     waitForListener: PropTypes.func,
     setNewResolver: PropTypes.func,
     showTransactionConfirmPage: PropTypes.func,
     showDomainConfigPage: PropTypes.func,
-    disableSelect: PropTypes.bool,
     getConfiguration: PropTypes.func,
-    t: PropTypes.func
+    t: PropTypes.func,
+    getResolver: PropTypes.func,
+    resolver: PropTypes.object,
   }
 
   constructor (props) {
     super(props);
-    this.props.getConfiguration()
-      .then(configuration => {
-        const resolvers = Object.assign([], GET_RESOLVERS(configuration));
-        this.setState({
-          resolvers,
-          configuration,
-        });
-      });
+    this.timeouts = [];
     this.state = {
       resolvers: [],
       configuration: null,
-      disableSelect: props.disableSelect || false,
+      resolver: {},
+      disableSelect: true,
     };
   }
 
@@ -47,33 +42,79 @@ class DomainsDetailConfigurationScreen extends Component {
     return this.state.configuration.rns.contracts.publicResolver;
   }
 
+  componentDidMount () {
+    this.props.getConfiguration()
+      .then(configuration => {
+        const resolvers = Object.assign([], GET_RESOLVERS(configuration));
+        this.setState({
+          resolvers,
+          configuration,
+        });
+      });
+    this.loadResolver();
+  }
+
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.disableSelect !== this.props.disableSelect) {
-      this.setState({disableSelect: this.props.disableSelect});
+    if (prevProps.resolver.address !== this.props.resolver.address) {
+      this.timeoutToLoadResolver();
     }
+  }
+
+  timeoutToLoadResolver() {
+    this.timeouts.push(setTimeout(async () => {
+      let resolver = await this.props.getResolver(this.props.domainName, this.props.subdomainName);
+      if (resolver.pending) {
+        this.timeoutToLoadResolver();
+      } else {
+        this.setState({
+          resolver: resolver,
+          disableSelect: resolver.pending,
+        });
+      }
+    }, WAIT_FOR_CONFIRMATION_DEFAULT));
+  }
+
+  componentWillUnmount () {
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
+  }
+
+  loadResolver () {
+    this.props.getResolver(this.props.domainName, this.props.subdomainName)
+      .then(resolver => {
+        if (resolver.pending) {
+          this.timeoutToLoadResolver();
+        } else {
+          this.setState({
+            resolver: resolver,
+            disableSelect: resolver.pending,
+          });
+        }
+      });
   }
 
   async onChangeComboResolvers (e) {
     for (const resolverItem of e.target.children) {
       if (resolverItem.value === e.target.value) {
         const address = resolverItem.getAttribute('data-address');
-        const transactionListenerId = await this.props.setNewResolver(this.props.domainName, address);
+        const transactionListenerId = await this.props.setNewResolver(this.props.domainName, address, this.props.subdomainName);
         this.props.showTransactionConfirmPage({
           afterApproval: {
             action: () => {
               this.props.showDomainConfigPage({
                 ...this.props,
-                disableSelect: true,
-                selectedResolverAddress: address,
               });
               this.props.showToast(t('Waiting Confirmation'));
               this.props.waitForListener(transactionListenerId)
                 .then(transactionReceipt => {
-                  this.props.showDomainConfigPage({
-                    ...this.props,
-                    disableSelect: false,
-                    selectedResolverAddress: address,
-                  });
+                  this.timeouts.push(setTimeout(() => {
+                    this.props.showDomainConfigPage({
+                      ...this.props,
+                      resolver: {
+                        pending: false,
+                        address: address,
+                      },
+                    });
+                  }, WAIT_FOR_CONFIRMATION_DEFAULT));
                 });
             },
           },
@@ -85,7 +126,7 @@ class DomainsDetailConfigurationScreen extends Component {
 
   render () {
     const { selectedResolverAddress, t } = this.props;
-    const { disableSelect, configuration } = this.state;
+    const { disableSelect, resolver, configuration } = this.state;
 
     if (!configuration) {
       return (<div>Loading...</div>);
@@ -99,7 +140,7 @@ class DomainsDetailConfigurationScreen extends Component {
           <select id="comboResolvers"
                   onChange={this.onChangeComboResolvers.bind(this)}
                   disabled={disableSelect}
-                  value={disableSelect ? t('pending') : this.getDefaultSelectedValue(this.state.resolvers, selectedResolverAddress)}
+                  value={disableSelect ? t('pending') : this.getDefaultSelectedValue(this.state.resolvers, resolver.address.toLowerCase())}
           >
             <option disabled value={this.state.configuration.rns.contracts.publicResolver} hidden> Select Resolver </option>
             <option disabled={!disableSelect} value={'pending'} hidden={!disableSelect}> {t('Pending...')} </option>
@@ -121,15 +162,12 @@ class DomainsDetailConfigurationScreen extends Component {
 
 function mapStateToProps (state) {
   const params = state.appState.currentView.params;
-  const domain = params.domain;
-  const details = domain.details || params.details;
   return {
+    domain: params.domain,
     dispatch: state.dispatch,
-    status: details.status,
-    domainName: details.name,
-    selectedResolverAddress: params.selectedResolverAddress || details.selectedResolverAddress,
-    domain: domain,
-    disableSelect: params.disableSelect,
+    domainName: params.domainName,
+    subdomainName: params.subdomainName,
+    resolver: params.resolver || {},
   }
 }
 
@@ -137,10 +175,11 @@ const mapDispatchToProps = dispatch => {
   return {
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
-    setNewResolver: (domainName, resolverAddress) => dispatch(rifActions.setResolverAddress(domainName, resolverAddress)),
+    setNewResolver: (domainName, resolverAddress, subdomainName) => dispatch(rifActions.setResolverAddress(domainName, resolverAddress, subdomainName)),
     showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
     showDomainConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, props)),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
+    getResolver: (domainName, subdomainName) => dispatch(rifActions.getResolver(domainName, subdomainName)),
   }
 }
 
