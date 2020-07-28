@@ -313,7 +313,7 @@ class OpenChannel extends Component {
     return (
       <div>
         <div className="form-segment">
-          <span className="ml-0 btn-add" onClick={() => this.open()}>+ Add channel</span>
+          <span className="ml-0 btn-add" onClick={() => this.open()}>{t('+ Add channel')}</span>
         </div>
         {body}
       </div>
@@ -322,6 +322,7 @@ class OpenChannel extends Component {
 }
 
 function mapDispatchToProps (dispatch) {
+  const {t} = this.props;
   return {
     getTokens: () => dispatch(rifActions.getTokens()),
     openChannel: (partner, tokenAddress, callbackHandlers) => dispatch(rifActions.openChannel(partner, tokenAddress, callbackHandlers)),

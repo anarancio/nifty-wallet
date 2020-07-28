@@ -5,6 +5,7 @@ import { GenericTable } from './index';
 import rifActions from '../actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {withTranslation} from "react-i18next";
 
 class TokenNetworkChannels extends Component {
 
@@ -13,6 +14,7 @@ class TokenNetworkChannels extends Component {
     getChannels: PropTypes.func,
     getChannel: PropTypes.func,
     classes: PropTypes.any,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -54,11 +56,11 @@ class TokenNetworkChannels extends Component {
   }
 
   render () {
-    const { paginationSize, classes } = this.props;
+    const { paginationSize, classes,t } = this.props;
     const { channelsData } = this.state;
     return (
       <GenericTable
-        title={'Lumino Channels'}
+        title={t('Lumino Channels')}
         columns={[
           {
             Header: 'Content',
@@ -89,4 +91,4 @@ function mapDispatchToProps (dispatch) {
     getChannel: () => {},
   }
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenNetworkChannels);
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(TokenNetworkChannels));

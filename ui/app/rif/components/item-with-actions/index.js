@@ -46,6 +46,7 @@ class ItemWithActions extends Component {
     };
 
    render = () => {
+      const {t} = this.props;
       const {
         leftIcon,
         leftContent,

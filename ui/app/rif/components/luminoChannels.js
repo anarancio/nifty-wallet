@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { GenericTable } from './index';
 import rifActions from '../actions';
 import ItemWithActions from './item-with-actions';
+import {withTranslation} from "react-i18next";
 
 class LuminoChannels extends Component {
 
@@ -12,6 +13,7 @@ class LuminoChannels extends Component {
     getChannels: PropTypes.func,
     getChannel: PropTypes.func,
     classes: PropTypes.any,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -51,11 +53,11 @@ class LuminoChannels extends Component {
   }
 
   render () {
-    const { paginationSize, classes } = this.props;
+    const { paginationSize, classes,t } = this.props;
     const data = this.getData();
     return (
       <GenericTable
-        title={'Lumino Channels'}
+        title={t('Lumino Channels')}
         columns={[
           {
             Header: 'Content',
@@ -83,4 +85,4 @@ function mapDispatchToProps (dispatch) {
     getChannel: () => {},
   }
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoChannels);
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(LuminoChannels));

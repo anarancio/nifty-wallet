@@ -132,12 +132,13 @@ class RifConfiguration extends Component {
   }
 
   saveConfiguration () {
+    const {t} = this.props;
     const configuration = this.state.configuration;
     this.props.updateConfiguration(configuration)
       .then(done => {
         this.props.goToSettings();
       }).catch(error => {
-        this.props.showToast('Error trying to update configuration: ' + error.message, false);
+        this.props.showToast(t('Error trying to update configuration: {{errorMessage}}', {errorMessage: error.message}), false);
     });
   }
 

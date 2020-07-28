@@ -5,6 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import rifActions from '../../actions';
 import {pageNames} from '../../pages';
+import {withTranslation} from "react-i18next";
 
 class Menu extends Component {
 
@@ -14,37 +15,39 @@ class Menu extends Component {
     opened: PropTypes.bool,
     options: PropTypes.array,
     domainInfo: PropTypes.object,
+    t: PropTypes.func
   }
 
   getDefaultMenuOptions () {
+    const {t} = this.props;
     return [
       {
-        label: 'Subdomains',
-        action: () => this.props.navigateTo(pageNames.rns.subdomains, 'Subdomains', {domainInfo: this.props.domainInfo}),
+        label: t('Subdomains'),
+        action: () => this.props.navigateTo(pageNames.rns.subdomains, t('Subdomains'), {domainInfo: this.props.domainInfo}),
       },
       {
-        label: 'Renew Domain',
-        action: () => this.props.navigateTo(pageNames.rns.renew, 'Renew Domain'),
+        label: t('Renew Domain'),
+        action: () => this.props.navigateTo(pageNames.rns.renew, t('Renew Domain')),
       },
       {
-        label: 'Pay',
+        label: t('Pay'),
         action: () => this.props.navigateTo(pageNames.rns.pay, null, {domainInfo: this.props.domainInfo}),
       },
       {
-        label: 'Sell it on MKP',
-        action: () => this.props.navigateTo(pageNames.rns.sellOnMKP, 'Sell it on Marketplace'),
+        label: t('Sell it on MKP'),
+        action: () => this.props.navigateTo(pageNames.rns.sellOnMKP, t('Sell it on Marketplace')),
       },
       {
-        label: 'Exchange Domain',
-        action: () => this.props.navigateTo(pageNames.rns.exchange, 'Exchange Domain'),
+        label: t('Exchange Domain'),
+        action: () => this.props.navigateTo(pageNames.rns.exchange, t('Exchange Domain')),
       },
       {
-        label: 'Transfer',
-        action: () => this.props.navigateTo(pageNames.rns.transfer, 'Transfer Domain'),
+        label: t('Transfer'),
+        action: () => this.props.navigateTo(pageNames.rns.transfer, t('Transfer Domain')),
       },
       {
-        label: 'Lumino Channels',
-        action: () => this.props.navigateTo(pageNames.rns.luminoChannels, 'Lumino Channels'),
+        label: t('Lumino Channels'),
+        action: () => this.props.navigateTo(pageNames.rns.luminoChannels, t('Lumino Channels')),
       },
     ];
   }
@@ -64,7 +67,7 @@ class Menu extends Component {
     } else {
       return (
         <ul>
-          <li>No available options</li>
+          <li>{t('No available options')}</li>
         </ul>
       );
     }
@@ -130,4 +133,4 @@ function mapDispatchToProps (dispatch) {
     },
   }
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Menu)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(Menu))
