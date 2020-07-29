@@ -309,6 +309,7 @@ class OpenChannel extends Component {
   }
 
   render () {
+    const {t} = this.props;
     const body = this.state.opened ? this.getBody() : null;
     return (
       <div>
@@ -322,7 +323,6 @@ class OpenChannel extends Component {
 }
 
 function mapDispatchToProps (dispatch) {
-  const {t} = this.props;
   return {
     getTokens: () => dispatch(rifActions.getTokens()),
     openChannel: (partner, tokenAddress, callbackHandlers) => dispatch(rifActions.openChannel(partner, tokenAddress, callbackHandlers)),
