@@ -39,7 +39,11 @@
   padding: 0 20px;
   margin: 12px 0 18px;
 }
-
+.config-select-language {
+  height: 32px;
+  width: 100%;
+  margin-bottom: 20px;
+}
 /* SEARCH BAR */
 .search-bar-container {
   width: 100%;
