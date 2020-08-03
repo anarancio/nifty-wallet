@@ -1,3 +1,5 @@
+import {withTranslation} from 'react-i18next';
+
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
@@ -5,7 +7,7 @@ const ReactMarkdown = require('react-markdown')
 const linker = require('extension-link-enabler')
 const findDOMNode = require('react-dom').findDOMNode
 
-module.exports = Notice
+module.exports = (withTranslation('translations')(Notice))
 
 inherits(Notice, Component)
 function Notice () {
@@ -13,8 +15,14 @@ function Notice () {
 }
 
 Notice.prototype.render = function () {
-  const { notice, onConfirm } = this.props
-  const { title, body } = notice
+  const { notice, onConfirm, t } = this.props
+  let { title, body } = notice
+  title = t(title);
+  const bodyLines = body.split('\n');
+  body = '';
+  bodyLines.forEach(line => {
+    body += t(line) + '\n';
+  });
   const state = this.state || { disclaimerDisabled: false }
   const disabled = state.disclaimerDisabled
 
@@ -118,7 +126,7 @@ Notice.prototype.render = function () {
           style: {
             marginTop: '18px',
           },
-        }, 'Accept'),
+        }, t('Accept')),
       ],
     ])
   )

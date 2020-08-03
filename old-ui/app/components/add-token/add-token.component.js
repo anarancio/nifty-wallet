@@ -1,3 +1,5 @@
+import {withTranslation} from 'react-i18next';
+
 const React = require('react')
 const { Component } = React
 const h = require('react-hyperscript')
@@ -20,7 +22,7 @@ const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
 const { POA_CODE, MAINNET_CODE } = require('../../../../app/scripts/controllers/network/enums')
 
-export default class AddTokenScreen extends Component {
+class AddTokenScreen extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
@@ -40,6 +42,7 @@ export default class AddTokenScreen extends Component {
     dispatch: PropTypes.func,
     network: PropTypes.string,
     addToken: PropTypes.func,
+    t: PropTypes.func,
   }
 
   constructor (props) {
@@ -128,7 +131,7 @@ export default class AddTokenScreen extends Component {
             style: {
               color: '#ffffff',
             },
-          }, 'Add Token'),
+          }, this.props.t('Add Token')),
         ]),
 
         ...views,
@@ -184,7 +187,7 @@ export default class AddTokenScreen extends Component {
               style: { fontWeight: 'bold'},
               'data-tip': '',
               'data-for': 'addToken',
-            }, 'Token Address' /* this.context.t('tokenAddress')*/),
+            }, this.props.t('Token Address')),
           ]),
         ]),
 
@@ -204,7 +207,7 @@ export default class AddTokenScreen extends Component {
         h('div', [
           h('span', {
             style: { fontWeight: 'bold', paddingRight: '10px'},
-          }, 'Token Symbol' /* this.context.t('tokenSymbol')*/),
+          }, this.props.t('Token Symbol')),
         ]),
 
         h('div', { style: {display: 'flex'} }, [
@@ -223,7 +226,7 @@ export default class AddTokenScreen extends Component {
         h('div', [
           h('span', {
             style: { fontWeight: 'bold', paddingRight: '10px'},
-          }, 'Decimals of Precision' /* this.context.t('decimal')*/),
+          }, this.props.t('Decimals of Precision')),
         ]),
 
         h('div', { style: {display: 'flex'} }, [
@@ -253,7 +256,7 @@ export default class AddTokenScreen extends Component {
             onClick: () => {
               goHome()
             },
-          }, 'Cancel' /* this.context.t('cancel')*/),
+          }, this.props.t('Cancel')),
           h('button', {
             disabled: this.hasError() || !this.hasSelected(),
             onClick: (event) => {
@@ -266,7 +269,7 @@ export default class AddTokenScreen extends Component {
                   goHome()
                 })
             },
-          }, 'Add' /* this.context.t('addToken')*/),
+          }, this.props.t('Add')),
         ]),
       ]),
     ])
@@ -304,11 +307,11 @@ export default class AddTokenScreen extends Component {
               clearPendingTokens()
               goHome()
             },
-          }, 'Cancel' /* this.context.t('cancel')*/),
+          }, this.props.t('Cancel')),
           h('button.btn-primary', {
             onClick: () => this.handleNext(),
             disabled: !this.hasSelected(),
-          }, 'Next' /* this.context.t('next')*/),
+          }, this.props.t('Next')),
         ]),
       ]),
     ])
@@ -560,3 +563,5 @@ export default class AddTokenScreen extends Component {
     return validDecimals
   }
 }
+
+module.exports = (withTranslation('translations')(AddTokenScreen));

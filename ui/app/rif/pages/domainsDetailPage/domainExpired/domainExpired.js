@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan } from '@fortawesome/free-solid-svg-icons'
 import {pageNames} from '../../index';
 import {Menu} from '../../../components';
+import {withTranslation} from "react-i18next";
 
 class DomainExpired extends Component {
 	static propTypes = {
@@ -19,9 +20,11 @@ class DomainExpired extends Component {
     isLuminoNode: PropTypes.bool,
     isRifStorage: PropTypes.bool,
     showDomainRegisterPage: PropTypes.func.isRequired,
+    t: PropTypes.func
 	}
 
 	render () {
+	  const {t} = this.props;
     const { domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isLuminoNode, isRifStorage } = this.props
     const domainInfo = {
       domainName,
@@ -41,10 +44,10 @@ class DomainExpired extends Component {
       <div className="domain-expired">
         <FontAwesomeIcon icon={faBan} color={'#E60000'} className={'domain-expired-icon'}/>
         <div>
-          Your domain is expired
+          {t('Your domain is expired')}
         </div>
         <div className="button-container">
-          <button onClick={() => this.props.showDomainRegisterPage(this.props.domainName)}>Register Now!</button>
+          <button onClick={() => this.props.showDomainRegisterPage(this.props.domainName)}>{t('Register Now!')}</button>
         </div>
       </div>
       <Menu domainInfo={domainInfo} />
@@ -82,4 +85,4 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(DomainExpired)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(DomainExpired))

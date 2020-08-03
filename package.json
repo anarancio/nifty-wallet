@@ -135,6 +135,7 @@
     "ethereumjs-tx": "^1.3.7",
     "ethereumjs-util": "^5.1.0",
     "ethereumjs-wallet": "^0.6.3",
+    "ethers": "^4.0.37",
     "ethjs": "^0.4.0",
     "ethjs-contract": "^0.2.3",
     "ethjs-ens": "^2.0.0",
@@ -149,6 +150,8 @@
     "gaba": "^1.9.3",
     "gulp-rename": "^2.0.0",
     "human-standard-token-abi": "^2.0.0",
+    "i18next": "^19.6.2",
+    "i18next-browser-languagedetector": "^5.0.0",
     "idb-global": "^2.1.0",
     "iframe-stream": "^3.0.0",
     "inject-css": "^0.1.1",
@@ -186,6 +189,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-hyperscript": "^3.0.0",
+    "react-i18next": "^11.7.0",
     "react-inspector": "^2.3.0",
     "react-markdown": "^3.0.0",
     "react-media": "^1.8.0",
@@ -223,8 +227,7 @@
     "web3-eth-abi": "^1.2.6",
     "web3-stream-provider": "^4.0.0",
     "web3-utils": "^1.2.4",
-    "xtend": "^4.0.1",
-    "ethers": "^4.0.37"
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

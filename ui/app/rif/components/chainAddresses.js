@@ -13,6 +13,7 @@ import {SLIP_ADDRESSES, PRIORITY_SLIP_ADDRESSES} from '../constants/slipAddresse
 import * as niftyActions from '../../actions';
 import * as lodash from 'lodash';
 import {WAIT_FOR_CONFIRMATION_DEFAULT, WAIT_FOR_NOTIFIER} from '../../constants/common';
+import {withTranslation} from "react-i18next";
 
 class ChainAddresses extends Component {
 
@@ -34,6 +35,7 @@ class ChainAddresses extends Component {
     getConfiguration: PropTypes.func,
     showToast: PropTypes.func,
     getResolver: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -134,15 +136,17 @@ class ChainAddresses extends Component {
   }
 
   onChangeSubmit = (address, selectedChainAddress) => {
+    const {t} = this.props;
     if (address) {
-      this.addAddress(address, selectedChainAddress, 'Updating chain address', 'update');
+      this.addAddress(address, selectedChainAddress, t('Updating chain address'), 'update');
     } else {
-      this.props.displayWarning('Address cannot be empty');
+      this.props.displayWarning(t('Address cannot be empty'));
     }
   }
 
   onDeleteClick = (selectedChainAddress) => {
-    this.addAddress(null, selectedChainAddress, 'Deleting chain address', 'delete');
+    const {t} = this.props;
+    this.addAddress(null, selectedChainAddress, t('Deleting chain address'), 'delete');
   }
 
   updateChainAddress = (selectedOption) => {
@@ -224,7 +228,7 @@ class ChainAddresses extends Component {
   }
 
   render () {
-    const { isOwner, redirectPage, paginationSize, classes } = this.props;
+    const { isOwner, redirectPage, paginationSize, classes, t } = this.props;
     const { resolvers, selectedResolverAddress } = this.state;
     const data = this.convertChainAddressesToTableData();
     return (
@@ -233,7 +237,7 @@ class ChainAddresses extends Component {
           data.length > 0 &&
           <div>
             <GenericTable
-              title={'Addresses'}
+              title={t('Addresses')}
               columns={[
                 {
                   Header: 'Content',
@@ -249,15 +253,15 @@ class ChainAddresses extends Component {
         {
           data.length === 0 &&
           <div>
-            <span className={classes.title}>Addresses</span>
-            <span className={classes.notFound}>No addresses found</span>
+            <span className={classes.title}>{t('Addresses')}</span>
+            <span className={classes.notFound}>{t('No addresses found')}</span>
           </div>
         }
         {(isOwner && resolvers.find(resolver => resolver.address.toLowerCase() === selectedResolverAddress && resolver.isMultiChain)) &&
         <div>
           <CustomButton
             svgIcon={SVG_PLUS}
-            text={'Add Address'}
+            text={t('Add Address')}
             onClick={() => this.showAddChainAddress()}
             className={
               {
@@ -305,4 +309,4 @@ function mapDispatchToProps (dispatch) {
     getResolver: (domainName, subdomainName) => dispatch(rifActions.getResolver(domainName, subdomainName)),
   }
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ChainAddresses);
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(ChainAddresses));

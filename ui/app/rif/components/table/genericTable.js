@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { useTable, usePagination } from 'react-table';
 import Pagination from './pagination';
+import {withTranslation} from "react-i18next";
 
-const Table = ({ title, columns, data, pageSize, displayColumnHeader, selectedPageIndex, changePageIndex, classes }) => {
+const Table = withTranslation('translations')(({ title, columns, data, pageSize, displayColumnHeader, selectedPageIndex, changePageIndex, classes, t }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -72,11 +73,11 @@ const Table = ({ title, columns, data, pageSize, displayColumnHeader, selectedPa
         </div>
       }
       {data.length === 0 &&
-        <span className={styles.noData}>No data to display</span>
+        <span className={styles.noData}>{t('No data to display')}</span>
       }
     </div>
   );
-};
+});
 
 export default class GenericTable extends Component {
   static propTypes = {

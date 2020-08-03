@@ -11,6 +11,7 @@ import {DEFAULT_ICON} from '../../../constants';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {getLoader} from '../../../utils/components';
 import ethUtils from 'ethereumjs-util';
+import {withTranslation} from "react-i18next";
 
 class OpenChannel extends Component {
 
@@ -29,11 +30,12 @@ class OpenChannel extends Component {
     getTokens: PropTypes.func,
     option: PropTypes.object,
     domainNotExists: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
     super(props);
-    const {tokenAddress, tokenName, tokenSymbol, tokenNetworkAddress} = props;
+    const {tokenAddress, tokenName, tokenSymbol, tokenNetworkAddress, t} = props;
     let selectedToken = {};
     if (props.tokenAddress) {
       selectedToken = {
@@ -59,7 +61,7 @@ class OpenChannel extends Component {
       tokensOptions: [],
       selectedToken: selectedToken,
       loading: false,
-      loadingMessage: 'Please Wait...',
+      loadingMessage: t('Please Wait...'),
     };
   }
 
@@ -87,6 +89,7 @@ class OpenChannel extends Component {
 
   getBody () {
     const {tokensOptions, selectedToken, loading} = this.state;
+    const {t} = this.props;
 
     if (loading) {
       return getLoader(this.state.loadingMessage);
@@ -105,7 +108,7 @@ class OpenChannel extends Component {
     }
 
     const selectOption = (props) => {
-      const {option} = props;
+      const {option, t} = props;
       const icon = option.icon ? option.icon : DEFAULT_ICON;
       return (
         <div
@@ -155,7 +158,7 @@ class OpenChannel extends Component {
         }
         <div className="form-segment">
           <input className="domain-address-input domain-address-input--open-channel" type="text"
-                 placeholder="Enter address / domain"
+                 placeholder={t("Enter address / domain")}
                  onChange={(event) => this.changeDestination(event)}/>
           <span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -170,7 +173,7 @@ class OpenChannel extends Component {
         <div className="form-segment">
           <input className="amount-input amount-input--open-channel"
                  type="text"
-                 placeholder={this.state.selectedToken.symbol + ' Amount'}
+                 placeholder={t("{{tokenSymbol}} Amount", {tokenSymbol: this.state.selectedToken.symbol})}
                  onKeyDown={event => this.validateAmount(event)}
                  onChange={event => this.changeAmount(event)}/>
         </div>
@@ -190,19 +193,20 @@ class OpenChannel extends Component {
   async openChannelRequest () {
     if (this.state.amount) {
       if (!validateAmountValue(this.state.amount)) {
-        this.props.showToast('Invalid deposit amount, should be greater than 0', false);
+        this.props.showToast(t('Invalid deposit amount, should be greater than 0'), false);
         return;
       }
     }
+    const {t} = this.props;
     const callbackHandlers = new CallbackHandlers();
     callbackHandlers.requestHandler = (result) => {
       console.debug('OPEN CHANNEL REQUESTED', result);
-      this.props.showToast('Requesting Open Channel');
+      this.props.showToast(t('Requesting Open Channel'));
       this.props.reloadChannels();
     };
     callbackHandlers.successHandler = async (response) => {
       console.debug('CHANNEL OPENED', response);
-      this.props.showToast('Channel Opened Successfully!');
+      this.props.showToast(t('Channel Opened Successfully!'));
       this.props.reloadChannels();
       if (this.props.afterChannelCreated) {
         this.props.afterChannelCreated(response);
@@ -210,12 +214,12 @@ class OpenChannel extends Component {
       if (this.state.amount) {
         this.setState({
           loading: true,
-          loadingMessage: 'Making deposit\nPlease wait, this operation could take around 8 minutes',
+          loadingMessage: t('Making deposit\nPlease wait, this operation could take around 8 minutes'),
         });
         const depositCallbackHandlers = new CallbackHandlers();
         depositCallbackHandlers.requestHandler = (result) => {
           console.debug('DEPOSIT REQUESTED', result);
-          this.props.showToast('Deposit Requested');
+          this.props.showToast(t('Deposit Requested'));
         };
         depositCallbackHandlers.successHandler = (result) => {
           this.setState({
@@ -226,7 +230,7 @@ class OpenChannel extends Component {
           if (this.props.afterDepositCreated) {
             this.props.afterDepositCreated(result);
           }
-          this.props.showToast('Deposit Done Successfully');
+          this.props.showToast(t('Deposit Done Successfully'));
         };
         depositCallbackHandlers.errorHandler = (error) => {
           this.setState({
@@ -235,13 +239,13 @@ class OpenChannel extends Component {
           console.debug('DEPOSIT ERROR', error);
           this.props.reloadChannels();
           const errorMessage = parseLuminoError(error);
-          this.props.showToast(errorMessage || 'Unknown Error trying to deposit on channel!', false);
+          this.props.showToast(errorMessage || t('Unknown Error trying to deposit on channel!'), false);
         };
 
         const channelIdentifier = response.channel_identifier;
-
+        const {amount, selectedToken} = this.state;
         // we need to deposit
-        this.props.showToast(`Trying to deposit ${this.state.amount} ${this.state.selectedToken.name} on channel ${channelIdentifier}`);
+        this.props.showToast(t('Trying to deposit {{amount}} {{tokenName}} on channel {{channelIdentifier}}', {amount, tokenName: selectedToken.name, channelIdentifier}));
         await this.props.createDeposit(
           this.state.destination,
           this.state.selectedToken.address,
@@ -262,25 +266,26 @@ class OpenChannel extends Component {
       console.debug('OPEN CHANNEL ERROR', error);
       this.props.reloadChannels();
       const errorMessage = parseLuminoError(error);
-      this.props.showToast(errorMessage || 'Unknown Error trying to open channel!', false);
+      this.props.showToast(errorMessage || t('Unknown Error trying to open channel!'), false);
     };
-    this.props.showPopup('Open Channel', {
-      text: 'Are you sure you want to open channel with partner ' + this.state.destination + ' using token ' + this.state.selectedToken.name + '?',
+    const {destination, selectedToken} = this.state;
+    this.props.showPopup(t('Open Channel'), {
+      text: t('Are you sure you want to open channel with partner {{destination}} using token {{tokenName}}?', {destination, tokenName: selectedToken.name}),
       confirmCallback: async () => {
         if (this.state.destination) {
           if (!ethUtils.isValidChecksumAddress(this.state.destination) && !isValidRNSDomain(this.state.destination)) {
-            this.props.showToast('Destination has to be a valid domain name or checksum address.', false);
+            this.props.showToast(t('Destination has to be a valid domain name or checksum address.'), false);
             return;
           }
           this.setState({
             loading: true,
-            loadingMessage: 'Opening channel\nPlease wait, this operation could take around 4 minutes',
+            loadingMessage: t('Opening channel\nPlease wait, this operation could take around 4 minutes'),
           });
           if (isValidRNSDomain(this.state.destination)) {
             // we check if the domain exists to avoid the no resolver problem
             const domainNotExists = await this.props.domainNotExists(this.state.destination);
             if (domainNotExists) {
-              this.props.showToast('There is no RNS resolver associated with this domain', false);
+              this.props.showToast(t('There is no RNS resolver associated with this domain'), false);
               this.setState({
                 loading: false,
               });
@@ -291,7 +296,7 @@ class OpenChannel extends Component {
             await this.props.openChannel(this.state.destination, this.state.selectedToken.address, callbackHandlers);
           }
         } else {
-          this.props.showToast('You need to select a token and put the partner and amount first.', false);
+          this.props.showToast(t('You need to select a token and put the partner and amount first.'), false);
         }
       },
     });
@@ -304,11 +309,12 @@ class OpenChannel extends Component {
   }
 
   render () {
+    const {t} = this.props;
     const body = this.state.opened ? this.getBody() : null;
     return (
       <div>
         <div className="form-segment">
-          <span className="ml-0 btn-add" onClick={() => this.open()}>+ Add channel</span>
+          <span className="ml-0 btn-add" onClick={() => this.open()}>{t('+ Add channel')}</span>
         </div>
         {body}
       </div>
@@ -333,4 +339,4 @@ function mapDispatchToProps (dispatch) {
   };
 }
 
-module.exports = connect(null, mapDispatchToProps)(OpenChannel)
+module.exports = withTranslation('translations')(connect(null, mapDispatchToProps)(OpenChannel))

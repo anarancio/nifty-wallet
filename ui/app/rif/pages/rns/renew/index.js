@@ -1,12 +1,15 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import PropTypes from 'prop-types';
+import {withTranslation} from "react-i18next";
 
 class Renew extends Component {
 
-  static propTypes = {}
+  static propTypes = {t: PropTypes.func}
 
   render () {
-    return (<div className="body">Renew</div>);
+    const {t} = this.props;
+    return (<div className="body">{t('Renew')}</div>);
   }
 }
 function mapStateToProps (state) {
@@ -18,4 +21,4 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {}
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Renew)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(Renew))

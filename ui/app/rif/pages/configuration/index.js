@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import rifActions from '../../actions';
 import niftyActions from '../../../actions';
+import {withTranslation} from 'react-i18next';
 
 class RifConfiguration extends Component {
 
@@ -11,6 +12,7 @@ class RifConfiguration extends Component {
     getConfiguration: PropTypes.func,
     goToSettings: PropTypes.func,
     showToast: PropTypes.func,
+    t: PropTypes.func,
   }
 
   constructor (props) {
@@ -130,12 +132,13 @@ class RifConfiguration extends Component {
   }
 
   saveConfiguration () {
+    const {t} = this.props;
     const configuration = this.state.configuration;
     this.props.updateConfiguration(configuration)
       .then(done => {
         this.props.goToSettings();
       }).catch(error => {
-        this.props.showToast('Error trying to update configuration: ' + error.message, false);
+        this.props.showToast(t('Error trying to update configuration: {{errorMessage}}', {errorMessage: error.message}), false);
     });
   }
 
@@ -144,6 +147,7 @@ class RifConfiguration extends Component {
   }
 
   render () {
+    const {t} = this.props;
     if (this.state.loading) {
       return (<div>Loaing Configuration...</div>);
     }
@@ -202,10 +206,10 @@ class RifConfiguration extends Component {
             <input value={this.state.configuration.rns.contracts.rskOwner} onChange={(event) => this.updateContractAddress('rskOwner', event)} placeholder="RSK Owner" />
           </li>
           <li className="mt-2">
-            <button className="btn-primary w-100" onClick={() => this.saveConfiguration()}>Save Configuration</button>
+            <button className="btn-primary w-100" onClick={() => this.saveConfiguration()}>{t("Save Configuration")}</button>
           </li>
           <li className="mt-2">
-            <button className="btn w-100" onClick={() => this.cancel()}>Cancel</button>
+            <button className="btn w-100" onClick={() => this.cancel()}>{t("Cancel")}</button>
           </li>
         </ul>
       </div>
@@ -221,4 +225,4 @@ function mapDispatchToProps (dispatch) {
     showToast: (message, success) => dispatch(niftyActions.displayToast(message, success)),
   }
 }
-module.exports = connect(null, mapDispatchToProps)(RifConfiguration)
+module.exports = withTranslation('translations')(connect(null, mapDispatchToProps)(RifConfiguration))

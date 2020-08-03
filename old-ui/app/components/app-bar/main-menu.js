@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {Dropdown, DropdownMenuItemWithAvatar} from '../dropdown'
 import actions from '../../../../ui/app/actions'
 import {connect} from 'react-redux'
+import {withTranslation} from 'react-i18next';
 
 class MainMenu extends Component {
   static propTypes = {
@@ -12,6 +13,7 @@ class MainMenu extends Component {
     changeState: PropTypes.func.isRequired,
     openMainMenu: PropTypes.func.isRequired,
     isMainMenuOpen: PropTypes.bool,
+    t: PropTypes.func,
   }
 
   render () {
@@ -47,19 +49,19 @@ class MainMenu extends Component {
         <DropdownMenuItemWithAvatar
           closeMenu={() => this.props.changeState(isMainMenuOpen)}
           onClick={() => { this.props.showConfigPage() }}
-          title={'Settings'}
+          title={this.props.t('Settings')}
         />
 
         <DropdownMenuItemWithAvatar
           closeMenu={() => this.props.changeState(isMainMenuOpen)}
           onClick={() => { this.props.lockMetamask() }}
-          title={'Log Out'}
+          title={this.props.t('Log Out')}
         />
 
         <DropdownMenuItemWithAvatar
           closeMenu={() => this.props.changeState(isMainMenuOpen)}
           onClick={() => { this.props.showInfoPage() }}
-          title={'Info/Help'}
+          title={this.props.t('Info/Help')}
         />
       </Dropdown>
     )
@@ -74,4 +76,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MainMenu)
+export default connect(null, mapDispatchToProps)(withTranslation('translations')(MainMenu))

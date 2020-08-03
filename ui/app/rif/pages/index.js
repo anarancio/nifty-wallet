@@ -45,7 +45,7 @@ function getTabTitleComponent (title, showTitle = false) {
 function buildTabs (screenName, tabOptions) {
   const tabs = [];
 
-  tabDefinitions.forEach((tabDefinition, index) => {
+  tabDefinitions().forEach((tabDefinition, index) => {
     let tabTitle = tabDefinition.defaultScreenTitle;
     let tabComponent = getPageComponent(tabDefinition.defaultScreenName);
     let showSearchbar = tabDefinition.showSearchbar;
@@ -95,7 +95,7 @@ function buildTabScreen (screenName, context, dispatch) {
     // we can use this to trigger on change tab actions
     console.debug('Selected tab', tab);
     currentTabIndex = tab.index;
-    const tabDefinition = tabDefinitions.find(definition => definition.index === tab.index);
+    const tabDefinition = tabDefinitions().find(definition => definition.index === tab.index);
     dispatch(rifActions.navigateTo(tabDefinition.defaultScreenName, {
       tabOptions: {
         showSearchbar: tabDefinition.showSearchbar,

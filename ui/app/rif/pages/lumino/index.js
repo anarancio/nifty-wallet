@@ -6,6 +6,7 @@ import LuminoNetworkItem from '../../components/LuminoNetworkItem';
 import {pageNames} from '../names';
 import {GenericTable, OpenChannel} from '../../components';
 import SearchLuminoNetworks from '../../components/searchLuminoNetworks';
+import {withTranslation} from "react-i18next";
 
 const styles = {
   myLuminoNetwork: {
@@ -30,6 +31,7 @@ class LuminoHome extends Component {
     getLuminoNetworks: PropTypes.func,
     currentAddress: PropTypes.string,
     navigateTo: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -92,6 +94,7 @@ class LuminoHome extends Component {
 
   render () {
     const {networks, filteredNetworks} = this.state;
+    const {t} = this.props;
     const myNetworks = this.getNetworkItems(filteredNetworks.withChannels)
     const otherNetworks = this.getNetworkItems(filteredNetworks.withoutChannels)
     const combinedNetworks = [...networks.withChannels, ...networks.withoutChannels];
@@ -106,11 +109,11 @@ class LuminoHome extends Component {
     return (
       <div className="rif-home-body">
         <SearchLuminoNetworks data={combinedNetworks} setFilteredNetworks={this.setFilteredNetworks}/>
-        {!itemsWereFiltered && <h2 className="page-title">Lumino networks directory</h2>}
+        {!itemsWereFiltered && <h2 className="page-title">{t('Lumino networks directory')}</h2>}
         {itemsWereFiltered &&
         <div className="lumino-list-container">
           <GenericTable
-            title={'Network Results'}
+            title={t('Network Results')}
             classes={styles.myLuminoNetwork}
             columns={columns}
             data={[...myNetworks, ...otherNetworks]}
@@ -120,13 +123,13 @@ class LuminoHome extends Component {
         {!itemsWereFiltered &&
         <div className="lumino-list-container">
           <GenericTable
-            title={'My Lumino Networks'}
+            title={t('My Lumino Networks')}
             classes={styles.myLuminoNetwork}
             columns={columns}
             data={myNetworks}
             paginationSize={3}/>
           <GenericTable
-            title={'Lumino networks available'}
+            title={t('Lumino networks available')}
             classes={styles.myLuminoNetwork}
             columns={columns}
             data={otherNetworks}
@@ -169,4 +172,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoHome)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(LuminoHome))

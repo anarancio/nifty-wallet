@@ -8,6 +8,7 @@ import {GenericTable} from '../../../components';
 import {pageNames} from '../../names';
 import {lumino} from '../../../../../../app/scripts/controllers/rif/constants';
 import {getStatus} from '../../../utils/utils';
+import {withTranslation} from "react-i18next";
 
 const styles = {
   myLuminoChannels: {
@@ -36,6 +37,7 @@ class LuminoNetworkDetails extends Component {
     networkName: PropTypes.string,
     showChannelDetails: PropTypes.func,
     startListening: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -88,7 +90,7 @@ class LuminoNetworkDetails extends Component {
   }
 
   render () {
-    const {networkSymbol, networkName, tokenNetwork, tokenAddress} = this.props;
+    const {networkSymbol, networkName, tokenNetwork, tokenAddress, t} = this.props;
     const {userChannels, loading, networkData} = this.state;
     const channelItems = this.getChannelItems(userChannels);
     const columns = [{
@@ -98,7 +100,7 @@ class LuminoNetworkDetails extends Component {
     return (
       <div className="body lumino-network-detail-container">
         <div className="d-flex align-items-center">
-          <div className="network-detail__name">{networkSymbol} Network</div>
+          <div className="network-detail__name">{t('{{networkSymbol}} Network', {networkSymbol})}</div>
         </div>
         <div className="row-data-container mb-4">
           <span className="lumino-text-symbol mr-1">
@@ -106,19 +108,19 @@ class LuminoNetworkDetails extends Component {
           </span>
           <div className="d-flex align-items-center">
             <img height={15} width={15} src="images/rif/node.svg"/>
-            <span className="lumino-text-data">{networkData.nodes} <small>nodes</small></span>
+            <span className="lumino-text-data">{networkData.nodes} <small>{t('nodes')}</small></span>
           </div>
           <div className="d-flex align-items-center">
             <img height={15} width={15} src="images/rif/channels.svg"/>
-            <span className="lumino-text-data">{networkData.channels} <small>channels</small></span>
+            <span className="lumino-text-data">{networkData.channels} <small>{t('channels')}</small></span>
           </div>
 
         </div>
-        {loading && <div>Loading data</div>}
+        {loading && <div>{t('Loading data')}</div>}
         {!loading && <div>
           {!!userChannels.length &&
           <GenericTable
-            title={`My channels in ${networkSymbol} network`}
+            title={t('My channels in {{networkSymbol}} network', {networkSymbol})}
             classes={styles.myLuminoChannels}
             columns={columns}
             data={channelItems}
@@ -126,9 +128,9 @@ class LuminoNetworkDetails extends Component {
           }
           {!userChannels.length && <div>
             <div>
-              No channels yet
+              {t('No channels yet')}
             </div>
-            <div>Add a channel to join the {networkSymbol} network</div>
+            <div>{t('Add a channel to join the {{networkSymbol}} network', {networkSymbol})}</div>
           </div>
           }
         </div>
@@ -173,4 +175,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LuminoNetworkDetails)
+export default withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(LuminoNetworkDetails))

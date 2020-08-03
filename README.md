@@ -45,6 +45,40 @@ npm start
 npm run dist
 ```
 
+## Multilanguage Support
+You can add new translations to support new languages. To do this you need to follow some
+steps:
+
+- First you need to check the folder languages inside the project root to see if your 
+language isn't already there, if the language it's there you should add the translation.
+- If your language file is not there you should:
+    - Create a json file inside the folder languages with the name as the language 
+    key code (ex: on english language we use en.json)
+    - Add a content similar to this on the new file:
+    ```json
+    {
+      "name": "The language name to display (ex: English)",
+      "key": "The language key code (ex: en)",
+      "translations": {
+        "key in default language that's english": "translation on the language that we want"
+      }
+    }
+    ```
+    - Next you need to add the translations for your language in this file removing the example translation. 
+    You can do that by just taking other language file by example. Translations should be 
+    added in the translations object inside the language json file as a key value map.
+    - Now as the last step you need to add your file into the languages/index.js file like a
+    javascript module and exported as the language key. Here we have an example for English and Spanish:
+    ```javascript
+      import en from './en.json';
+      import es from './es.json';
+      
+      export default {
+        en,
+        es,
+      }
+    ```
+    
 #### Writing Browser Tests
 
 To write tests that will be run in the browser using QUnit, add your test files to `test/integration/lib`.

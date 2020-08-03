@@ -1,8 +1,9 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {getLoader} from '../utils/components';
+import {withTranslation} from "react-i18next";
 
-export class AbstractPage extends Component {
+class AbstractPage extends Component {
 
   static propTypes = {
     t: PropTypes.func,
@@ -12,7 +13,7 @@ export class AbstractPage extends Component {
     super(props);
     this.state = {
       loading: false,
-      loadingMessage: props.t ? props.t('Wait please...') : 'Wait please...',
+      loadingMessage: props.t('Wait please...'),
     };
   }
 
@@ -31,3 +32,5 @@ export class AbstractPage extends Component {
     }
   }
 }
+
+export default withTranslation('translations')(AbstractPage)

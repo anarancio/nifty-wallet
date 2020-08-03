@@ -10,6 +10,7 @@ import {getBalanceInEth, parseLuminoError} from '../../../utils/parse';
 import {getLoader} from '../../../utils/components';
 import {lumino} from '../../../../../../app/scripts/controllers/rif/constants';
 import {getStatus} from '../../../utils/utils';
+import {withTranslation} from "react-i18next";
 
 const styles = {
   tabs: '',
@@ -29,17 +30,19 @@ class LuminoChannels extends Component {
     showToast: PropTypes.func,
     startListening: PropTypes.func,
     getChannels: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
     super(props);
+    const {t} = this.props;
     this.state = {
       paymentInput: 0,
       isOpen: props.channel.sdk_status === 'CHANNEL_OPENED',
       channelStatus: this.getStatus(props.channel.sdk_status),
       loading: false,
       currentSdkStatus: props.channel.sdk_status,
-      loadingMessage: 'Please Wait...',
+      loadingMessage: t('Please Wait...'),
       balance: getBalanceInEth(props.channel.offChainBalance),
     };
     this.startListeningToEvents();
@@ -74,11 +77,11 @@ class LuminoChannels extends Component {
   }
 
   buildTabs () {
-    const {channel} = this.props;
+    const {channel, t} = this.props;
     const tabs = [];
     const addFundsTab = {
       index: 0,
-      title: 'Add funds',
+      title: t('Add funds'),
       component: (
         <DepositOnChannel
           destination={channel.partner_address}
@@ -94,14 +97,14 @@ class LuminoChannels extends Component {
     tabs.push(addFundsTab);
     const payTab = {
       index: 1,
-      title: 'Pay',
+      title: t('Pay'),
       component: this.state.loading ? getLoader(this.state.loadingMessage) : (
         <div>
           <div className="form-segment">
             <input
               className="amount-input"
               type="text"
-              placeholder={(this.props.channel.token_symbol + ' Amount')}
+              placeholder={t('{{tokenSymbol}} Amount', {tokenSymbol: this.props.channel.token_symbol})}
               onKeyDown={event => this.validateAmount(event)}
               onChange={(e) => this.setState({paymentInput: e.target.value})}
             />
@@ -123,18 +126,18 @@ class LuminoChannels extends Component {
   }
 
   sendLuminoPayment () {
-    const channel = this.props.channel;
+    const {channel, t} = this.props;
     const callbackHandlers = new CallbackHandlers();
     callbackHandlers.requestHandler = (result) => {
       console.debug('PAYMENT REQUESTED', result);
-      this.props.showToast('Payment Sent');
+      this.props.showToast(t('Payment Sent'));
     };
     callbackHandlers.successHandler = (result) => {
       this.setState({
         loading: false,
       });
       console.debug('PAYMENT DONE', result);
-      this.props.showToast('Payment Delivered');
+      this.props.showToast(t('Payment Delivered'));
       this.updateChannelState();
     };
     callbackHandlers.errorHandler = (error) => {
@@ -143,20 +146,20 @@ class LuminoChannels extends Component {
       });
       console.debug('PAYMENT ERROR', error);
       const errorMessage = parseLuminoError(error);
-      this.props.showToast(errorMessage || 'Unknown Error trying to pay!', false);
+      this.props.showToast(errorMessage || t('Unknown Error trying to pay!'), false);
       this.updateChannelState();
     };
-    this.props.showPopup('Pay', {
-      text: 'Are you sure you want to pay ' + this.state.paymentInput + ' tokens to partner ' + channel.partner_address + '?',
-      confirmLabel: 'Pay',
+    this.props.showPopup(t('Pay'), {
+      text: t('¿Are you sure you want to pay {{paymentInput}} tokens to partner {{partnerAddress}}?', {paymentInput: this.state.paymentInput, partnerAddress: channel.partner_address}),
+      confirmLabel: t('Pay'),
       confirmCallback: async () => {
         if (!validateAmountValue(this.state.paymentInput)) {
-          this.props.showToast('Invalid deposit amount, should be greater than 0', false);
+          this.props.showToast(t('Invalid deposit amount, should be greater than 0'), false);
           return;
         }
         this.setState({
           loading: true,
-          loadingMessage: 'Paying...',
+          loadingMessage: t('Paying...'),
         });
         this.props.sendLuminoPayment(channel.token_address, channel.partner_address, this.state.paymentInput, callbackHandlers);
       },
@@ -195,15 +198,16 @@ class LuminoChannels extends Component {
   closingMessage = () => {
     // eslint-disable-next-line camelcase
     const {currentSdkStatus} = this.state;
+    const {t} = this.props;
     const messages = {
-      'CHANNEL_WAITING_FOR_CLOSE': 'Closing channel\nPlease wait, this operation could take around 4 minutes',
-      'CHANNEL_CLOSED': 'Channel has been closed\nThe settlement will take around 2 hours',
+      'CHANNEL_WAITING_FOR_CLOSE': t('Closing channel\nPlease wait, this operation could take around 4 minutes'),
+      'CHANNEL_CLOSED': t('Channel has been closed\nThe settlement will take around 2 hours'),
     }
-    return messages[currentSdkStatus] || 'Closing channel\nPlease wait, this operation could take around 4 minutes';
+    return messages[currentSdkStatus] || t('Closing channel\nPlease wait, this operation could take around 4 minutes');
   }
 
   render () {
-    const {channel} = this.props;
+    const {channel, t} = this.props;
     const {isOpen, channelStatus} = this.state;
     const tabs = this.buildTabs();
     return (
@@ -276,4 +280,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoChannels)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(LuminoChannels))

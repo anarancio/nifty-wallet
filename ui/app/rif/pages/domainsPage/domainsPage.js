@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import rifActions from '../../actions'
 import {pageNames} from '../index'
 import {domainsScreen} from '../../constants';
+import {withTranslation} from 'react-i18next';
 
 function statusStyle (status) {
   switch (status) {
@@ -103,7 +104,7 @@ class DomainsScreen extends Component {
         </ul>
       )
     } else if (this.state.domains && this.state.domains.length === 0) {
-      return (<div className={'domains-list'}>No domains registered</div>);
+      return (<div className={'domains-list'}>{this.props.t('No domains registered')}</div>);
     } else {
       return (<div><div className="app-loader"/></div>);
     }
@@ -115,6 +116,7 @@ DomainsScreen.propTypes = {
   showDomainRegisterPage: PropTypes.func.isRequired,
   domains: PropTypes.array,
   getDomains: PropTypes.func,
+  t: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -146,4 +148,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(DomainsScreen)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(withTranslation('translations')(DomainsScreen))

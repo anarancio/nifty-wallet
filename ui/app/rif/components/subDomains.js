@@ -9,6 +9,7 @@ import {SVG_PLUS} from '../constants';
 import AddNewSubdomain from '../pages/domainsDetailPage/domainDetailActive/addNewSubdomain';
 import {pageNames} from '../pages';
 import {arraysMatch} from '../utils/utils';
+import {withTranslation} from "react-i18next";
 
 class Subdomains extends Component {
 
@@ -27,6 +28,7 @@ class Subdomains extends Component {
     newSubdomains: PropTypes.array,
     paginationSize: PropTypes.number,
     classes: PropTypes.any,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -92,7 +94,7 @@ class Subdomains extends Component {
   }
 
   render () {
-    const {domainInfo, isOwner, pageName, redirectParams, classes, paginationSize} = this.props;
+    const {domainInfo, isOwner, pageName, redirectParams, classes, paginationSize, t} = this.props;
     const {subdomains} = this.state;
     const data = this.getData();
     return (
@@ -120,15 +122,15 @@ class Subdomains extends Component {
         {
           data.length === 0 &&
           <div>
-            <span className={classes.title}>Subdomains</span>
-            <span className={classes.notFound}>No subdomains found</span>
+            <span className={classes.title}>{t('Subdomains')}</span>
+            <span className={classes.notFound}>{t('No subdomains found')}</span>
           </div>
         }
         {isOwner &&
         <div>
           <CustomButton
             svgIcon={SVG_PLUS}
-            text={'Add Subdomain'}
+            text={t('Add Subdomain')}
             onClick={() => this.showAddSubdomain()}
             className={
               {
@@ -182,4 +184,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Subdomains);
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(Subdomains));

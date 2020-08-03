@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {withTranslation, Trans} from "react-i18next";
 
 class LuminoNetworkItem extends Component {
 
@@ -12,26 +13,28 @@ class LuminoNetworkItem extends Component {
     onClick: PropTypes.func,
     className: PropTypes.object,
     userChannels: PropTypes.number,
+    t: PropTypes.func
   }
 
   render = () => {
-    const {icon, userChannels, symbol, nodes, channels, onClick, className = {}} = this.props;
+    const {icon, userChannels, symbol, nodes, channels, onClick, className = {}, t} = this.props;
     return (<div className="row-data-container c-pointer" onClick={onClick}>
       {icon && <FontAwesomeIcon icon={icon} className={className.icon}/>}
       <span className="lumino-text-symbol">{symbol}</span>
       {!!userChannels && <div className="d-flex mx-auto align-items-center">
         <img height={15} width={15} src="images/rif/channels-circle.svg"/>
-        <span className="lumino-text-data">{userChannels} <small>owned channels</small> </span>
+        <span className="lumino-text-data">{userChannels} <small>{t('owned channels')}</small>
+          </span>
       </div>
       }
       {!userChannels && <div className="d-flex mx-auto">
         <div className="d-flex align-items-center">
           <img height={12} width={12} src="images/rif/node.svg"/>
-          <span className="lumino-text-data">{nodes} <small>nodes</small></span>
+          <span className="lumino-text-data">{nodes} <small>{t('nodes')}</small></span>
         </div>
         <div className="d-flex align-items-center">
           <img height={12} width={12} src="images/rif/channels.svg"/>
-          <span className="lumino-text-data">{channels} <small>channels</small></span>
+          <span className="lumino-text-data">{channels} <small>{t('channels')}</small></span>
         </div>
       </div>
       }
@@ -42,4 +45,4 @@ class LuminoNetworkItem extends Component {
   }
 }
 
-export default LuminoNetworkItem;
+export default withTranslation('translations')(LuminoNetworkItem);

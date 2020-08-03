@@ -8,6 +8,7 @@ import {ChainAddresses, CustomButton, LuminoNetworkChannels} from '../../../comp
 import {GET_RESOLVERS, PAGINATION_DEFAULT_SIZE} from '../../../constants';
 import DomainHeader from '../../../components/domain-header';
 import {WAIT_FOR_CONFIRMATION_DEFAULT} from '../../../../constants/common';
+import {withTranslation} from "react-i18next";
 
 // TODO @fmelo
 // Here you can set the classnames for the entire page
@@ -91,6 +92,7 @@ class Subdomains extends Component {
     isDomainOwner: PropTypes.bool,
     showConfigPage: PropTypes.func,
     getResolver: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -145,8 +147,9 @@ class Subdomains extends Component {
   }
 
   openDeletePopup (subdomain) {
-    this.props.showPopup('Delete Subdomain', {
-      text: 'Are you sure you want to delete the subdomain ' + subdomain.name + '?',
+    const {t} = this.props;
+    this.props.showPopup(t('Delete Subdomain'), {
+      text: t('Are you sure you want to delete the subdomain {{subdomainName}}?', {subdomainName: subdomain.name}),
       confirmCallback: async () => {
         const transactionListenerId = await this.props.deleteSubdomain(subdomain.domainName, subdomain.name);
         this.props.showTransactionConfirmPage({
@@ -161,7 +164,7 @@ class Subdomains extends Component {
                       newSubdomains: subdomains,
                     });
                 });
-              this.props.showToast('Waiting for confirmation');
+              this.props.showToast(t('Waiting for confirmation'));
               this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
                 this.props.getSubdomains(this.props.domainName)
                   .then(subdomains => {
@@ -286,4 +289,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Subdomains);
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(Subdomains));

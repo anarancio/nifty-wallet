@@ -6,7 +6,8 @@ import niftyActions from '../../../../actions';
 import {registrationTimeouts} from '../../../constants';
 import {pageNames} from '../../index';
 import extend from 'xtend';
-import {AbstractPage} from '../../abstract-page';
+import AbstractPage from '../../abstract-page';
+import {withTranslation} from "react-i18next";
 
 class DomainRegisterScreen extends AbstractPage {
 
@@ -33,6 +34,7 @@ class DomainRegisterScreen extends AbstractPage {
     showDomainList: PropTypes.func,
     tabOptions: PropTypes.object,
     showLoading: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -79,7 +81,7 @@ class DomainRegisterScreen extends AbstractPage {
       const available = this.props.isDomainAvailable(domainName);
       if (!available) {
         // is not available for registration so we redirect to domain list with a warning
-        this.props.showToast('Domain not available, can not be registered!', false);
+        this.props.showToast(t('Domain not available, can not be registered!'), false);
         this.props.showDomainList();
       } else {
         await this.calculateAndFillCost(domainName, 1);
@@ -199,18 +201,20 @@ class DomainRegisterScreen extends AbstractPage {
   }
 
   getTitle (currentStep) {
+    const {t, domainName} = this.props;
     if (currentStep !== 'registered') {
-      return (<h3 className="buying-name">Buying {this.props.domainName}</h3>);
+      return (<h3 className="buying-name">{t('Buying {{domainName}}', domainName)}</h3>);
     }
     return null;
   }
 
   getBody (currentStep) {
+    const {t} = this.props;
     const partials = {
       setupRegister: (
         <div className="domainRegisterInitiate">
           <div className="d-flex number-years-to-buy">
-            <span className="title-years">Number of years:</span>
+            <span className="title-years">{t('Number of years:')}</span>
             <div className="qty-years">
               <span className="hand-over btn-minus"
                     onClick={() => this.changeYearsToRegister(this.props.yearsToRegister - 1)}>
@@ -228,24 +232,25 @@ class DomainRegisterScreen extends AbstractPage {
               </span>
             </div>
             <small className="discount-msg">
-              <span>50% discount per year</span> from the third year
+              <Trans t={t}>
+                <span>50% discount per year</span> from the third year
+              </Trans>
             </small>
           </div>
           <div className="d-flex domain-cost">
-            <span>Cost</span><span className="cost-number">{this.props.costInRif} <small>RIF</small></span>
+            <span>{t('Cost')}</span><span className="cost-number">{this.props.costInRif} <small>RIF</small></span>
           </div>
           <div className="domain-register-disclaimer">
-            You will be asked to confirm the first of two transactions required (request & register)
-            to buy your domain.
+            {t('You will be asked to confirm the first of two transactions required (request & register)' +
+              'to buy your domain.')}
           </div>
         </div>
       ),
       waitingForRegister: (
         <div className="waiting-for-register text-center">
-          <h4 className="waiting-for-register__title">Confirming transaction</h4>
+          <h4 className="waiting-for-register__title">{t('Confirming transaction')}</h4>
           <div className="app-loader"/>
-          <p className="waiting-for-register__text">Wait until the domain is requested then click Register to buy the
-            domain.</p>
+          <p className="waiting-for-register__text">{t('Wait until the domain is requested then click Register to buy the domain.')}</p>
         </div>
       ),
       readyToRegister: (
@@ -254,22 +259,22 @@ class DomainRegisterScreen extends AbstractPage {
             <svg width="38" height="23" viewBox="0 0 38 23" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1.09302 10.5L12.9674 21L37.2326 1" stroke="#602A95" strokeWidth="2"/>
             </svg>
-            <span>Your domain has been requested</span>
+            <span>{t('Your domain has been requested')}</span>
           </div>
-          <p className="ready-to-register__text">Click Register to buy the domain.</p>
+          <p className="ready-to-register__text">{t('Click Register to buy the domain.')}</p>
         </div>
       ),
       waitingForConfirmation: (
         <div className="waiting-for-confirm text-center">
-          <h4 className="waiting-for-confirm__title">Confirming transaction</h4>
+          <h4 className="waiting-for-confirm__title">{t('Confirming transaction')}</h4>
           <div className="app-loader"/>
         </div>
       ),
       registered: (
         <div className="domain-registered text-center">
-          <h4 className="domain-registered__title">Congrats!</h4>
-          <p className="domain-registered__name">{this.props.domainName} is yours</p>
-          <p className="domain-registered__text">Check it in the explorer</p>
+          <h4 className="domain-registered__title">{t("Congrats!")}</h4>
+          <p className="domain-registered__name">{t('{{domainName}} is yours', {domainName: this.props.domainName})}</p>
+          <p className="domain-registered__text">{t('Check it in the explorer')}</p>
         </div>
       ),
     };
@@ -304,25 +309,26 @@ class DomainRegisterScreen extends AbstractPage {
   }
 
   getButtons (currentStep) {
+    const {t} = this.props;
     const partials = {
       setupRegister: (
         <div className="button-container">
-          <button className="btn-primary btn-register" onClick={() => this.requestDomain()}>Request Domain</button>
+          <button className="btn-primary btn-register" onClick={() => this.requestDomain()}>{t('Request Domain')}</button>
         </div>
       ),
       waitingForRegister: (
         <div className="button-container">
-          <button className="btn-primary btn-register" disabled={true}>Register</button>
+          <button className="btn-primary btn-register" disabled={true}>{t('Register')}</button>
         </div>
       ),
       readyToRegister: (
         <div className="button-container">
-          <button className="btn-primary btn-register" onClick={() => this.completeRegistration()}>Register</button>
+          <button className="btn-primary btn-register" onClick={() => this.completeRegistration()}>{t('Register')}</button>
         </div>
       ),
       registered: (
         <div className="button-container">
-          <button className="btn-primary-outlined" onClick={() => this.props.showDomainList()}>My Domains</button>
+          <button className="btn-primary-outlined" onClick={() => this.props.showDomainList()}>{t('My Domains')}</button>
         </div>
       ),
     };
@@ -384,4 +390,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(DomainRegisterScreen)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(DomainRegisterScreen))

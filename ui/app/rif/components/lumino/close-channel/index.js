@@ -5,6 +5,7 @@ import rifActions from '../../../actions';
 import {CallbackHandlers} from '../../../actions/callback-handlers';
 import niftyActions from '../../../../actions';
 import {parseLuminoError} from '../../../utils/parse';
+import {withTranslation} from "react-i18next";
 
 class CloseChannel extends Component {
 
@@ -21,16 +22,18 @@ class CloseChannel extends Component {
     afterCloseChannel: PropTypes.func,
     afterCloseChannelRequest: PropTypes.func,
     subscribeToCloseChannel: PropTypes.func,
+    t: PropTypes.func
   }
 
   closeChannelModal () {
+    const {t, channelIdentifier, partner, tokenName} = this.props;
     this.props.showPopup('Close Channel', {
-      text: `Are you sure you want to close channel ${this.props.channelIdentifier} with partner ${this.props.partner} for token ${this.props.tokenName}?`,
+      text: t(`Are you sure you want to close channel {{channelIdentifier}} with partner {{partner}} for token {{tokenName}}?`, {channelIdentifier, partner, tokenName}),
       confirmCallback: async () => {
         const callbackHandlers = new CallbackHandlers();
         callbackHandlers.requestHandler = async (result) => {
           console.debug('CLOSE CHANNEL REQUESTED', result);
-          this.props.showToast('Requesting Close Channel');
+          this.props.showToast(t('Requesting Close Channel'));
           if (this.props.afterCloseChannelRequest) {
             this.props.afterCloseChannelRequest(result);
           }
@@ -40,12 +43,12 @@ class CloseChannel extends Component {
           if (this.props.afterCloseChannel) {
             this.props.afterCloseChannel(result);
           }
-          this.props.showToast('Channel Closed Successfully!');
+          this.props.showToast(t('Channel Closed Successfully!'));
         };
         callbackHandlers.errorHandler = (error) => {
           console.debug('CLOSE CHANNEL ERROR', error);
           const errorMessage = parseLuminoError(error);
-          this.props.showToast(errorMessage || 'Unknown Error trying to close channel!', false);
+          this.props.showToast(errorMessage || t('Unknown Error trying to close channel!'), false);
         };
         await this.props.closeChannel(this.props.partner, this.props.tokenAddress, this.props.tokenNetworkAddress, this.props.channelIdentifier, callbackHandlers);
       },
@@ -53,10 +56,11 @@ class CloseChannel extends Component {
   }
 
   render () {
+    const {t} = this.props;
     return (
       <div className="d-flex mx-auto">
         <button className="btn-primary btn-primary-outlined ml-auto"
-                onClick={() => this.closeChannelModal()}>{this.props.buttonLabel ? this.props.buttonLabel : 'Close'}</button>
+                onClick={() => this.closeChannelModal()}>{this.props.buttonLabel ? this.props.buttonLabel : t('Close')}</button>
       </div>
     );
   }
@@ -76,4 +80,4 @@ function mapDispatchToProps (dispatch) {
   };
 }
 
-module.exports = connect(null, mapDispatchToProps)(CloseChannel)
+module.exports = withTranslation('translations')(connect(null, mapDispatchToProps)(CloseChannel))

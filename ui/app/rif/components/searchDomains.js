@@ -6,6 +6,7 @@ import actions from '../../actions';
 import {pageNames} from '../pages';
 import {cleanDomainName} from '../utils/parse';
 import {GenericSearch} from './index';
+import {withTranslation} from "react-i18next";
 
 class SearchDomains extends Component {
 
@@ -16,6 +17,7 @@ class SearchDomains extends Component {
     showDomainsDetailPage: PropTypes.func,
     getDomainDetails: PropTypes.func,
     getStoredDomains: PropTypes.func,
+    t: PropTypes.func
   }
 
   componentDidMount () {
@@ -35,9 +37,10 @@ class SearchDomains extends Component {
   }
 
   filter = (value) => {
+    const {t} = this.props;
     // There is a limitation in rns that domains with less 5 characters are blocked
     if (value.length < 5) {
-      this.props.displayWarning('Domains with less than 5 characters are blocked.');
+      this.props.displayWarning(t('Domains with less than 5 characters are blocked.'));
       return;
     }
 
@@ -55,7 +58,7 @@ class SearchDomains extends Component {
         } else {
           // We need to put an else here, so we can redirect to details page, remember that the localstorage part of code, will not be anymore here
           this.props.getDomainDetails(domainName).then(details => {
-            console.debug('Details retrieved', details);
+            console.debug(t('Details retrieved'), details);
             return this.props.showDomainsDetailPage({
               status: details.status,
               domain: {
@@ -66,7 +69,7 @@ class SearchDomains extends Component {
             });
           }).catch(error => {
             console.debug('Error retrieving domain details', error);
-            this.props.displayWarning('An error happend trying to get details from domain, please try again later.');
+            this.props.displayWarning(t('An error happend trying to get details from domain, please try again later.'));
           });
         }
       });
@@ -74,11 +77,12 @@ class SearchDomains extends Component {
   }
 
   render () {
+    const {t} = this.props;
     return (
       <GenericSearch
         onlyFilterOnEnter={true}
         customFilterFunction={this.filter}
-        placeholder="Search for domains"
+        placeholder={t("Search for domains")}
       />
     )
   }
@@ -114,4 +118,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SearchDomains)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(SearchDomains))

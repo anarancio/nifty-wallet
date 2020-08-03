@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import {withTranslation} from "react-i18next";
 
 class Exchange extends Component {
 
-  static propTypes = {}
+  static propTypes = {t: PropTypes.func}
 
   render () {
-    return (<div>Exchange</div>);
+    return (<div>{t('Exchange')}</div>);
   }
 }
 function mapStateToProps (state) {
@@ -18,4 +20,4 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {}
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Exchange)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(Exchange))

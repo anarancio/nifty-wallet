@@ -5,6 +5,7 @@ import {GenericTable, OpenChannel} from './index';
 import rifActions from '../actions';
 import ItemWithActions from './item-with-actions';
 import {pageNames} from '../pages';
+import {withTranslation} from "react-i18next";
 
 class LuminoNetworkChannels extends Component {
 
@@ -76,7 +77,7 @@ class LuminoNetworkChannels extends Component {
   }
 
   render () {
-    const {isOwner, paginationSize, classes} = this.props;
+    const {isOwner, paginationSize, classes, t} = this.props;
     const data = this.getData();
     return (
       <div>
@@ -84,7 +85,7 @@ class LuminoNetworkChannels extends Component {
           data.length > 0 &&
           <div>
             <GenericTable
-              title={'Lumino Channels'}
+              title={t('Lumino Channels')}
               columns={[
                 {
                   Header: 'Content',
@@ -100,8 +101,8 @@ class LuminoNetworkChannels extends Component {
         {
           data.length === 0 &&
           <div>
-            <span className={classes.title}>Lumino Channels</span>
-            <span className={classes.notFound}>No channels found</span>
+            <span className={classes.title}>{t('Lumino Channels')}</span>
+            <span className={classes.notFound}>{t('No channels found')}</span>
           </div>
         }
         {isOwner &&
@@ -133,4 +134,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(LuminoNetworkChannels);
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(LuminoNetworkChannels));

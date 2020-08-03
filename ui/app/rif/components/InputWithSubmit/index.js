@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
+import {withTranslation} from "react-i18next";
 
 class InputWithSubmit extends Component {
 
@@ -10,6 +10,7 @@ class InputWithSubmit extends Component {
     classes: PropTypes.string,
     placeholderText: PropTypes.string,
     textInput: PropTypes.string,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -39,9 +40,9 @@ class InputWithSubmit extends Component {
 
     return <div className={classes}>
       <input onChange={this.onChange} value={value} placeholder={placeholderText} />
-      <button onClick={this.onSubmit} className="btn-primary">Change</button>
+      <button onClick={this.onSubmit} className="btn-primary">{t('Change')}</button>
     </div>;
   }
 }
 
-export default InputWithSubmit;
+export default withTranslation('translates')(InputWithSubmit);

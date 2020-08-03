@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import {Menu} from '../../../components';
 import {pageNames} from '../../index';
+import {withTranslation} from "react-i18next";
 
 class DomainExpiring extends Component {
   static propTypes = {
@@ -19,10 +20,11 @@ class DomainExpiring extends Component {
     isLuminoNode: PropTypes.bool,
     isRifStorage: PropTypes.bool,
     navigateTo: PropTypes.func,
+    t: PropTypes.func
   }
 
   render () {
-    const { domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isLuminoNode, isRifStorage } = this.props;
+    const { domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isLuminoNode, isRifStorage, t } = this.props;
     const domainInfo = {
       domainName,
       expirationDate,
@@ -41,10 +43,11 @@ class DomainExpiring extends Component {
         <div className="domain-expiring">
           <FontAwesomeIcon icon={faExclamationTriangle} color={'#D5E300'} className={'domain-expiring-icon'}/>
           <div>
-            Your domain is expiring
+            {t('Your domain is expiring')}
+
           </div>
           <div className="button-container">
-            <button onClick={() => this.props.navigateTo(pageNames.rns.renew, 'Renew Domain')}>Renew now!</button>
+            <button onClick={() => this.props.navigateTo(pageNames.rns.renew, 'Renew Domain')}>{t('Renew now!')}</button>
           </div>
         </div>
         <Menu domainInfo={domainInfo} />
@@ -83,4 +86,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(DomainExpiring)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(DomainExpiring))

@@ -1,3 +1,4 @@
+import {withTranslation} from 'react-i18next';
 const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
@@ -5,7 +6,6 @@ const h = require('react-hyperscript')
 const { HashRouter } = require('react-router-dom')
 const OldApp = require('../../old-ui/app/app')
 const { setFeatureFlag } = require('./actions')
-const I18nProvider = require('./i18n-provider')
 
 function mapStateToProps (state) {
   return {
@@ -25,7 +25,7 @@ function mapDispatchToProps (dispatch) {
     },
   }
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SelectedApp)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(withTranslation('translations')(SelectedApp))
 
 inherits(SelectedApp, Component)
 function SelectedApp () {
@@ -59,6 +59,6 @@ SelectedApp.prototype.render = function () {
   return h(HashRouter, {
     hashType: 'noslash',
   }, [
-    h(I18nProvider, [ h(OldApp) ]),
+    h(OldApp),
   ])
 }

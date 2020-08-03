@@ -1,3 +1,5 @@
+import {withTranslation} from 'react-i18next';
+
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
@@ -5,7 +7,7 @@ const inherits = require('util').inherits
 const TransactionListItem = require('./transaction-list-item')
 const { MAINNET_CODE } = require('../../../app/scripts/controllers/network/enums')
 
-module.exports = TransactionList
+module.exports = (withTranslation('translations')(TransactionList))
 
 
 inherits(TransactionList, Component)
@@ -14,7 +16,7 @@ function TransactionList () {
 }
 
 TransactionList.prototype.render = function () {
-  const { transactions, network, unapprovedMsgs, conversionRate } = this.props
+  const { transactions, network, unapprovedMsgs, conversionRate, t } = this.props
 
   var shapeShiftTxList
   if (Number(network) === MAINNET_CODE) {
@@ -79,7 +81,7 @@ TransactionList.prototype.render = function () {
             style: {
               margin: '50px 0',
             },
-          }, 'No transaction history.'),
+          }, t('No transaction history.')),
         ]),
       ]),
     ])

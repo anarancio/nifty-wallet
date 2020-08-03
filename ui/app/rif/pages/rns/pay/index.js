@@ -14,6 +14,7 @@ import {getLuminoErrorCode, isValidRNSDomain, parseLuminoError} from '../../../u
 import web3Utils from 'web3-utils';
 import {validateDecimalAmount} from '../../../utils/validations';
 import {getLoader} from '../../../utils/components';
+import {withTranslation} from "react-i18next";
 
 class ModeOption extends Select.Option {
   render () {
@@ -44,13 +45,14 @@ class ModeOption extends Select.Option {
 class ModeOptionSelected extends Component {
   static propTypes = {
     value: PropTypes.object,
+    t: PropTypes.func
   }
 
   render () {
-    const {value} = this.props;
+    const {value,t} = this.props;
     let fasterWithoutFees = null;
     if (value.value === payMode.LUMINO) {
-      fasterWithoutFees = (<small className="payment-legend">Faster and without fees</small>);
+      fasterWithoutFees = (<small className="payment-legend">{t('Faster and without fees')}</small>);
     }
     return (
       <div className="mode-dropdown-item">
@@ -358,7 +360,7 @@ class Pay extends Component {
           options={modeOptions}
           clearable={false}
           value={this.state.selectedMode}
-          valueComponent={ModeOptionSelected}
+          valueComponent={withTranslation('translations')(ModeOptionSelected)}
         />
       </div>
     );
@@ -420,4 +422,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Pay)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(Pay))

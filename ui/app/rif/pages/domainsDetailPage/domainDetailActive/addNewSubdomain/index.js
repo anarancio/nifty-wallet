@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import rifActions from '../../../../actions';
 import niftyActions from '../../../../../actions';
+import {withTranslation} from "react-i18next";
 
 class AddNewSubdomain extends Component {
   static propTypes = {
@@ -17,6 +18,7 @@ class AddNewSubdomain extends Component {
     showPopup: PropTypes.func,
     showThis: PropTypes.func,
     showTransactionConfirmPage: PropTypes.func,
+    t: PropTypes.func
   }
   constructor(props) {
     super(props);
@@ -32,7 +34,7 @@ class AddNewSubdomain extends Component {
       this.state.newSubdomain.owner,
       this.props.ownerAddress);
     this.props.showPopup('Confirmation', {
-      text: 'Please confirm the operation in the next screen to create the subdomain.',
+      text: t('Please confirm the operation in the next screen to create the subdomain.'),
       hideCancel: true,
       confirmCallback: async () => {
         this.props.showTransactionConfirmPage({
@@ -43,7 +45,7 @@ class AddNewSubdomain extends Component {
                 {
                   ...this.props.redirectParams,
                 });
-              this.props.showToast('Waiting Confirmation');
+              this.props.showToast(t('Waiting Confirmation'));
               this.props.waitForListener(transactionListenerId).then(async (transactionReceipt) => {
                 this.props.getSubdomains(this.props.domainName)
                   .then(subdomains => {
@@ -53,7 +55,7 @@ class AddNewSubdomain extends Component {
                         ...this.props.redirectParams,
                         newSubdomains: subdomains,
                       });
-                    this.props.showToast('Subdomain added');
+                    this.props.showToast(t('Subdomain added'));
                   });
               });
             },
@@ -65,20 +67,21 @@ class AddNewSubdomain extends Component {
   }
 
   render () {
+    const {t} = this.props;
     return (
       <div className="add-subdomain-container">
-        <input id="subdomain-name" key="subdomain-name" type="text" placeholder="Subdomain Name" onChange={(e) => {
+        <input id="subdomain-name" key="subdomain-name" type="text" placeholder={t("Subdomain Name")} onChange={(e) => {
           const newSubdomain = this.state.newSubdomain;
           newSubdomain.name = e.target.value;
           this.setState({newSubdomain});
         }}/>
         <div className="add-subdomain__inputs">
-          <input key="subdomain-owner" type="text" placeholder="Owner Address (Optional)" onChange={(e) => {
+          <input key="subdomain-owner" type="text" placeholder={t("Owner Address (Optional)")} onChange={(e) => {
             const newSubdomain = this.state.newSubdomain;
             newSubdomain.owner = e.target.value;
             this.setState({newSubdomain});
           }}/>
-          <button className="btn-primary" onClick={() => this.addSubdomain()}>Save</button>
+          <button className="btn-primary" onClick={() => this.addSubdomain()}>{t("Save")}</button>
         </div>
       </div>
     )
@@ -108,4 +111,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AddNewSubdomain)
+module.exports =  withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(AddNewSubdomain))

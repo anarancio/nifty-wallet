@@ -18,7 +18,7 @@ class ChannelChiplet extends Component {
       return (<div className={'channels-info-chiplet'}>
         <div className={'channels-info-chiplet-text'}>
           <div className={'channels-info-chiplet-text-domain'}>{address}</div>
-          <div className={'channels-info-chiplet-text-balance'}>Your balance: <span>{balance} {tokenSymbol}</span></div>
+          <div className={'channels-info-chiplet-text-balance'}>{t('Your balance:')} <span>{balance} {tokenSymbol}</span></div>
         </div>
         <div className={'channels-info-chiplet-status'}>
           <div>{ChannelStatusChip(getStatusForChannel(status))}</div>
