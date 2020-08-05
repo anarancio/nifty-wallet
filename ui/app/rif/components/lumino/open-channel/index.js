@@ -191,13 +191,13 @@ class OpenChannel extends Component {
   }
 
   async openChannelRequest () {
+    const {t} = this.props;
     if (this.state.amount) {
       if (!validateAmountValue(this.state.amount)) {
         this.props.showToast(t('Invalid deposit amount, should be greater than 0'), false);
         return;
       }
     }
-    const {t} = this.props;
     const callbackHandlers = new CallbackHandlers();
     callbackHandlers.requestHandler = (result) => {
       console.debug('OPEN CHANNEL REQUESTED', result);

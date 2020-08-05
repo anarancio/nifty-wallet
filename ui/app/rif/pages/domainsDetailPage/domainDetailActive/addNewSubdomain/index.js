@@ -28,6 +28,7 @@ class AddNewSubdomain extends Component {
   }
 
   async addSubdomain () {
+    const {t} = this.props;
     const transactionListenerId = await this.props.createSubdomain(
       this.props.domainName,
       this.state.newSubdomain.name.toLowerCase(),
