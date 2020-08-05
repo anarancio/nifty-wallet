@@ -13,7 +13,7 @@ class AbstractPage extends Component {
     super(props);
     this.state = {
       loading: false,
-      loadingMessage: props.t('Wait please...'),
+      loadingMessage: this.props.t('Wait please...'),
     };
   }
 
@@ -33,4 +33,4 @@ class AbstractPage extends Component {
   }
 }
 
-export default withTranslation('translations')(AbstractPage)
+export default AbstractPage;

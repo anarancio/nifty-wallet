@@ -7,7 +7,7 @@ import {registrationTimeouts} from '../../../constants';
 import {pageNames} from '../../index';
 import extend from 'xtend';
 import AbstractPage from '../../abstract-page';
-import {withTranslation} from "react-i18next";
+import {withTranslation, Trans} from "react-i18next";
 
 class DomainRegisterScreen extends AbstractPage {
 
@@ -390,4 +390,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(DomainRegisterScreen))
+module.exports = connect(mapStateToProps, mapDispatchToProps)(withTranslation('translations')(DomainRegisterScreen))
