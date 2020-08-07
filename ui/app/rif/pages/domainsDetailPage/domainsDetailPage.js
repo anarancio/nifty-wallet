@@ -14,7 +14,7 @@ class DomainsDetailScreen extends Component {
     t: PropTypes.func
 	}
 	render () {
-		let { status, t } = this.props;
+		const { status, t } = this.props;
 		return (
 		<div className={'body'}>
 			{status === 'active' &&
