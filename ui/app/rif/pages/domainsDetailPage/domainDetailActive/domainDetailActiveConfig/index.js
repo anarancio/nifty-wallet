@@ -92,7 +92,8 @@ class DomainsDetailConfigurationScreen extends Component {
       });
   }
 
-  async onChangeComboResolvers (e) {
+  async   onChangeComboResolvers (e) {
+    const {t} = this.props;
     for (const resolverItem of e.target.children) {
       if (resolverItem.value === e.target.value) {
         const address = resolverItem.getAttribute('data-address');

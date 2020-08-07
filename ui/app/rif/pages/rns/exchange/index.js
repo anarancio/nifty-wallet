@@ -8,6 +8,7 @@ class Exchange extends Component {
   static propTypes = {t: PropTypes.func}
 
   render () {
+    const {t} = this.props;
     return (<div>{t('Exchange')}</div>);
   }
 }

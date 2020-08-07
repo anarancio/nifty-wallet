@@ -35,7 +35,7 @@ class InputWithSubmit extends Component {
   }
 
   render = () => {
-    const {classes, placeholderText} = this.props
+    const {classes, placeholderText, t} = this.props
     const {value} = this.state;
 
     return <div className={classes}>

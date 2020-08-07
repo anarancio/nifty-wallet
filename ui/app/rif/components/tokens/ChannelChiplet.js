@@ -4,6 +4,7 @@ import rifActions from '../../actions';
 import PropTypes from 'prop-types';
 import {ChannelStatusChip} from './index';
 import {getStatusForChannel} from '../../utils/utils'
+import {withTranslation} from "react-i18next";
 
 class ChannelChiplet extends Component {
   static propTypes = {
@@ -12,9 +13,10 @@ class ChannelChiplet extends Component {
     tokenSymbol: PropTypes.string,
     status: PropTypes.string,
     getDomainByAddress: PropTypes.func,
+    t: PropTypes.func,
   }
   render () {
-    const { address, balance, tokenSymbol, status } = this.props;
+    const { address, balance, tokenSymbol, status, t } = this.props;
       return (<div className={'channels-info-chiplet'}>
         <div className={'channels-info-chiplet-text'}>
           <div className={'channels-info-chiplet-text-domain'}>{address}</div>
@@ -35,4 +37,4 @@ function mapStateToProps (state) {
   }
 }
 
-module.exports = connect(mapStateToProps)(ChannelChiplet)
+module.exports = connect(mapStateToProps)(withTranslation('translations')(ChannelChiplet))
