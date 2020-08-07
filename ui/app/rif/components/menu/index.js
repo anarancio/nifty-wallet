@@ -53,6 +53,7 @@ class Menu extends Component {
   }
 
   buildOptions () {
+    const {t} = this.props;
     const options = this.props.options ? this.props.options : this.getDefaultMenuOptions();
     if (options) {
       const optionFragments = [];

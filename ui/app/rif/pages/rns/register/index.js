@@ -63,7 +63,7 @@ class DomainRegisterScreen extends AbstractPage {
   }
 
   async initialize () {
-    const {domain, domainName, currentStep} = this.props;
+    const {domain, domainName, currentStep, t} = this.props;
     if (domain && !currentStep) {
       if (domain.registration) {
         if (domain.registration.status === 'finishing') {
