@@ -1,4 +1,3 @@
-
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
@@ -27,12 +26,11 @@ const BigNumber = require('bignumber.js')
 const ethNetProps = require('eth-net-props')
 import { getMetaMaskAccounts } from '../../../ui/app/selectors'
 import ToastComponent from './toast'
-import {withTranslation} from "react-i18next";
 
 const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
 
-module.exports = withTranslation('translations')(connect(mapStateToProps)(PendingTx))
+module.exports = connect(mapStateToProps)(PendingTx)
 inherits(PendingTx, Component)
 function PendingTx (props) {
   Component.call(this)
@@ -164,7 +162,7 @@ PendingTx.prototype.render = function () {
   }
 
   const isError = txMeta.simulationFails || !isValidAddress || insufficientBalance || (dangerousGasLimit && !gasLimitSpecified)
-  const {t} = this.props;
+
   return (
 
     h('div', {
@@ -311,7 +309,7 @@ PendingTx.prototype.render = function () {
                   left: '30px',
                 },
               }) : null,
-              t('Confirm Transaction'),
+              'Confirm Transaction',
               isNotification ? h(NetworkIndicator, {
                 network: network,
                 provider: provider,
@@ -335,7 +333,7 @@ PendingTx.prototype.render = function () {
                   style: {
                     fontSize: '12px',
                   },
-                }, t('Transaction Error. Exception thrown in contract code.'))
+                }, 'Transaction Error. Exception thrown in contract code.')
               : null,
 
               !isValidAddress ?
@@ -343,7 +341,7 @@ PendingTx.prototype.render = function () {
                   style: {
                     fontSize: '12px',
                   },
-                }, t('Recipient address is invalid. Sending this transaction will result in a loss of ETH. '))
+                }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH. ')
               : null,
 
               insufficientBalance ?
@@ -351,7 +349,7 @@ PendingTx.prototype.render = function () {
                   style: {
                     fontSize: '12px',
                   },
-                }, t('Insufficient balance for transaction. '))
+                }, 'Insufficient balance for transaction. ')
               : null,
 
               (dangerousGasLimit && !gasLimitSpecified) ?
@@ -359,7 +357,7 @@ PendingTx.prototype.render = function () {
                   style: {
                     fontSize: '12px',
                   },
-                }, t('Gas limit set dangerously high. Approving this transaction is liable to fail. '))
+                }, 'Gas limit set dangerously high. Approving this transaction is liable to fail. ')
               : null,
             ]) : null,
 
@@ -367,7 +365,7 @@ PendingTx.prototype.render = function () {
             // Currently not customizable, but easily modified
             // in the way that gas and gasLimit currently are.
             h('.row', [
-              h('.cell.label', t('Amount')),
+              h('.cell.label', 'Amount'),
               h(EthBalance, {
                 valueStyle,
                 dimStyle,
@@ -383,7 +381,7 @@ PendingTx.prototype.render = function () {
 
             // Gas Limit (customizable)
             h('.cell.row', [
-              h('.cell.label', t('Gas Limit')),
+              h('.cell.label', 'Gas Limit'),
               h('.cell.value', {
               }, [
                 h(BNInput, {
@@ -409,7 +407,7 @@ PendingTx.prototype.render = function () {
 
             // Gas Price (customizable)
             h('.cell.row', [
-              h('.cell.label', t('Gas Price')),
+              h('.cell.label', 'Gas Price'),
               h('.cell.value', {
               }, [
                 h(BNInput, {
@@ -432,7 +430,7 @@ PendingTx.prototype.render = function () {
 
             // Max Transaction Fee (calculated)
             h('.cell.row', [
-              h('.cell.label', t('Max Transaction Fee')),
+              h('.cell.label', 'Max Transaction Fee'),
               h(EthBalance, {
                 valueStyle,
                 dimStyle,
@@ -448,7 +446,7 @@ PendingTx.prototype.render = function () {
                 fontFamily: 'Nunito Regular',
               },
             }, [
-              h('.cell.label', t('Max Total')),
+              h('.cell.label', 'Max Total'),
               h('.cell.value', {
                 style: {
                   display: 'flex',
@@ -482,7 +480,7 @@ PendingTx.prototype.render = function () {
                   fontFamily: 'Nunito Regular',
                   fontSize: '14px',
                 },
-              }, t('Data included: {{dataLength}} bytes',{dataLength})),
+              }, `Data included: ${dataLength} bytes`),
             ]),
           ]), // End of Table
 
@@ -510,20 +508,20 @@ PendingTx.prototype.render = function () {
             style: {
               marginRight: 0,
             },
-          }, t('Reset')),
+          }, 'Reset'),
 
           // Accept Button or Buy Button
           insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, `Buy ${this.state.coinName}`) :
             h('input.confirm', {
               type: 'submit',
-              value: t('Submit'),
+              value: 'Submit',
               style: { marginLeft: '10px' },
               disabled: buyDisabled,
             }),
 
           h('button.cancel.btn-red', {
             onClick: props.cancelTransaction,
-          }, t('Reject')),
+          }, 'Reject'),
         ]),
         showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
           style: {
@@ -534,7 +532,7 @@ PendingTx.prototype.render = function () {
         }, [
           h('button.cancel.btn-red', {
             onClick: props.cancelAllTransactions,
-          }, t('Reject All')),
+          }, 'Reject All'),
         ]) : null,
       ]),
     ])
@@ -542,7 +540,6 @@ PendingTx.prototype.render = function () {
 }
 
 PendingTx.prototype.miniAccountPanelForRecipient = function (isToken, tokensTransferTo) {
-  const {t} = this.props;
   const props = this.props
   const txData = props.txData
   const txParams = txData.txParams || {}
@@ -591,7 +588,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function (isToken, tokensTran
           fontFamily: 'Nunito Bold',
           color: '#ffffff',
         },
-      }, t('New Contract')),
+      }, 'New Contract'),
 
     ])
   }
@@ -659,14 +656,13 @@ PendingTx.prototype.resetGasFields = function () {
 
 PendingTx.prototype.onSubmit = function (event) {
   event.preventDefault()
-  const {t} = this.props;
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
   this.setState({ valid, submitting: true })
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
-    this.props.dispatch(actions.displayWarning(t('Invalid Gas Parameters')))
+    this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
     this.setState({ submitting: false })
   }
 }

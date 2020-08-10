@@ -10,7 +10,6 @@ const actions = require('../../../ui/app/actions')
 const connect = require('react-redux').connect
 const { MAINNET_CODE } = require('../../../app/scripts/controllers/network/enums')
 import { countSignificantDecimals, toChecksumAddress } from '../util'
-import {withTranslation} from "react-i18next";
 
 const tokenCellDropDownPrefix = 'token-cell_dropdown_'
 
@@ -81,7 +80,7 @@ TokenCell.prototype.render = function () {
 }
 
 TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
-  const { address, symbol, string, network, userAddress, showSendTokenPage, t } = this.props
+  const { address, symbol, string, network, userAddress, showSendTokenPage } = this.props
   const { optionsMenuActive } = this.state
 
   return h(
@@ -113,7 +112,7 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
             showSendTokenPage(address)
           },
         },
-        t(`Send`),
+        `Send`,
       ),
       h(
         DropdownMenuItem,
@@ -125,7 +124,7 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
             global.platform.openWindow({ url })
           },
         },
-        t(`View token on block explorer`),
+        `View token on block explorer`,
       ),
       h(
         DropdownMenuItem,
@@ -136,7 +135,7 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
             copyToClipboard(checkSumAddress)
           },
         },
-        t('Copy address to clipboard'),
+        'Copy address to clipboard',
       ),
       h(
         DropdownMenuItem,
@@ -146,7 +145,7 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
             this.props.removeToken({ address, symbol, string, network, userAddress })
           },
         },
-        t('Remove'),
+        'Remove',
       ),
     ],
   )
@@ -180,5 +179,5 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = withTranslation('translations')(connect(null, mapDispatchToProps)(TokenCell))
+module.exports = connect(null, mapDispatchToProps)(TokenCell)
 
