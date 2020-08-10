@@ -19,6 +19,7 @@ import SendProfile from './send-profile'
 import SendHeader from './send-header'
 import ErrorComponent from '../error'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
+import {withTranslation} from "react-i18next";
 
 class SendTransactionScreen extends PersistentForm {
   constructor (props) {
@@ -36,10 +37,11 @@ class SendTransactionScreen extends PersistentForm {
     PersistentForm.call(this)
   }
   render () {
+    const { t } = this.props;
     const { isLoading, token, amount } = this.state
     if (isLoading) {
       return (
-        <Loading isLoading={isLoading} loadingMessage="Loading..." />
+        <Loading isLoading={isLoading} loadingMessage={ t("Loading...") } />
       )
     }
     this.persistentFormParentId = 'send-tx-form'
@@ -57,12 +59,12 @@ class SendTransactionScreen extends PersistentForm {
 
       <div className="send-screen flex-column flex-grow">
         <SendProfile isToken={true} token={token} />
-        <SendHeader title={`Send ${this.state.token.symbol} Tokens`} />
+        <SendHeader title={t('Send {{tokenSymbol}} Tokens', { tokenSymbol: this.state.token.symbol })} />
         <ErrorComponent error={error} />
         <section className="flex-row flex-center">
           <EnsInput
             name="address"
-            placeholder="Recipient Address"
+            placeholder={t("Recipient Address")}
             onChange={() => this.recipientDidChange.bind(this)}
             network={network}
             identities={identities}
@@ -74,7 +76,7 @@ class SendTransactionScreen extends PersistentForm {
             name="amount"
             value={amount}
             onChange={(e) => this.amountDidChange(e.target.value)}
-            placeholder="Amount"
+            placeholder={t("Amount")}
             type="number"
             style={{
               marginRight: '6px',
@@ -83,7 +85,7 @@ class SendTransactionScreen extends PersistentForm {
           <button
             onClick={() => this.onSubmit()}
             disabled={nextDisabled}
-          >Next
+          >{t('Next')}
           </button>
         </section>
       </div>
@@ -124,7 +126,7 @@ class SendTransactionScreen extends PersistentForm {
 
   createFreshTokenTracker () {
     this.setState({isLoading: true})
-    const { address, tokenAddress, network } = this.props
+    const { address, tokenAddress, network, t } = this.props
     if (!isValidAddress(tokenAddress, network)) return
     if (this.tracker) {
       // Clean up old trackers when refreshing:
@@ -156,7 +158,7 @@ class SendTransactionScreen extends PersistentForm {
       this.updateBalances(this.tracker.serialize())
     })
     .catch((reason) => {
-      log.error(`Problem updating balances`, reason)
+      log.error(t(`Problem updating balances`), reason)
       this.setState({ isLoading: false })
     })
   }
@@ -182,6 +184,7 @@ class SendTransactionScreen extends PersistentForm {
   }
 
   async onSubmit () {
+    const { t } = this.props;
     const state = this.state || {}
     const { token, amount } = state
     let recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
@@ -199,14 +202,14 @@ class SendTransactionScreen extends PersistentForm {
     let message
 
     if (isNaN(amount) || amount === '') {
-      message = 'Invalid token\'s amount.'
+      message = t('Invalid token\'s amount.')
       return this.props.displayWarning(message)
     }
 
     if (parts[1]) {
       const decimal = parts[1]
       if (decimal.length > 18) {
-        message = 'Token\'s amount is too precise.'
+        message = t('Token\'s amount is too precise.')
         return this.props.displayWarning(message)
       }
     }
@@ -216,22 +219,22 @@ class SendTransactionScreen extends PersistentForm {
     const tokensValueWithDec = new BigNumber(calcTokenAmountWithDec(amount, token.decimals))
 
     if (tokensValueWithDec.gt(token.balance)) {
-      message = 'Insufficient token\'s balance.'
+      message = t('Insufficient token\'s balance.')
       return this.props.displayWarning(message)
     }
 
     if (amount < 0) {
-      message = 'Can not send negative amounts of ETH.'
+      message = t('Can not send negative amounts of ETH.')
       return this.props.displayWarning(message)
     }
 
     if ((isInvalidChecksumAddress(recipient, this.props.network))) {
-      message = 'Recipient address checksum is invalid.'
+      message = t('Recipient address checksum is invalid.')
       return this.props.displayWarning(message)
     }
 
     if (!isValidAddress(recipient, this.props.network) || (!recipient)) {
-      message = 'Recipient address is invalid.'
+      message = t('Recipient address is invalid.')
       return this.props.displayWarning(message)
     }
 
@@ -310,4 +313,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SendTransactionScreen)
+module.exports = withTranslation('translations')(connect(mapStateToProps, mapDispatchToProps)(SendTransactionScreen))

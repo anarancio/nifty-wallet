@@ -111,7 +111,7 @@ class LuminoChannels extends Component {
           </div>
           <div className="form-segment">
             <button disabled={!(this.state.paymentInput > 0)} className="btn-primary"
-                    onClick={() => this.sendLuminoPayment()}>Pay
+                    onClick={() => this.sendLuminoPayment()}>{t('Pay')}
             </button>
           </div>
         </div>
@@ -225,7 +225,7 @@ class LuminoChannels extends Component {
           {isOpen &&
           <CloseChannel
             partner={channel.partner_address}
-            buttonLabel="Close"
+            buttonLabel={t("Close")}
             tokenAddress={channel.token_address}
             tokenNetworkAddress={channel.token_network_identifier}
             tokenName={channel.token_name}
