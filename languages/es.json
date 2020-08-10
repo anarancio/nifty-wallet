@@ -219,6 +219,24 @@
     "Insufficient token's balance.": "Balance de tokens insuficiente.",
     "Can not send negative amounts of ETH.": "No se puede envíar una cantidad negativa de ETH.",
     "Recipient address checksum is invalid.": "El checksum de la dirección del receptor es inválido.",
-    "Recipient address is invalid.": "La dirección del receptor es inválida."
+    "Recipient address is invalid.": "La dirección del receptor es inválida.",
+
+    "Confirm Transaction": "Confirmar Transacción",
+    "Transaction Error. Exception thrown in contract code.": "Error en la transacción. Una excepción ha ocurrido en el código del contrato.",
+    "Recipient address is invalid. Sending this transaction will result in a loss of ETH. ": "La dirección del recepto es inválida. Enviar esta transacción resultaría en una perdidade de ETH. ",
+    "Insufficient balance for transaction. ": "Balance insuficiente para la transacción. ",
+    "Gas limit set dangerously high. Approving this transaction is liable to fail. ": "Límite de gas peglirosamente alto. Es probable que esta transaccion falle si la aprueba.",
+    "Gas Limit": "Limite de Gas",
+    "Gas Price": "Precio de Gas",
+    "Max Transaction Fee": "Comisión Máxima",
+    "Max Total": "Total Máximo",
+    "Data included: {{dataLength}} bytes": "Datos incluidos: {{dataLength}} bytes",
+    "Reset": "Reiniciar",
+    "Submit": "Enviar",
+    "Reject": "Rechazar",
+    "Reject All": "Rechazar Todo",
+    "New Contract": "Nuevo Contrato",
+    "Invalid Gas Parameters": "Parámetros de Gas inválidos",
+    "Estimating transaction cost…": "Estimando costo de la  transacción..."
   }
 }

@@ -179,7 +179,7 @@ class OpenChannel extends Component {
         </div>
         <div className="form-segment">
           <button className="btn-primary" disabled={!this.readyToOpenChannel()}
-                  onClick={() => this.openChannelRequest()}>Add
+                  onClick={() => this.openChannelRequest()}>{t('Add')}
           </button>
         </div>
       </div>

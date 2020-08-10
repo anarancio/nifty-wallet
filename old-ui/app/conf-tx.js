@@ -1,3 +1,4 @@
+
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
@@ -12,11 +13,13 @@ const PendingTx = require('./components/pending-tx')
 import PendingMsg from './components/pending-msg'
 import PendingPersonalMsg from './components/pending-personal-msg'
 import PendingTypedMsg from './components/pending-typed-msg'
+import {withTranslation} from "react-i18next";
+
 const Loading = require('./components/loading')
 const { DAI_CODE, POA_SOKOL_CODE, RSK_TESTNET_CODE, GOERLI_TESTNET_CODE } = require('../../app/scripts/controllers/network/enums')
 const { getMetaMaskAccounts } = require('../../ui/app/selectors')
 
-module.exports = connect(mapStateToProps)(ConfirmTxScreen)
+module.exports = withTranslation('translations')(connect(mapStateToProps)(ConfirmTxScreen))
 
 function mapStateToProps (state) {
   const { metamask, appState } = state
@@ -55,7 +58,7 @@ function ConfirmTxScreen () {
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
   const { network, unapprovedTxs, currentCurrency, computedBalances,
-    unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, blockGasLimit } = props
+    unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, blockGasLimit, t } = props
   let { conversionRate } = props
 
   const isTestnet = parseInt(network) === POA_SOKOL_CODE || parseInt(network) === RSK_TESTNET_CODE || parseInt(network) === GOERLI_TESTNET_CODE
@@ -86,7 +89,7 @@ ConfirmTxScreen.prototype.render = function () {
 
       h(LoadingIndicator, {
         isLoading: this.state ? !this.state.bypassLoadingScreen : txData.loadingDefaults,
-        loadingMessage: 'Estimating transaction cost…',
+        loadingMessage: t('Estimating transaction cost…'),
         canBypass: true,
         bypass: () => {
           this.setState({bypassLoadingScreen: true})
