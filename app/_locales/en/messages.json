@@ -167,7 +167,7 @@
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
   },
-  "connect":
+  "connect": {
     "message": "Connect"
   },
   "connecting": {
