@@ -178,7 +178,13 @@ const mapDispatchToProps = dispatch => {
     waitForListener: (transactionListenerId) => dispatch(rifActions.waitForTransactionListener(transactionListenerId)),
     setNewResolver: (domainName, resolverAddress, subdomainName) => dispatch(rifActions.setResolverAddress(domainName, resolverAddress, subdomainName)),
     showTransactionConfirmPage: (callbacks) => dispatch(rifActions.goToConfirmPageForLastTransaction(callbacks)),
-    showDomainConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, props)),
+    showDomainConfigPage: (props) => dispatch(rifActions.navigateTo(pageNames.rns.domainsDetailConfiguration, {
+      ...props,
+      tabOptions: {
+        showSearchbar: false,
+        showBack: true,
+      },
+    })),
     getConfiguration: () => dispatch(rifActions.getConfiguration()),
     getResolver: (domainName, subdomainName) => dispatch(rifActions.getResolver(domainName, subdomainName)),
   }
