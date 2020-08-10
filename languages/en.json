@@ -203,6 +203,22 @@
     "Open": "Open",
     "Waiting for Close": "Waiting for Close",
     "Opening": "Opening",
-    "Closed": "Closed"
+    "Closed": "Closed",
+    "Send:": "Send",
+    "View token on block explorer": "View token on block explorer",
+    "Copy address to clipboard": "Copy address to clipboard",
+    "Remove": "Remove",
+    "Send {{tokenSymbol}} Tokens": "Send {{tokenSymbol}} Tokens",
+    "Loading...": "Loading...",
+    "Recipient Address": "Recipient Address",
+    "Amount":  "Amount",
+    "Next": "Next",
+    "Problem updating balances": "Problem updating balances",
+    "Invalid token's amount.": "Invalid token's amount.",
+    "Token's amount is too precise.": "Token's amount is too precise.",
+    "Insufficient token's balance.": "Insufficient token's balance.",
+    "Can not send negative amounts of ETH.": "Can not send negative amounts of ETH.",
+    "Recipient address checksum is invalid.": "Recipient address checksum is invalid.",
+    "Recipient address is invalid.": "ecipient address is invalid."
   }
 }
