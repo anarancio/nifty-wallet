@@ -13,7 +13,7 @@ import {SLIP_ADDRESSES, PRIORITY_SLIP_ADDRESSES} from '../constants/slipAddresse
 import * as niftyActions from '../../actions';
 import * as lodash from 'lodash';
 import {WAIT_FOR_CONFIRMATION_DEFAULT, WAIT_FOR_NOTIFIER} from '../../constants/common';
-import {withTranslation} from "react-i18next";
+import {withTranslation} from 'react-i18next';
 
 class ChainAddresses extends Component {
 

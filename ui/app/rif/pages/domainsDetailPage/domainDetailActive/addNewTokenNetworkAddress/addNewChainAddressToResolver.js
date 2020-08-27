@@ -17,7 +17,9 @@ class AddNewChainAddressToResolver extends Component {
 
   constructor (props) {
     super(props);
-    const slipChainAddresses = [...props.slipChainAddresses];
+    const slipChainAddresses = [...props.slipChainAddresses.map(slipAddress => {
+      return {label: slipAddress.name, ...slipAddress};
+    })];
     this.state = {
       slipChainAddresses: slipChainAddresses,
       selectedChainAddress: slipChainAddresses[0],
@@ -39,13 +41,13 @@ class AddNewChainAddressToResolver extends Component {
     const selectValue = ({value}) => {
       const icon = value.icon ? value.icon : DEFAULT_ICON_SVG;
       return (
-        <div>
-          <span>
+        <div className="Select-value">
+          <span className="Select-value-label" role="option" aria-selected="true" id="react-select-2--value-item">
             <img className="select-token-item-icon" src={'/images/rif/' + icon}/>
             <span>{value.name}</span>
           </span>
         </div>
-      )
+      );
     }
     const selectOption = (props) => {
       const {option} = props;
@@ -72,12 +74,14 @@ class AddNewChainAddressToResolver extends Component {
         </div>
       )
     }
+    // future reference, react-select that we use is v1, here is the documentation https://v1.react-select.com/
     return (
       <div className="add-address-container">
-        <div id="comboChainAddresses">
+        <div>
           <Select
-            searchable={false}
-            arrowRenderer={() => <div className={'combo-selector-triangle'}></div>}
+            noResultsText="No Network Found"
+            searchPromptText="Enter a name"
+            arrowRenderer={() => <div className="combo-selector-triangle"/>}
             onChange={this.updateChainAddress}
             optionComponent={selectOption}
             options={this.state.slipChainAddresses}
