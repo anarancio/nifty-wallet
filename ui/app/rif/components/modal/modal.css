@@ -16,7 +16,7 @@
   font-family: var(--primary-font);
   color: var(--gray-modal-title);
   max-width: 100%;
-  line-break: anywhere;
+  word-wrap: break-word;
 }
 
 .modal-message h1 {
