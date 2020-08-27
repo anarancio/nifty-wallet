@@ -12,7 +12,7 @@ class AddNewChainAddressToResolver extends Component {
     updateChainAddress: PropTypes.func.isRequired,
     updateAddress: PropTypes.func.isRequired,
     option: PropTypes.object,
-    t: PropTypes.func
+    t: PropTypes.func,
   }
 
   constructor (props) {
@@ -79,8 +79,9 @@ class AddNewChainAddressToResolver extends Component {
       <div className="add-address-container">
         <div>
           <Select
-            noResultsText="No Network Found"
-            searchPromptText="Enter a name"
+            noResultsText={this.props.t('No Network Found')}
+            searchPromptText={this.props.t('Type a name')}
+            placeholder={this.props.t('Select') + '...'}
             arrowRenderer={() => <div className="combo-selector-triangle"/>}
             onChange={this.updateChainAddress}
             optionComponent={selectOption}

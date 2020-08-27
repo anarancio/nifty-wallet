@@ -236,6 +236,9 @@
     "Reject All": "Reject All",
     "New Contract": "New Contract",
     "Invalid Gas Parameters": "Invalid Gas Parameters",
-    "Estimating transaction cost…": "Estimating transaction cost…"
+    "Estimating transaction cost…": "Estimating transaction cost…",
+    "No Network Found": "No Network Found",
+    "Type a name": "Type a name",
+    "Select": "Select"
   }
 }
