@@ -3,11 +3,23 @@
 }
 
 .add-address-container .Select-control {
-  max-width: 200px;
   border-width: 1px;
   padding: 2px;
   color: var(--gray-text);
   font-size: 12px;
+}
+
+.add-address-container .Select {
+  width: 15.5em;
+}
+
+.add-address-container .Select-value, .add-address-container .Select-value .Select-value-label {
+  display: flex;
+  align-items: center;
+}
+
+.add-address-container .Select-value .Select-value-label .select-token-item-icon {
+  margin-right: 0.5em;
 }
 
 .add-address-container .Select-control .Select-input {
