@@ -34,7 +34,7 @@ class DomainRegisterScreen extends AbstractPage {
     showDomainList: PropTypes.func,
     tabOptions: PropTypes.object,
     showLoading: PropTypes.func,
-    t: PropTypes.func
+    t: PropTypes.func,
   }
 
   constructor (props) {
@@ -203,7 +203,7 @@ class DomainRegisterScreen extends AbstractPage {
   getTitle (currentStep) {
     const {t, domainName} = this.props;
     if (currentStep !== 'registered') {
-      return (<h3 className="buying-name">{t('Buying {{domainName}}', domainName)}</h3>);
+      return (<h3 className="buying-name">{t('Buying {{domainName}}', {domainName})}</h3>);
     }
     return null;
   }
@@ -272,7 +272,7 @@ class DomainRegisterScreen extends AbstractPage {
       ),
       registered: (
         <div className="domain-registered text-center">
-          <h4 className="domain-registered__title">{t("Congrats!")}</h4>
+          <h4 className="domain-registered__title">{t('Congrats!')}</h4>
           <p className="domain-registered__name">{t('{{domainName}} is yours', {domainName: this.props.domainName})}</p>
           <p className="domain-registered__text">{t('Check it in the explorer')}</p>
         </div>
