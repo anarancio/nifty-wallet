@@ -59,10 +59,17 @@ function luminoCallbacksRunning (appState, action) {
   });
 }
 
+function isInitProcessFinalized (appState, action) {
+  return extend(appState, {
+    isInitProcessFinalized: action.data,
+  });
+}
+
 export const rifReducers = {
   navigateTo,
   showMenu,
   showModal,
   landingPage,
   luminoCallbacksRunning,
+  isInitProcessFinalized,
 }

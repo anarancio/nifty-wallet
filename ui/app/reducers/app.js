@@ -878,6 +878,9 @@ function reduceApp (state, action) {
     case rifActions.LUMINO_CALLBACKS_RUNNING:
       return rifReducers.luminoCallbacksRunning(appState, action)
 
+    case rifActions.INIT_PROCESS_FINALIZED:
+      return rifReducers.isInitProcessFinalized(appState, action)
+
     default:
       return appState
   }

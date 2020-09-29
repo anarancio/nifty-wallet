@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
+import rifActions from '../../../../ui/app/rif/actions'
 import { capitalizeFirstLetter } from '../../../../app/scripts/lib/util'
 
 class ForgetDeviceScreen extends Component {
@@ -18,6 +19,7 @@ class ForgetDeviceScreen extends Component {
 		showConnectHWWalletPage: PropTypes.func,
 		forgetDevice: PropTypes.func,
 		goHome: PropTypes.func,
+    setUsingHardwareWallet: PropTypes.func,
 	}
 
 	render () {
@@ -55,6 +57,7 @@ class ForgetDeviceScreen extends Component {
 							accounts: [],
 							unlocked: false,
 						})
+            this.props.setUsingHardwareWallet(false);
 					})
 					.catch(e => {
 						this.setState({ error: (e.message || e.toString()) })
@@ -79,6 +82,7 @@ const mapDispatchToProps = dispatch => {
     showConnectHWWalletPage: () => dispatch(actions.showConnectHWWalletPage()),
     forgetDevice: (device, clearAccounts) => dispatch(actions.forgetDevice(device, clearAccounts)),
     goHome: () => dispatch(actions.goHome()),
+    setUsingHardwareWallet: (using) => dispatch(rifActions.setUsingHardwareWallet(using)),
   }
 }
 

@@ -133,7 +133,7 @@ class AccountList extends Component {
           type="default"
           large={true}
           className="new-account-connect-form__button btn-violet"
-          onClick={this.props.onCancel.bind(this)}
+          onClick={this.props.onCancel.bind(this, this.props.device)}
         >Cancel</Button>
         <Button
           type="primary"
