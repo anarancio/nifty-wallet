@@ -124,6 +124,7 @@ class DomainsDetailActiveScreen extends Component {
     isLuminoNode: PropTypes.func,
     showPay: PropTypes.func,
     getResolver: PropTypes.func,
+    isUsingHardwareWallet: PropTypes.bool,
   }
 
   constructor (props) {
@@ -150,11 +151,12 @@ class DomainsDetailActiveScreen extends Component {
       resolvers: [],
       isLuminoNode: false,
       resolver: {},
+      isUsingHardwareWallet: false,
     };
   }
 
   render () {
-    const { domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, newChainAddresses, newSubdomains, showPay } = this.props;
+    const { domainName, content, expirationDate, autoRenew, ownerAddress, isOwner, isRifStorage, newChainAddresses, newSubdomains, showPay, isUsingHardwareWallet } = this.props;
     const {resolvers, isLuminoNode, resolver} = this.state;
     const selectedResolverAddress = (resolver && resolver.address) ? resolver.address.toLowerCase() : '';
     const domainInfo = {
@@ -168,6 +170,16 @@ class DomainsDetailActiveScreen extends Component {
       content,
       selectedResolverAddress,
     };
+
+    const luminoNetworks = !isUsingHardwareWallet ? (
+      <LuminoNetworkChannels
+        isOwner={isOwner}
+        paginationSize={PAGINATION_DEFAULT_SIZE}
+        classes={styles.LuminoNetworkChannels}
+        pageName={pageNames.rns.domainsDetail}
+        tabIndex={0}
+      />
+    ) : null;
 
     return (
       <div className="domain-detail">
@@ -223,13 +235,7 @@ class DomainsDetailActiveScreen extends Component {
             }}
             pageName={pageNames.rns.domainsDetail}
           />
-          <LuminoNetworkChannels
-            isOwner={isOwner}
-            paginationSize={PAGINATION_DEFAULT_SIZE}
-            classes={styles.LuminoNetworkChannels}
-            pageName={pageNames.rns.domainsDetail}
-            tabIndex={0}
-          />
+          {luminoNetworks}
         </div>
       </div>
     );
@@ -255,6 +261,7 @@ function mapStateToProps (state) {
     newSubdomains: params.newSubdomains || details.newSubdomains || [],
     disableResolvers: details.disableResolvers,
     domain: domain,
+    isUsingHardwareWallet: state.appState.isUsingHardwareWallet,
   }
 }
 

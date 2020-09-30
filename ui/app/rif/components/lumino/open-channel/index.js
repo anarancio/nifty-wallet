@@ -30,8 +30,7 @@ class OpenChannel extends Component {
     getTokens: PropTypes.func,
     option: PropTypes.object,
     domainNotExists: PropTypes.func,
-    t: PropTypes.func,
-    isUsingHardwareWallet: PropTypes.func,
+    t: PropTypes.func
   }
 
   constructor (props) {
@@ -63,10 +62,7 @@ class OpenChannel extends Component {
       selectedToken: selectedToken,
       loading: false,
       loadingMessage: t('Please Wait...'),
-      isUsingHardwareWallet: false,
     };
-    this.props.isUsingHardwareWallet()
-      .then(isUsingHardwareWallet => this.setState({isUsingHardwareWallet}));
   }
 
   changeDestination (event) {
@@ -92,7 +88,7 @@ class OpenChannel extends Component {
   }
 
   getBody () {
-    const {tokensOptions, selectedToken, loading, isUsingHardwareWallet} = this.state;
+    const {tokensOptions, selectedToken, loading} = this.state;
     const {t} = this.props;
 
     if (loading) {
@@ -144,11 +140,8 @@ class OpenChannel extends Component {
       return getLoader(this.state.loadingMessage);
     }
 
-    const hardwareMessage = isUsingHardwareWallet ? (<div className="block-ui-message"><div>Not supported using hardware wallet</div></div>) : null;
-
     return (
-      <div className={isUsingHardwareWallet ? 'block-ui' : ''}>
-        {hardwareMessage}
+      <div>
         {(!this.props.tokenAddress) &&
         <div id="comboChainAddresses" className="select-token-container">
           <Select
@@ -165,7 +158,7 @@ class OpenChannel extends Component {
         }
         <div className="form-segment">
           <input className="domain-address-input domain-address-input--open-channel" type="text"
-                 placeholder={t('Enter address / domain')}
+                 placeholder={t("Enter address / domain")}
                  onChange={(event) => this.changeDestination(event)}/>
           <span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -180,7 +173,7 @@ class OpenChannel extends Component {
         <div className="form-segment">
           <input className="amount-input amount-input--open-channel"
                  type="text"
-                 placeholder={t('{{tokenSymbol}} Amount', {tokenSymbol: this.state.selectedToken.symbol})}
+                 placeholder={t("{{tokenSymbol}} Amount", {tokenSymbol: this.state.selectedToken.symbol})}
                  onKeyDown={event => this.validateAmount(event)}
                  onChange={event => this.changeAmount(event)}/>
         </div>
@@ -343,7 +336,6 @@ function mapDispatchToProps (dispatch) {
     createDeposit: (partner, tokenAddress, tokenNetworkAddress, channelIdentifier, amount, callbackHandlers) =>
       dispatch(rifActions.createDeposit(partner, tokenAddress, tokenNetworkAddress, channelIdentifier, amount, callbackHandlers)),
     domainNotExists: (domainName) => dispatch(rifActions.checkDomainAvailable(domainName)),
-    isUsingHardwareWallet: () => dispatch(rifActions.isUsingHardwareWallet()),
   };
 }
 

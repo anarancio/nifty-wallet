@@ -65,6 +65,12 @@ function isInitProcessFinalized (appState, action) {
   });
 }
 
+function isUsingHardwareWallet (appState, action) {
+  return extend(appState, {
+    isUsingHardwareWallet: action.data,
+  });
+}
+
 export const rifReducers = {
   navigateTo,
   showMenu,
@@ -72,4 +78,5 @@ export const rifReducers = {
   landingPage,
   luminoCallbacksRunning,
   isInitProcessFinalized,
+  isUsingHardwareWallet,
 }

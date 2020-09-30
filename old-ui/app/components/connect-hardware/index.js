@@ -310,6 +310,7 @@ ConnectHardwareForm.propTypes = {
   customHdPaths: PropTypes.object,
   finalizeInitProcess: PropTypes.func,
   isInitProcessFinalized: PropTypes.func,
+  setUsingHardwareWallet: PropTypes.func,
 }
 
 const mapStateToProps = state => {

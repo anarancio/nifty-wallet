@@ -226,14 +226,19 @@ export default class RifController {
 
   setUsingHardwareWallet (using = true) {
     const state = this.store.getState();
-    state.usingHardwareWallet = using;
+    state[this.address] = {
+      usingHardwareWallet: using,
+    };
     this.store.updateState(state);
     return Promise.resolve();
   }
 
   isUsingHardwareWallet () {
     const state = this.store.getState();
-    return Promise.resolve(state.usingHardwareWallet);
+    if (state[this.address]) {
+      return Promise.resolve(state[this.address].usingHardwareWallet);
+    }
+    return Promise.resolve(false);
   }
 
   /**

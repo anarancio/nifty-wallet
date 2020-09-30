@@ -6,7 +6,8 @@ import LuminoNetworkItem from '../../components/LuminoNetworkItem';
 import {pageNames} from '../names';
 import {GenericTable, OpenChannel} from '../../components';
 import SearchLuminoNetworks from '../../components/searchLuminoNetworks';
-import {withTranslation} from "react-i18next";
+import {withTranslation} from 'react-i18next';
+import {getBlockUiMessage} from '../../utils/components';
 
 const styles = {
   myLuminoNetwork: {
@@ -32,7 +33,7 @@ class LuminoHome extends Component {
     currentAddress: PropTypes.string,
     navigateTo: PropTypes.func,
     t: PropTypes.func,
-    isUsingHardwareWallet: PropTypes.func,
+    isUsingHardwareWallet: PropTypes.bool,
   }
 
   constructor (props) {
@@ -46,17 +47,14 @@ class LuminoHome extends Component {
         withChannels: [],
         withoutChannels: [],
       },
-      isUsingHardwareWallet: false,
     }
-    this.props.isUsingHardwareWallet()
-      .then(isUsingHardwareWallet => this.setState({isUsingHardwareWallet}));
   }
 
   componentDidMount () {
     this.getLuminoNetworks();
   }
 
-  async getLuminoNetworks() {
+  async getLuminoNetworks () {
     const {getLuminoNetworks, currentAddress} = this.props;
     const networks = await getLuminoNetworks(currentAddress);
     if (networks && networks.withChannels.length || networks.withoutChannels.length) {
@@ -97,8 +95,8 @@ class LuminoHome extends Component {
   }
 
   render () {
-    const {networks, filteredNetworks, isUsingHardwareWallet} = this.state;
-    const {t} = this.props;
+    const {networks, filteredNetworks} = this.state;
+    const {t, isUsingHardwareWallet} = this.props;
     const myNetworks = this.getNetworkItems(filteredNetworks.withChannels)
     const otherNetworks = this.getNetworkItems(filteredNetworks.withoutChannels)
     const combinedNetworks = [...networks.withChannels, ...networks.withoutChannels];
@@ -111,7 +109,7 @@ class LuminoHome extends Component {
       accessor: 'content',
     }];
 
-    const hardwareMessage = isUsingHardwareWallet ? (<div className="block-ui-message"><div>Not supported using hardware wallet</div></div>) : null;
+    const hardwareMessage = isUsingHardwareWallet ? getBlockUiMessage(t('Not supported feature using hardware wallet')) : null;
 
     return (
       <div className={'rif-home-body' + (isUsingHardwareWallet ? ' block-ui' : '')}>
@@ -144,7 +142,7 @@ class LuminoHome extends Component {
             paginationSize={3}/>
         </div>
         }
-        <div  className="lumino-list-container">
+        <div className="lumino-list-container">
           <OpenChannel
             reloadChannels={() => this.getLuminoNetworks()}
             afterChannelCreated={() => this.getLuminoNetworks()}
@@ -158,6 +156,7 @@ class LuminoHome extends Component {
 function mapStateToProps (state) {
   return {
     currentAddress: state.metamask.selectedAddress.toLowerCase(),
+    isUsingHardwareWallet: state.appState.isUsingHardwareWallet,
   }
 }
 
@@ -177,7 +176,6 @@ function mapDispatchToProps (dispatch) {
         },
       }));
     },
-    isUsingHardwareWallet: () => dispatch(rifActions.isUsingHardwareWallet()),
   }
 }
 

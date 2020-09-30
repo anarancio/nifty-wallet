@@ -240,6 +240,7 @@
     "Estimating transaction cost…": "Estimando costo de la  transacción…",
     "No Network Found": "Red no encontrada",
     "Type a name": "Escribe un nombre",
-    "Select": "Seleccione"
+    "Select": "Seleccione",
+    "Not supported feature using hardware wallet": "Funcionalidad no soportada utilizando wallet física"
   }
 }

@@ -17,6 +17,7 @@ const rifActions = {
   RIF_LANDING_PAGE: 'RIF_LANDING_PAGE',
   LUMINO_CALLBACKS_RUNNING: 'LUMINO_CALLBACKS_RUNNING',
   INIT_PROCESS_FINALIZED: 'INIT_PROCESS_FINALIZED',
+  USING_HARDWARE_WALLET: 'USING_HARDWARE_WALLET',
   setBackgroundConnection,
   // RNS
   checkDomainAvailable,
@@ -86,6 +87,7 @@ const rifActions = {
   isInitProcessFinalized,
   setUsingHardwareWallet,
   isUsingHardwareWallet,
+  updateUsingWalletStatus,
 }
 
 let background = null;
@@ -1285,7 +1287,7 @@ function finalizeInitProcess () {
           handleError(error, dispatch);
           return reject(error);
         }
-        dispatch(setInitProcessFinalized(true));
+        dispatch(triggerInitProcessFinalizedActionUpdate(true));
         return resolve();
       });
     });
@@ -1297,10 +1299,10 @@ function updateInitProcessStatus () {
     return new Promise((resolve, reject) => {
       background.rif.isInitProcessFinalized((error, finalized) => {
         if (error) {
-          dispatch(setInitProcessFinalized(false));
+          dispatch(triggerInitProcessFinalizedActionUpdate(false));
           return reject(error);
         }
-        dispatch(setInitProcessFinalized(finalized));
+        dispatch(triggerInitProcessFinalizedActionUpdate(finalized));
         return resolve(finalized);
       });
     });
@@ -1308,10 +1310,17 @@ function updateInitProcessStatus () {
 }
 
 
-function setInitProcessFinalized (finalized) {
+function triggerInitProcessFinalizedActionUpdate (finalized) {
   return {
     type: rifActions.INIT_PROCESS_FINALIZED,
     data: finalized,
+  }
+}
+
+function triggerIsUsingHardwareWalletActionUpdate (using = true) {
+  return {
+    type: rifActions.USING_HARDWARE_WALLET,
+    data: using,
   }
 }
 
@@ -1337,6 +1346,7 @@ function setUsingHardwareWallet (using = true) {
           handleError(error, dispatch);
           return reject(error);
         }
+        dispatch(triggerIsUsingHardwareWalletActionUpdate(using));
         return resolve();
       });
     });
@@ -1351,6 +1361,21 @@ function isUsingHardwareWallet () {
           handleError(error, dispatch);
           return reject(error);
         }
+        return resolve(using);
+      });
+    });
+  };
+}
+
+function updateUsingWalletStatus () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.isUsingHardwareWallet((error, using) => {
+        if (error) {
+          dispatch(triggerIsUsingHardwareWalletActionUpdate(false));
+          return reject(error);
+        }
+        dispatch(triggerIsUsingHardwareWalletActionUpdate(using));
         return resolve(using);
       });
     });

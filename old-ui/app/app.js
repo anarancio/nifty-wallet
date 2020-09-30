@@ -113,12 +113,13 @@ function mapStateToProps (state) {
 }
 
 App.prototype.componentDidUpdate = function () {
-  this.setupLuminoDefaultCallbacks(this.props.dispatch);
-  this.updateInitProcessStatus();
+  this.setupLuminoDefaultCallbacks(this.props.dispatch)
+  this.updateStatusFlags()
 }
 
-App.prototype.updateInitProcessStatus = async function () {
+App.prototype.updateStatusFlags = async function () {
   await this.props.dispatch(rifActions.updateInitProcessStatus())
+  await this.props.dispatch(rifActions.updateUsingWalletStatus())
 }
 
 App.prototype.setupLuminoDefaultCallbacks = function (dispatch) {
