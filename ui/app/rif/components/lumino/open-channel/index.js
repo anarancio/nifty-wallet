@@ -11,7 +11,7 @@ import {DEFAULT_ICON} from '../../../constants';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {getLoader} from '../../../utils/components';
 import ethUtils from 'ethereumjs-util';
-import {withTranslation} from "react-i18next";
+import {withTranslation} from 'react-i18next';
 
 class OpenChannel extends Component {
 
@@ -108,7 +108,7 @@ class OpenChannel extends Component {
     }
 
     const selectOption = (props) => {
-      const {option, t} = props;
+      const {option} = props;
       const icon = option.icon ? option.icon : DEFAULT_ICON;
       return (
         <div

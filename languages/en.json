@@ -239,6 +239,7 @@
     "Estimating transaction cost…": "Estimating transaction cost…",
     "No Network Found": "No Network Found",
     "Type a name": "Type a name",
-    "Select": "Select"
+    "Select": "Select",
+    "Not supported feature using hardware wallet": "Not supported feature using hardware wallet"
   }
 }

@@ -1,6 +1,5 @@
 // Constant names, if you want to add a new token (icon), just go to constant.js and add one to the array, then add it to getNameTokenForIcon
 import {SLIP_ADDRESSES, PRIORITY_SLIP_ADDRESSES} from '../constants/slipAddresses'
-import React from 'react';
 import _ from 'lodash';
 
 const slipChainAddresses = [...PRIORITY_SLIP_ADDRESSES, ...SLIP_ADDRESSES]

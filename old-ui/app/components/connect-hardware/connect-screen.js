@@ -18,6 +18,9 @@ class ConnectScreen extends Component {
     static propTypes = {
         connectToHardwareWallet: PropTypes.func.isRequired,
         browserSupported: PropTypes.bool.isRequired,
+        goHome: PropTypes.func,
+        isInitProcessFinalized: PropTypes.bool,
+        finalizeInitProcess: PropTypes.func,
     }
 
     connect = () => {
@@ -109,10 +112,20 @@ class ConnectScreen extends Component {
             <div className="hw-connect__get-hw">
                 <p className="hw-connect__get-hw__msg">Don’t have a hardware wallet?</p>
                 {this.getAffiliateLinks()}
+                {this.getGoToHomeInitSection()}
             </div>
         )
     }
 
+    getGoToHomeInitSection () {
+      return !this.props.isInitProcessFinalized ? (<p className="hw-connect__get-hw__msg">
+        Or you can skip this and go directly to the home page
+        <span className="hw-connect__get-hw__link" onClick={async () => {
+          await this.props.finalizeInitProcess();
+          await this.props.goHome();
+        }}> here</span>
+      </p>) : null;
+    }
 
     scrollToTutorial = (e) => {
       if (this.referenceNode) this.referenceNode.scrollIntoView({behavior: 'smooth'})

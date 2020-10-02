@@ -28,7 +28,7 @@ export default class RifController {
     this.metamaskController = props.metamaskController;
     this.web3 = new Web3(this.metamaskController.networkController._provider);
 
-    const initState = props.initState || {};
+    const initState = props.initState || {isInitProcessFinalized: false};
 
     const currentNetworkId = this.metamaskController.networkController.getNetworkState() === 'loading' ? global.networks.main :
       this.metamaskController.networkController.getNetworkState();
@@ -212,6 +212,35 @@ export default class RifController {
     return Promise.resolve(this.unlocked);
   }
 
+  finalizeInitProcess () {
+    const state = this.store.getState();
+    state.isInitProcessFinalized = true;
+    this.store.updateState(state);
+    return Promise.resolve();
+  }
+
+  isInitProcessFinalized () {
+    const state = this.store.getState();
+    return Promise.resolve(state.isInitProcessFinalized);
+  }
+
+  setUsingHardwareWallet (using = true) {
+    const state = this.store.getState();
+    state[this.address] = {
+      usingHardwareWallet: using,
+    };
+    this.store.updateState(state);
+    return Promise.resolve();
+  }
+
+  isUsingHardwareWallet () {
+    const state = this.store.getState();
+    if (state[this.address]) {
+      return Promise.resolve(state[this.address].usingHardwareWallet);
+    }
+    return Promise.resolve(false);
+  }
+
   /**
    * This method publishes all the operations available to call from the ui for RifController
    * and all it's members.
@@ -226,6 +255,10 @@ export default class RifController {
       cleanStore: bindOperation(this.cleanStore, this),
       enabled: bindOperation(this.enabled, this),
       walletUnlocked: bindOperation(this.walletUnlocked, this),
+      isInitProcessFinalized: bindOperation(this.isInitProcessFinalized, this),
+      finalizeInitProcess: bindOperation(this.finalizeInitProcess, this),
+      setUsingHardwareWallet: bindOperation(this.setUsingHardwareWallet, this),
+      isUsingHardwareWallet: bindOperation(this.isUsingHardwareWallet, this),
     }
   }
 }

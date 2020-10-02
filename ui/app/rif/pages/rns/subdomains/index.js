@@ -92,7 +92,8 @@ class Subdomains extends Component {
     isDomainOwner: PropTypes.bool,
     showConfigPage: PropTypes.func,
     getResolver: PropTypes.func,
-    t: PropTypes.func
+    t: PropTypes.func,
+    isUsingHardwareWallet: PropTypes.bool,
   }
 
   constructor (props) {
@@ -185,10 +186,20 @@ class Subdomains extends Component {
   }
 
   render () {
-    const {subdomain, domainName, newChainAddresses, isOwner, isDomainOwner} = this.props;
+    const {subdomain, domainName, newChainAddresses, isOwner, isDomainOwner, isUsingHardwareWallet} = this.props;
     const updatedChainAddresses = newChainAddresses || [];
     const displayName = `${subdomain.name}.${domainName}`
     const {resolvers} = this.state;
+
+    const luminoNetworks = !isUsingHardwareWallet ? (
+      <LuminoNetworkChannels
+        isOwner={isOwner}
+        paginationSize={PAGINATION_DEFAULT_SIZE}
+        classes={styles.luminoNetworkChannels}
+        pageName={pageNames.rns.subdomains}
+      />
+    ) : null;
+
     return (
       <div className="body subdomain-page">
         <DomainHeader
@@ -242,12 +253,7 @@ class Subdomains extends Component {
           />
         </div>
         }
-        <LuminoNetworkChannels
-          isOwner={isOwner}
-          paginationSize={PAGINATION_DEFAULT_SIZE}
-          classes={styles.luminoNetworkChannels}
-          pageName={pageNames.rns.subdomains}
-        />
+        {luminoNetworks}
       </div>
     );
   }
@@ -258,6 +264,7 @@ function mapStateToProps (state) {
   return {
     ...params,
     isOwner: state.metamask.selectedAddress.toLowerCase() === params.subdomain.ownerAddress.toLowerCase(),
+    isUsingHardwareWallet: state.appState.isUsingHardwareWallet,
   }
 }
 

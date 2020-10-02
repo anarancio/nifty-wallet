@@ -16,6 +16,8 @@ const rifActions = {
   NAVIGATE_TO: 'NAVIGATE_TO',
   RIF_LANDING_PAGE: 'RIF_LANDING_PAGE',
   LUMINO_CALLBACKS_RUNNING: 'LUMINO_CALLBACKS_RUNNING',
+  INIT_PROCESS_FINALIZED: 'INIT_PROCESS_FINALIZED',
+  USING_HARDWARE_WALLET: 'USING_HARDWARE_WALLET',
   setBackgroundConnection,
   // RNS
   checkDomainAvailable,
@@ -80,6 +82,12 @@ const rifActions = {
   changeLanguage,
   getCurrentLanguage,
   getAvailableLanguages,
+  finalizeInitProcess,
+  updateInitProcessStatus,
+  isInitProcessFinalized,
+  setUsingHardwareWallet,
+  isUsingHardwareWallet,
+  updateUsingWalletStatus,
 }
 
 let background = null;
@@ -1056,7 +1064,7 @@ function showRifLandingPage () {
       screenTitle: 'My Domains',
       showTitle: true,
       tabIndex: 0,
-    }
+    },
   };
   pushScreenToNavigationStack('rif.landingPage', params);
   return {
@@ -1267,6 +1275,109 @@ function getAvailableLanguages () {
     return new Promise((resolve) => {
       const availableLanguages = Object.keys(languages).map(key => languages[key]);
       resolve(availableLanguages);
+    });
+  };
+}
+
+function finalizeInitProcess () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.finalizeInitProcess((error) => {
+        if (error) {
+          handleError(error, dispatch);
+          return reject(error);
+        }
+        dispatch(triggerInitProcessFinalizedActionUpdate(true));
+        return resolve();
+      });
+    });
+  };
+}
+
+function updateInitProcessStatus () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.isInitProcessFinalized((error, finalized) => {
+        if (error) {
+          dispatch(triggerInitProcessFinalizedActionUpdate(false));
+          return reject(error);
+        }
+        dispatch(triggerInitProcessFinalizedActionUpdate(finalized));
+        return resolve(finalized);
+      });
+    });
+  };
+}
+
+
+function triggerInitProcessFinalizedActionUpdate (finalized) {
+  return {
+    type: rifActions.INIT_PROCESS_FINALIZED,
+    data: finalized,
+  }
+}
+
+function triggerIsUsingHardwareWalletActionUpdate (using = true) {
+  return {
+    type: rifActions.USING_HARDWARE_WALLET,
+    data: using,
+  }
+}
+
+function isInitProcessFinalized () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.isInitProcessFinalized((error, finalized) => {
+        if (error) {
+          handleError(error, dispatch);
+          return reject(error);
+        }
+        return resolve(finalized);
+      });
+    });
+  };
+}
+
+function setUsingHardwareWallet (using = true) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.setUsingHardwareWallet(using, (error) => {
+        if (error) {
+          handleError(error, dispatch);
+          return reject(error);
+        }
+        dispatch(triggerIsUsingHardwareWalletActionUpdate(using));
+        return resolve();
+      });
+    });
+  };
+}
+
+function isUsingHardwareWallet () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.isUsingHardwareWallet((error, using) => {
+        if (error) {
+          handleError(error, dispatch);
+          return reject(error);
+        }
+        return resolve(using);
+      });
+    });
+  };
+}
+
+function updateUsingWalletStatus () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.rif.isUsingHardwareWallet((error, using) => {
+        if (error) {
+          dispatch(triggerIsUsingHardwareWalletActionUpdate(false));
+          return reject(error);
+        }
+        dispatch(triggerIsUsingHardwareWalletActionUpdate(using));
+        return resolve(using);
+      });
     });
   };
 }

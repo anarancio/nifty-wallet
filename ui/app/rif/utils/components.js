@@ -8,3 +8,7 @@ export function getLoader (message) {
     </div>
   );
 }
+
+export function getBlockUiMessage (message) {
+  return (<div className="block-ui-message"><div>{message}</div></div>);
+}

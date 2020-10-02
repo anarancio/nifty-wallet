@@ -108,11 +108,18 @@ function mapStateToProps (state) {
     selected,
     keyrings,
     luminoCallbacksRunning: state.appState.luminoCallbacksRunning,
+    isInitProcessFinalized: state.appState.isInitProcessFinalized,
   }
 }
 
 App.prototype.componentDidUpdate = function () {
-  this.setupLuminoDefaultCallbacks(this.props.dispatch);
+  this.setupLuminoDefaultCallbacks(this.props.dispatch)
+  this.updateStatusFlags()
+}
+
+App.prototype.updateStatusFlags = async function () {
+  await this.props.dispatch(rifActions.updateInitProcessStatus())
+  await this.props.dispatch(rifActions.updateUsingWalletStatus())
 }
 
 App.prototype.setupLuminoDefaultCallbacks = function (dispatch) {
@@ -120,7 +127,6 @@ App.prototype.setupLuminoDefaultCallbacks = function (dispatch) {
     dispatch(rifActions.rifEnabled()).then(enabled => {
       if (enabled) {
         dispatch(rifActions.setupDefaultLuminoCallbacks());
-
       }
     });
   }
@@ -253,6 +259,11 @@ App.prototype.renderPrimary = function () {
   if (props.seedWords) {
     log.debug('rendering seed words')
     return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
+  }
+
+  if (!this.props.isInitProcessFinalized) {
+    log.debug('rendering hardware wallet menu screen')
+    return h(ConnectHardwareForm, {key: 'hardware-wallets-menu'})
   }
 
   // show current view

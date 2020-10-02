@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
+import rifActions from '../../../../ui/app/rif/actions'
 import ConnectScreen from './connect-screen'
 import AccountList from './account-list'
 import { formatBalance } from '../../util'
@@ -10,19 +11,30 @@ import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
 import { LEDGER, TREZOR } from './enum'
 
+const initialState = {
+  error: null,
+  selectedAccount: null,
+  selectedAccounts: [],
+  accounts: [],
+  browserSupported: true,
+  unlocked: false,
+  device: null,
+  isInitProcessFinalized: false,
+};
+
 class ConnectHardwareForm extends Component {
+
   constructor (props, context) {
     super(props)
+    this.state = initialState;
+    this.initialize();
+  }
+
+  initialize () {
     this.timerID = null
-    this.state = {
-      error: null,
-      selectedAccount: null,
-      selectedAccounts: [],
-      accounts: [],
-      browserSupported: true,
-      unlocked: false,
-      device: null,
-    }
+    this.props.isInitProcessFinalized().then(isInitProcessFinalized => {
+      this.setState({isInitProcessFinalized})
+    });
   }
 
   componentWillReceiveProps (nextProps) {
@@ -154,7 +166,14 @@ class ConnectHardwareForm extends Component {
   }
 
   onForgetDevice = (device) => {
-    this.props.showForgetDevicePage(device)
+    if (this.state.isInitProcessFinalized) {
+      this.props.showForgetDevicePage(device)
+    } else {
+      this.props.forgetDevice(device, true);
+      this.setState(initialState);
+      this.initialize();
+      this.props.setUsingHardwareWallet(false);
+    }
   }
 
   onUnlockAccount = (device) => {
@@ -165,7 +184,9 @@ class ConnectHardwareForm extends Component {
 
     this.unlockHardwareWalletAccounts(this.state.selectedAccounts, device)
     .then(_ => {
+      this.props.finalizeInitProcess();
       this.props.goHome()
+      this.props.setUsingHardwareWallet(true);
     })
   }
 
@@ -181,8 +202,15 @@ class ConnectHardwareForm extends Component {
     }, Promise.resolve())
   }
 
-  onCancel = () => {
-    this.props.goHome()
+  onCancel = (device) => {
+    if (this.state.isInitProcessFinalized) {
+      this.props.goHome()
+      console.log('GOING HOMEEEEEEEEEEEEEEEEEEEEEEE');
+    } else {
+      this.props.forgetDevice(device, true);
+      this.setState(initialState);
+      this.initialize();
+    }
   }
 
   renderError () {
@@ -197,6 +225,9 @@ class ConnectHardwareForm extends Component {
         <ConnectScreen
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
+          goHome={this.props.goHome}
+          isInitProcessFinalized={this.state.isInitProcessFinalized}
+          finalizeInitProcess={this.props.finalizeInitProcess}
         />
       )
     }
@@ -221,15 +252,19 @@ class ConnectHardwareForm extends Component {
   }
 
   render () {
+    let backButton = null;
+    if (this.state.isInitProcessFinalized) {
+      backButton = (<i className="fa fa-arrow-left fa-lg cursor-pointer"
+                       onClick={() => this.props.goHome() }
+                       style={{
+                         position: 'absolute',
+                         left: '30px',
+                       }}/>);
+    }
     return (
       <div style={{width: '100%'}}>
         <div className="section-title flex-row flex-center">
-          <i className="fa fa-arrow-left fa-lg cursor-pointer"
-            onClick={() => this.props.goHome() }
-            style={{
-              position: 'absolute',
-              left: '30px',
-          }}/>
+          {backButton}
           <h2>Connect to hardware wallet</h2>
         </div>
         <div style={{overflowY: 'auto', height: '482px'}}>
@@ -273,6 +308,9 @@ ConnectHardwareForm.propTypes = {
   address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
   customHdPaths: PropTypes.object,
+  finalizeInitProcess: PropTypes.func,
+  isInitProcessFinalized: PropTypes.func,
+  setUsingHardwareWallet: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -320,6 +358,9 @@ const mapDispatchToProps = dispatch => {
     showForgetDevicePage: (device) => dispatch(actions.showForgetDevicePage(device)),
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
+    finalizeInitProcess: () => dispatch(rifActions.finalizeInitProcess()),
+    isInitProcessFinalized: () => dispatch(rifActions.isInitProcessFinalized()),
+    setUsingHardwareWallet: (using) => dispatch(rifActions.setUsingHardwareWallet(using)),
   }
 }
 
