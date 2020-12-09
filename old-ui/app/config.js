@@ -4,7 +4,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 import PropTypes from 'prop-types'
-import {isRskNetwork} from '../../app/scripts/controllers/rif/utils/general';
+import {isRskConfigurableNetwork} from '../../app/scripts/controllers/rif/utils/general';
 import {withTranslation} from 'react-i18next';
 const actions = require('../../ui/app/actions')
 const rifActions = require('../../ui/app/rif/actions');
@@ -76,7 +76,7 @@ class ConfigScreen extends Component {
     }
 
     let rifConfiguration = null;
-    if (isRskNetwork(this.props.metamask.network)) {
+    if (isRskConfigurableNetwork(this.props.metamask.network)) {
       rifConfiguration = h('div', [
         h('p.config-title', this.props.t('RIF Configuration')),
         h('p.config-description', this.props.t('This is for rif configuration only.')),

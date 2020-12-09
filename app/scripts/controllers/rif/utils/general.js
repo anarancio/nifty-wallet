@@ -3,6 +3,10 @@ import {toChecksumAddress} from 'web3-utils';
 
 const nodeify = require('../../../lib/nodeify');
 
+export function isRskConfigurableNetwork (networkId) {
+  return global.networks.reg === networkId;
+}
+
 export function isRskNetwork (networkId) {
   return global.networks.main === networkId ||
     global.networks.test === networkId ||
