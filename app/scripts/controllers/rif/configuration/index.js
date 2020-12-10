@@ -44,8 +44,6 @@ export class RifConfigurationProvider {
   validateConfiguration (configuration) {
     return !!(configuration &&
       configuration.lumino &&
-      configuration.lumino.hub &&
-      configuration.lumino.hub.endpoint &&
       configuration.lumino.explorer &&
       configuration.lumino.explorer.endpoint &&
       configuration.notifier &&
@@ -71,9 +69,6 @@ export class RifConfigurationProvider {
       case global.networks.main: // RSK Mainnet
         return {
           lumino: {
-            hub: {
-              endpoint: '',
-            },
             explorer: {
               endpoint: '',
             },
@@ -95,9 +90,6 @@ export class RifConfigurationProvider {
       case global.networks.test: // RSK Testnet
         return {
           lumino: {
-            hub: {
-              endpoint: 'http://165.227.110.216:5001/api/v1',
-            },
             explorer: {
               endpoint: 'http://165.227.110.216:8080/api/v1',
             },

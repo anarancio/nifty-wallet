@@ -29,6 +29,7 @@ export class LuminoManager extends AbstractManager {
       keyringController: this.keyringController,
     });
     this.luminoExplorer = new LuminoExplorer({
+      address: this.address,
       configurationProvider: this.configurationProvider,
     });
   }
@@ -36,10 +37,16 @@ export class LuminoManager extends AbstractManager {
   async initializeLumino (reconfigure = false) {
     const configuration = this.configurationProvider.getConfigurationObject();
     if (this.unlocked && isRskNetwork(this.network.id)) {
+      let hubEndpoint;
+      try {
+        hubEndpoint = await this.luminoExplorer.getHubConnectionUrl();
+      } catch (error) {
+        throw Error(error);
+      }
       const configParams = {
         chainId: this.network.id,
         rskEndpoint: this.network.rskEndpoint,
-        hubEndpoint: configuration.lumino.hub.endpoint,
+        hubEndpoint,
         address: ethUtils.toChecksumAddress(this.address),
         registryAddress: configuration.rns.contracts.rns,
       };
@@ -104,6 +111,9 @@ export class LuminoManager extends AbstractManager {
     }
     if (this.operations) {
       this.operations.updateAddress(address);
+    }
+    if (this.luminoExplorer) {
+      this.luminoExplorer.onAddressChanged(address);
     }
     this.initializeLumino(true);
   }

@@ -1,9 +1,17 @@
+import {toChecksumAddress} from "web3-utils";
+
 const ENDPOINT_EXPLORER_DASHBOARD = '/dashboard';
+const ENDPOINT_EXPLORER_BALANCING_HUBS = '/luminoHubConnection';
 
 export class LuminoExplorer {
 
   constructor (props) {
     this.configurationProvider = props.configurationProvider;
+    this.address = props.address;
+  }
+
+  onAddressChanged (address) {
+    this.address = toChecksumAddress(address);
   }
 
   getTokens () {
@@ -18,7 +26,7 @@ export class LuminoExplorer {
           // Creating promises so then we resolve
           dashBoardInfo.tokens.forEach(token => promisesSummaries.push(this.getTokenSummary(token.network_address)));
           Promise.all(promisesSummaries).then(values => {
-            // Assing value returned by promises
+            // Assign value returned by promises
             const tokensWithSummary = [];
             for (let i = 0; i < dashBoardInfo.tokens.length; i++) {
               const token = dashBoardInfo.tokens[i];
@@ -45,6 +53,7 @@ export class LuminoExplorer {
         }).catch(err => reject(err));
     });
   }
+
   // TODO: this method should return the channels per token no the token by address, or if the intention was to get
   // TODO: the token by address then we should change the method name
   getChannelsForToken (tokenAddress) {
@@ -63,6 +72,7 @@ export class LuminoExplorer {
         }).catch(err => reject(err));
     });
   }
+
   isLuminoNode (address) {
     const configuration = this.configurationProvider.getConfigurationObject();
     return new Promise((resolve, reject) => {
@@ -78,6 +88,32 @@ export class LuminoExplorer {
           });
           resolve(false);
         }).catch(err => reject(err));
+    });
+  }
+
+  getHubConnectionUrl () {
+    const configuration = this.configurationProvider.getConfigurationObject();
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open('POST', `${configuration.lumino.explorer.endpoint}${ENDPOINT_EXPLORER_BALANCING_HUBS}/register_client/${this.address}`);
+      request.addEventListener('load', function(e) {
+        switch (request.status) {
+          case 200:
+            const response = JSON.parse(request.response);
+            resolve(`${response.url}/api/v1`);
+            break;
+          case 404:
+            reject('No hub registered on Explorer API');
+            break;
+          case 409:
+            reject('No more available connections');
+            break;
+          default:
+            reject(`Error with status ${request.status}: ${request.statusText}`);
+            break;
+        }
+      });
+      request.send();
     });
   }
 }
