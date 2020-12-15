@@ -100,7 +100,7 @@ export class LuminoExplorer {
         switch (request.status) {
           case 200:
             const response = JSON.parse(request.response);
-            resolve(`${response.url}/api/v1`);
+            resolve(response.url);
             break;
           case 404:
             reject('No hub registered on Explorer API');
