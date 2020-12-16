@@ -31,15 +31,6 @@ class RifConfiguration extends Component {
       });
   }
 
-  updateLuminoHubConfiguration (event) {
-    const luminoHubEndpoint = event.target.value;
-    const configuration = this.state.configuration;
-    configuration.lumino.hub.endpoint = luminoHubEndpoint;
-    this.setState({
-      configuration,
-    });
-  }
-
   updateExplorerConfiguration (event) {
     const explorerEndpoint = event.target.value;
     const configuration = this.state.configuration;
@@ -156,10 +147,6 @@ class RifConfiguration extends Component {
       <div className="settings-body">
         <ul>
           <li>
-            <label>Lumino HUB</label>
-            <input value={this.state.configuration.lumino.hub.endpoint} onChange={(event) => this.updateLuminoHubConfiguration(event)} placeholder="Lumino Hub Endpoint" />
-          </li>
-          <li>
             <label>Explorer</label>
             <input value={this.state.configuration.lumino.explorer.endpoint} onChange={(event) => this.updateExplorerConfiguration(event)} placeholder="Explorer Endpoint" />
           </li>
@@ -206,10 +193,10 @@ class RifConfiguration extends Component {
             <input value={this.state.configuration.rns.contracts.rskOwner} onChange={(event) => this.updateContractAddress('rskOwner', event)} placeholder="RSK Owner" />
           </li>
           <li className="mt-2">
-            <button className="btn-primary w-100" onClick={() => this.saveConfiguration()}>{t("Save Configuration")}</button>
+            <button className="btn-primary w-100" onClick={() => this.saveConfiguration()}>{t('Save Configuration')}</button>
           </li>
           <li className="mt-2">
-            <button className="btn w-100" onClick={() => this.cancel()}>{t("Cancel")}</button>
+            <button className="btn w-100" onClick={() => this.cancel()}>{t('Cancel')}</button>
           </li>
         </ul>
       </div>
