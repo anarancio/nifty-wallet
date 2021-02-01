@@ -70,12 +70,14 @@ export class RifConfigurationProvider {
         return {
           lumino: {
             explorer: {
-              endpoint: 'http://13.56.151.74:8080/api/v1', // FIXME is this ip updated?
+              endpoint: 'http://206.189.182.241:8080/api/v1', // FIXME is this ip updated?
             },
           },
           notifier: {
             availableNodes: [
-              'https://gateway-notifier.rifos.org', // FIXME: we need two more notifiers, also is the port needed?
+              'http://206.189.200.203:8080/api/v1',
+              'http://167.99.232.42:8080/api/v1',
+              'http://167.99.233.117:8080/api/v1',
             ],
           },
           rns: {
