@@ -70,7 +70,7 @@ export class RifConfigurationProvider {
         return {
           lumino: {
             explorer: {
-              endpoint: 'http://206.189.182.241:8080/api/v1', // FIXME is this ip updated?
+              endpoint: 'http://206.189.182.241:8080/api/v1',
             },
           },
           notifier: {
