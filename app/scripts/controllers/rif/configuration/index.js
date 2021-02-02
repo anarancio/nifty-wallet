@@ -75,9 +75,9 @@ export class RifConfigurationProvider {
           },
           notifier: {
             availableNodes: [
-              'http://206.189.200.203:8080/api/v1',
-              'http://167.99.232.42:8080/api/v1',
-              'http://167.99.233.117:8080/api/v1',
+              'http://206.189.200.203:8080',
+              'http://167.99.232.42:8080',
+              'http://167.99.233.117:8080',
             ],
           },
           rns: {
