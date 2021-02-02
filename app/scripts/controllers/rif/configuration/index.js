@@ -70,11 +70,15 @@ export class RifConfigurationProvider {
         return {
           lumino: {
             explorer: {
-              endpoint: '',
+              endpoint: 'http://206.189.182.241:8080/api/v1',
             },
           },
           notifier: {
-            availableNodes: [],
+            availableNodes: [
+              'http://206.189.200.203:8080/api/v1',
+              'http://167.99.232.42:8080/api/v1',
+              'http://167.99.233.117:8080/api/v1',
+            ],
           },
           rns: {
             contracts: {
@@ -91,14 +95,14 @@ export class RifConfigurationProvider {
         return {
           lumino: {
             explorer: {
-              endpoint: 'http://165.227.110.216:8080/api/v1',
+              endpoint: 'http://localhost:8080/api/v1', // FIXME we dont have explorer on testnet
             },
           },
           notifier: {
-            availableNodes: [
-              'http://138.197.6.5:8081',
-              'http://138.197.6.5:8082',
-              'http://138.197.6.5:8083',
+            availableNodes: [ // FIXME we dont have notifiers on testnet
+              'http://localhost:8081/',
+              'http://localhost:8082/',
+              'http://localhost:8083/',
             ],
           },
           rns: {
@@ -115,24 +119,25 @@ export class RifConfigurationProvider {
       case global.networks.reg: // RSK Regtest
         return {
           lumino: {
-            hub: {
-              endpoint: '',
-            },
             explorer: {
-              endpoint: '',
+              endpoint: 'http://localhost:8080/api/v1',
             },
           },
           notifier: {
-            availableNodes: [],
+            availableNodes: [
+              'http://localhost:8081/',
+              'http://localhost:8082/',
+              'http://localhost:8083/',
+            ],
           },
           rns: {
             contracts: {
-              rns: '',
-              publicResolver: '',
-              multiChainResolver: '',
-              rif: '',
-              fifsAddrRegistrar: '',
-              rskOwner: '',
+              rns: '0x83C5541A6c8D2dBAD642f385d8d06Ca9B6C731ee',
+              publicResolver: '0xE0825f57Dd05Ef62FF731c27222A86E104CC4Cad',
+              multiChainResolver: '0x73ec81da0C72DD112e06c09A6ec03B5544d26F05',
+              rif: '0x1Af2844A588759D0DE58abD568ADD96BB8B3B6D8',
+              fifsAddrRegistrar: '0x8921BF2f074b5470c02Cc7473F17282576111591',
+              rskOwner: '0x79bbC6403708C6578B0896bF1d1a91D2BB2AAa1c',
             },
           },
         };
