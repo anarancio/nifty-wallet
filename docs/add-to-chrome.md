@@ -1,12 +1,11 @@
-## Add Custom Build to Chrome
+## Add to Chrome
 
 * Open `Settings` > `Extensions`.
-* Check "Developer mode".
+* Check `Developer mode` on the top right of the screen.
 * Alternatively, use the URL `chrome://extensions/` in your address bar
-* At the top, click `Load Unpacked Extension`.
-* Navigate to your `metamask-plugin/dist/chrome` folder.
+* At the top left, click `Load Unpacked Extension`.
+* Navigate to your `root/dist/chrome` folder.
 * Click `Select`.
-* Change to your locale via `chrome://settings/languages`
-* Restart the browser and test the plugin in your locale
+* Restart the browser and test the plugin
 
-You now have the plugin, and can click 'inspect views: background plugin' to view its dev console.
+You now have the plugin, and can click `inspect views: background plugin` to view its dev console.
