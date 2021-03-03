@@ -7,7 +7,7 @@ This wallet let you make payments using Lumino, manage your RNS domains and oper
 ### How to use
 You can use RConnect by simply adding a generated build of this plugin into your
 browser. How well first you need to build the plugin, for this you need to follow the 
-steps under [How to build]() section.
+steps under [How to build](#how-to-build) section.
 
 After you successfully generate a build then you need to add that build to your browser,
 you can do that following the steps depending on what browser are you working on:
