@@ -2,7 +2,7 @@
 
 RConnect is a browser extension to operate with RSK blockchain and Lumino Payments. 
 It's a fork of the Metamask based wallet [Nifty Wallet](https://github.com/poanetwork/nifty-wallet).
-This wallet let you make payments using Lumino, manage your RNS domains and operate over RSK blockchain networks.
+This wallet lets you make payments using Lumino, manage your RNS domains and operate over RSK blockchain networks.
 
 ### How to use
 You can use RConnect by simply adding a generated build of this plugin into your
