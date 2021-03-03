@@ -55,6 +55,8 @@ RConnect General Architecture:
 
 ## Build for Development
 
+If you are going to develop and use local RIF Services see [here](./docs/configuration.md) to configure for local development.
+
 Execute this in the terminal:
 ```bash
 npm install
