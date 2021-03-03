@@ -73,7 +73,7 @@ After you see something like this the plugin is ready and watching changes.
 
 ## Build for Publishing
 
-Execute this on terminal:
+Execute this on a terminal:
 ```bash
 npm run dist
 ```
