@@ -22,7 +22,7 @@ you can do that following the steps depending on what browser are you working on
    - If you are using [nvm](https://github.com/nvm-sh/nvm#installation) (recommended) running `nvm install 10` will automatically choose the right node version for you.
    - If you don't use nvm then you need to install npm globally: ```npm install -g npm@6.9.0```
  - Clone Lumino Light Client SDK from [here](https://github.com/rsksmart/lumino-light-client-sdk.git).
-   - The SDK repository folder needs to be at the same level as the rconnect folder in order to work properly.
+   - The SDK repository folder needs to be at the same level as the RConnect folder in order to work properly.
    - You need to go to the SDK folder and run `npm install && npm run build` to generate the SDK build.
  - Go to the parent root folder of the project on your terminal
  - Install dependencies: ```npm install```
