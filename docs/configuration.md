@@ -136,4 +136,4 @@ Here is an example of a local configuration:
 ```
 
 **IMPORTANT: These parameters are only initial parameters, the wallet needs to be
-re-installed (removed and installed again) on the browser after we change this, otherwise we will not see any change at all.**
+removed and installed again on the browser if they are changed. No changes will be reflected without a re-installation.**
