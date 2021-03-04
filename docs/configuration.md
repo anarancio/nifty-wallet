@@ -10,8 +10,7 @@ Take a look at the RConnect General Architecture Diagram:
 ![General Diagram](./general-rconnect-architecture.png)
 
 There we have 1 RSK Node, 1 Lumino Explorer, 1 Lumino Hub and several Notifiers.
-All these are API's running somewhere, so we need to setup those to let the wallet
-to access them. 
+All these are running APIs, so we need to specify where they are in order to let the wallet access them.
 
 The file that let us configure this is [this one.](../app/scripts/controllers/rif/configuration/index.js)
 There we will see that is a JS file with some functions inside, basically what we need
