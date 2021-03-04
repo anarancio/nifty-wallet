@@ -5,9 +5,7 @@ neccesary infrastructure to allow the wallet to work with RIF Services.
 To do so you need to configure some API parameters that allow
 us to access those services.
 
-Take a look at the RConnect General Architecture Diagram:
-
-![General Diagram](./general-rconnect-architecture.png)
+Take a look at the RConnect General Architecture Diagram [here](../README.md#rconnect-general-architecture).
 
 There we have 1 RSK Node, 1 Lumino Explorer, 1 Lumino Hub and several Notifiers.
 All these are running APIs, so we need to specify where they are in order to let the wallet access them.

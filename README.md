@@ -44,11 +44,11 @@ You can also test with a continuously watching process, via `npm run watch`.
 You can run the linter by itself with `gulp lint`.
 
 ## Architecture
-RConnect Internal Architecture:
+#### RConnect Internal Architecture:
 
 [![Architecture Diagram](./docs/architecture.png)][1]
 
-RConnect General Architecture:
+#### RConnect General Architecture:
 
 ![General Diagram](./docs/general-rconnect-architecture.png)
 
