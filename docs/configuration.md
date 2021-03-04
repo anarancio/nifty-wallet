@@ -2,7 +2,7 @@
 
 When you run RConnect on Regtest with a local node you need to setup all the 
 neccesary infrastructure to allow the wallet to work with RIF Services. 
-To do so you need to configure some information about the API's that allow
+To do so you need to configure some API parameters that allow
 us to access those services.
 
 If we see the RConnect General Architecture Diagram:
