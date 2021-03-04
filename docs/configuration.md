@@ -1,6 +1,6 @@
 ## How to configure RIF Services for local development.
 
-When you run RConnect on Regtest with a local node you need to setup all the 
+When you run RConnect on Regtest with a local node you need to set up all the 
 neccesary infrastructure to allow the wallet to work with RIF Services. 
 To do so you need to configure some API parameters that allow
 us to access those services.
