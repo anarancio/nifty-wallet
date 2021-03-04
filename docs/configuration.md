@@ -104,7 +104,7 @@ those fields are:
 ```
 
 As you can see we need to set up some endpoints (for Lumino Explorer and RIF Notifiers) and then RNS Suite Smart Contract addresses.
-Lumino Hub doesn't need to be here since Lumino Explorer provide that for us in runtime so we are ok.
+Lumino Hub data doesn't need to be included here since the Lumino Explorer provides that for us in runtime, so we're OK in that regard.
 
 Here is an example of a local configuration:
 
