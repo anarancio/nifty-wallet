@@ -5,7 +5,7 @@ neccesary infrastructure to allow the wallet to work with RIF Services.
 To do so you need to configure some API parameters that allow
 us to access those services.
 
-If we see the RConnect General Architecture Diagram:
+Take a look at the RConnect General Architecture Diagram:
 
 ![General Diagram](./general-rconnect-architecture.png)
 
