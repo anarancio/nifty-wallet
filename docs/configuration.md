@@ -68,8 +68,7 @@ As you can see we have a structure like this:
 }
 ```
 
-Now we need to fill those empty fields, here is some reference about what
-those fields are:
+Now we need to fill in those empty fields. Here are references about what those fields are:
 
 ```json5
 {
