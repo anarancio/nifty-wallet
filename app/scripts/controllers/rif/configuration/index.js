@@ -120,24 +120,24 @@ export class RifConfigurationProvider {
         return {
           lumino: {
             explorer: {
-              endpoint: 'http://localhost:8080/api/v1',
+              endpoint: '',
             },
           },
           notifier: {
             availableNodes: [
-              'http://localhost:8081/',
-              'http://localhost:8082/',
-              'http://localhost:8083/',
+              '',
+              '',
+              '',
             ],
           },
           rns: {
             contracts: {
-              rns: '0x83C5541A6c8D2dBAD642f385d8d06Ca9B6C731ee',
-              publicResolver: '0xE0825f57Dd05Ef62FF731c27222A86E104CC4Cad',
-              multiChainResolver: '0x73ec81da0C72DD112e06c09A6ec03B5544d26F05',
-              rif: '0x1Af2844A588759D0DE58abD568ADD96BB8B3B6D8',
-              fifsAddrRegistrar: '0x8921BF2f074b5470c02Cc7473F17282576111591',
-              rskOwner: '0x79bbC6403708C6578B0896bF1d1a91D2BB2AAa1c',
+              rns: '',
+              publicResolver: '',
+              multiChainResolver: '',
+              rif: '',
+              fifsAddrRegistrar: '',
+              rskOwner: '',
             },
           },
         };
