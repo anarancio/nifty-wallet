@@ -74,15 +74,15 @@ Now we need to fill in those empty fields. Here are references about what those 
 {
   lumino: {
     explorer: {
-      endpoint: 'Here you need to put the endpoint url where the Lumino Explorer API is running, for example http://localhost:8080/api/v1',
+      endpoint: 'endpoint URL for the Lumino Explorer API; e.g. http://localhost:8080/api/v1',
     },
   },
   notifier: {
     availableNodes: [
       // This is an array of notifier endpoints, you need at least 3.
-      'The endpoint for the notifier 1 (where the API is running), for example: http://localhost:8081/',
-      'The endpoint for the notifier 2 (where the API is running), for example: http://localhost:8082/',
-      'The endpoint for the notifier 3 (where the API is running), for example: http://localhost:8083/'
+      'Notifier 1 running API endpoint, e.g.: http://localhost:8081/',
+      'Notifier 2 running API endpoint, e.g.: http://localhost:8082/',
+      'Notifier 3 running API endpoint, e.g.: http://localhost:8083/'
     ],
   },
   rns: {
