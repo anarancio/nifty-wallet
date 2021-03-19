@@ -11,8 +11,7 @@ There we have 1 RSK Node, 1 Lumino Explorer, 1 Lumino Hub and several Notifiers.
 All these are running APIs, so we need to specify where they are in order to let the wallet access them.
 
 The file that lets us configure this is [`index.js`.](../app/scripts/controllers/rif/configuration/index.js)
-There we will see that is a JS file with some functions inside, basically what we need
-to change is the function `getInitialConfigStructure` that makes the initial setup.
+This is a JS file which defines a particular set of functions. We need to change the `getInitialConfigStructure` function because it is the one that does the initial setup.
 This function looks similar to this:
 
 ```js
