@@ -87,7 +87,7 @@ Now we need to fill in those empty fields. Here are references about what those 
   },
   rns: {
     contracts: {
-      // All these values can be retrieved from the RNS Suite deployment summary.
+      // All these values can be retrieved from the RNS Suite (https://github.com/rnsdomains/rns-suite) deployment summary.
       rns: 'The RNS Contract Address',
       publicResolver: 'The Public Resolver Contract Address',
       multiChainResolver: 'The Multi-chain Resolver Contract Address',
